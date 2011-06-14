@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:screenOrientation="portrait"
+    android:background="@color/grey" >
+    <LinearLayout 
+    	style="@style/TitleBar"
+    	android:id="@+id/TitleBar">
+        <ImageButton style="@style/TitleBarAction"
+        	android:id="@+id/btn_title_home"
+            android:contentDescription=""
+            android:src="@drawable/ic_title_home"  />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText"
+        	android:text="Previous Pictures" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction" 
+            android:id="@+id/btn_title_refresh"
+            android:contentDescription=""
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+        <ProgressBar style="@style/TitleBarProgressIndicator"
+            android:id="@+id/title_refresh_progress"
+            android:visibility="gone" />
+    </LinearLayout>	
+	 
+	<LinearLayout
+		android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">  
+		<ListView  
+			android:id="@android:id/list"
+			android:layout_weight="1"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+		    android:divider="@color/darkergrey"
+		    android:dividerHeight="1px"
+		    android:cacheColorHint="@color/grey"
+		    android:smoothScrollbar="true"
+		    />
+		<TextView
+			android:id="@android:id/empty"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:gravity="center"
+		    android:text="Cannot retreive list at this time." />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

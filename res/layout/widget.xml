@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:gravity="center_vertical">
+  
+	<RelativeLayout
+	android:id="@+id/content"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:padding="5dp"
+	android:visibility="gone"
+	android:background="#66000000"
+>
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text=""
+		android:textSize="20sp"
+		android:layout_alignParentTop="true"
+		android:gravity="center"
+		android:ellipsize="end"
+		android:textColor="#FFFFFF"
+		android:shadowColor="#666666"
+	  	android:shadowRadius="1.2"
+	  	android:shadowDx="1.2"
+	  	android:shadowDy="1.2"
+	  	android:typeface="sans"		
+	/>
+	<TextView
+		android:id="@+id/credit"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text=""
+		android:textSize="10sp"
+		android:gravity="center"
+		android:ellipsize="end"
+		android:textColor="#CCCCCC"
+		android:layout_below="@+id/title"
+		android:shadowColor="#666666"
+	  	android:shadowRadius="1.2"
+	  	android:shadowDx="1.2"
+	  	android:shadowDy="1.2"
+	  	android:typeface="sans"
+	/>
+
+
+</RelativeLayout>
+	
+	<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent"
+	  android:gravity="center"
+	  android:id="@+id/loading"
+	  android:background="#99000000">
+		<TextView
+			android:text="Please wait..."
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textSize="16sp"
+			android:gravity="center"
+			android:textColor="#FFFFFF"
+		/>
+	</LinearLayout>
+	
+</LinearLayout>

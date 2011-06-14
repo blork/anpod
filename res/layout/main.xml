@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:screenOrientation="portrait"
+    android:background="@color/white">
+    <LinearLayout 
+    	style="@style/TitleBar"
+    	android:id="@+id/TitleBar">
+        <ImageView style="@style/TitleBarLogo"
+            android:contentDescription=""
+            android:src="@drawable/title_logo" />
+ 
+        <View style="@style/TitleBarSpring" />
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction" 
+            android:id="@+id/btn_title_refresh"
+            android:contentDescription=""
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+        <ProgressBar style="@style/TitleBarProgressIndicator"
+            android:id="@+id/title_refresh_progress"
+            android:visibility="gone" />
+    </LinearLayout>	
+    <ScrollView
+    	android:layout_weight="1"
+   		android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent" 
+		    android:screenOrientation="portrait">
+			<LinearLayout style="@style/ImageBox">  
+			      <ImageView
+			      	android:id="@+id/image"
+			      	android:layout_width="wrap_content"
+			      	android:layout_height="wrap_content"
+			      	android:clickable="true"
+			      	android:padding="3dp"
+			      	android:gravity="center"
+			      	android:layout_gravity="center"/>
+			     <TextView
+		        	android:id="@+id/play"
+		       		android:orientation="horizontal"
+			   		android:layout_width="fill_parent"
+		        	android:layout_height="wrap_content"
+		        	android:textSize="@dimen/text_size_very_small"
+		        	android:textColor="@color/darkgrey"        	
+		        	android:layout_weight="1"
+		       		android:gravity="center"
+		       		android:visibility="gone"
+		       		android:autoLink="all" />
+	    	</LinearLayout>
+	    
+			<View
+			 android:id="@+id/dark_separator"
+			 android:layout_width="fill_parent"
+			 android:layout_height="1px"
+			 android:background="@color/purple" />	
+			 <View
+			 android:layout_width="fill_parent"
+			 android:layout_height="1px"
+			 android:background="@color/white" />	
+			 
+			<LinearLayout
+				android:id="@+id/title_container"
+				android:orientation="vertical"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		      	android:background="@color/lightpurple">  
+			    <TextView
+			    	android:id="@+id/image_title"
+			   		android:orientation="horizontal"
+			   		android:layout_width="fill_parent"
+		        	android:layout_height="wrap_content"
+		        	android:text="Image Name" 
+		        	android:textSize="@dimen/text_size_medium"
+		        	android:textStyle="bold"
+		        	android:textColor="@color/darkgrey"
+		        	android:layout_weight="1"
+		        	android:ellipsize="marquee"
+		        	android:singleLine="true"
+		        	android:marqueeRepeatLimit="marquee_forever"
+		       		android:gravity="center_horizontal" />
+		    </LinearLayout>
+		
+			<LinearLayout
+				android:id="@+id/light_gradient_section"
+		        android:orientation="vertical"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		   		android:background="@drawable/light_gradient">
+		        <LinearLayout
+		            android:orientation="horizontal"
+		            android:layout_width="fill_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1">
+		            <Button android:id="@+id/home_btn_about"
+		                style="@style/HomeButton"
+		                android:onClick="onAboutClick"
+		                android:text="@string/about_button"
+		                android:drawableTop="@drawable/home_btn_about"/>
+		        </LinearLayout>
+		        <LinearLayout
+		            android:orientation="horizontal"
+		            android:layout_width="fill_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		      		android:padding="6dip">
+		      		
+		            <Button android:id="@+id/home_btn_more"
+		                style="@style/HomeButton"
+		                android:onClick="onMoreClick"
+		                android:text="@string/more_button"
+		                android:drawableTop="@drawable/home_btn_more"/>
+		                
+		            <Button android:id="@+id/home_btn_share"
+		                style="@style/HomeButton"
+		                android:onClick="onShareClick"
+		                android:text="@string/share_button"
+		                android:drawableTop="@drawable/home_btn_share"/>
+		                
+		            <Button android:id="@+id/home_btn_options"
+		                style="@style/HomeButton"
+		                android:onClick="onOptionsClick"
+		                android:text="@string/options_button"
+		                android:drawableTop="@drawable/home_btn_options"/>
+		        </LinearLayout>
+			</LinearLayout>
+	    </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

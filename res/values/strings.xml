@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Astronomy Picture of the Day</string>
+    
+    <string-array name="updates">
+        <item>0:00 (Midnight)</item>
+        <item>2:00</item>
+        <item>4:00</item>
+        <item>6:00</item>
+        <item>8:00</item>
+        <item>10:00</item>
+        <item>12:00 (Noon)</item>
+        <item>14:00</item>
+        <item>16:00</item>
+        <item>18:00</item>
+        <item>20:00</item>
+        <item>22:00</item>
+    </string-array>
+    <string-array name="updates_values">
+   		<item>0</item>
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+        <item>22</item>
+    </string-array>	
+    
+     <string-array name="themes">
+        <item>Purple</item>
+        <item>Black</item>
+        <item>Green</item>
+    </string-array>
+    <string-array name="themes_values">
+   		<item>purple</item>
+        <item>black</item>
+        <item>green</item>
+    </string-array>	
+    
+	<string name="help">
+		This app downloads the picture from NASA\'s Astronomy Picture of the Day website, apod.nasa.gov.\n
+		Please email me or post to apod.uservoice.com with comments or problems.\n
+		Click on the pictures to get the full list of actions, such as setting wallpaper, etc.\n
+		Swipe left and right on the previous picture details pages for next and previous.\n
+		By default, it runs every day at midnight and automatically sets your homescreen wallpaper, and saves the picture to your SD Card.\n\n
+		There\'s also a donate version, with the ads removed, now available!\n\n
+		If you decide to alter the settings to turn off updates and automatic wallpaper setting, you can still run the update manually\n\n
+		I try and release updates often, and fix bugs as soon as I can. I hope you enjoy this app!\n
+	</string>
+	<!-- •  -->
+	<string name="changelog">
+• Fixed crash on Motorola Xoom!\n
+• Honeycomb support! Not full tablet UI yet, though.\n
+• Fix for out of memory crash\n
+	</string>
+	<string name="about_button">
+		About today\'s picture
+	</string>
+	<string name="more_button">
+		View more
+	</string>
+	<string name="share_button">
+		Share
+	</string>
+	<string name="options_button">
+		Options
+	</string>
+</resources>

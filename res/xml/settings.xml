@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Notifications"
+		android:summary="Notification Settings."
+		android:key="notifications">
+		<CheckBoxPreference
+            android:key="notifications_enabled"
+            android:defaultValue="true"
+            android:title="Notifications"
+		 />
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="Updates"
+		android:summary="Update options."
+		android:key="pref_updates">
+		<CheckBoxPreference
+            android:key="updates_enabled"
+            android:defaultValue="true"
+            android:title="Daily Updates"
+            android:summaryOn="Picture will be downloaded daily."
+            android:summaryOff="Must be run manually." />  
+		<CheckBoxPreference
+            android:key="weekly_enabled"
+            android:defaultValue="false"
+            android:title="Weekly Updates"
+            android:summary="Get the highest rated picture each week." />                     
+       	<ListPreference
+			android:summary="Change update time."
+			android:key="update_time"
+			android:title="Update Time"
+			android:entries="@array/updates"
+			android:entryValues="@array/updates_values"
+			android:dependency="updates_enabled"/>     
+       <CheckBoxPreference
+            android:key="wallpaper_auto_enabled"
+            android:defaultValue="true"
+            android:title="Set Wallpaper"
+            android:summaryOn="Wallpaper will be set automatically."
+            android:summaryOff="Wallpaper must be set manually." />	
+       <CheckBoxPreference
+            android:key="boot"
+            android:defaultValue="true"
+            android:title="Run on Boot"
+            android:summaryOn="Update will run when you start your phone."
+            android:summaryOff="Update will not run when you start your phone." />	
+       <CheckBoxPreference
+            android:key="wifi"
+            android:defaultValue="false"
+            android:title="WiFi only"
+            android:summaryOn="Update will only run when connected by WiFi."
+            android:summaryOff="Update will run over any network connection." />	
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Picture"
+		android:summary="Picture Settings."
+		android:key="picture">
+		<CheckBoxPreference
+            android:key="sd_card"
+            android:defaultValue="true"
+            android:title="Save Pictures"
+            android:summaryOff="Pictures will not be saved to external storage."
+            android:summaryOn="Pictures will be saved to external storage." />
+       	<Preference
+			android:key="cache"
+			android:title="Current cache size"
+			android:summary="" />   
+	</PreferenceCategory>	
+	
+	<PreferenceCategory android:title="Themes"
+		android:summary="Theme Settings."
+		android:key="theme">
+       	<ListPreference
+			android:key="theme"
+			android:title="Change theme"
+			android:entries="@array/themes"
+			android:defaultValue="purple"
+			android:entryValues="@array/themes_values" />    
+	</PreferenceCategory>
+
+</PreferenceScreen>
