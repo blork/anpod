@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/g-media-streamer-android/!svn/ver/1/src/com/gmedia/mobile/adapters
+END
+ItemThumbnailAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/g-media-streamer-android/!svn/ver/1/src/com/gmedia/mobile/adapters/ItemThumbnailAdapter.java
+END
+StationThumbnailAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/g-media-streamer-android/!svn/ver/1/src/com/gmedia/mobile/adapters/StationThumbnailAdapter.java
+END
+TrackThumbnailAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/g-media-streamer-android/!svn/ver/1/src/com/gmedia/mobile/adapters/TrackThumbnailAdapter.java
+END

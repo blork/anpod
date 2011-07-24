@@ -1,90 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.blork.anpod"
-      android:versionCode="74"
-      android:versionName="2.2.4">
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".Main"
-                  android:label="@string/app_name" 
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
-                  android:configChanges="orientation">
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest android:installLocation="auto" android:versionCode="75"
+    android:versionName="3.0" package="com.blork.anpod" xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-sdk android:minSdkVersion="5" android:targetSdkVersion="11"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <application android:hardwareAccelerated="true"
+        android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/Theme.IOSched">
+        <meta-data android:name="android.app.default_searchable" android:value=".activity.SearchActivity"/>
+        <activity android:label="@string/app_name" android:name="com.blork.anpod.activity.HomeActivity" android:configChanges="orientation">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+       
+        <activity android:label="@string/app_name" android:name=".activity.SearchDetailsFragmentPagerActivity" android:configChanges="orientation"/>
+
+        <activity android:label="@string/app_name" android:name=".activity.DetailsFragmentPagerActivity" android:configChanges="orientation"/>
         
-		<activity android:name=".About"
-                  android:label="@string/app_name" 
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
-                  android:configChanges="orientation"
-                  android:launchMode="singleTask">
-        </activity>   
-        <activity android:name=".Today"
-                  android:label="@string/app_name" 
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
-                  android:configChanges="orientation">
-        </activity>  
-        <activity android:name=".Retry"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
-                  android:launchMode="singleInstance">
-        </activity> 
-		<activity android:name=".List"
-                  android:label="@string/app_name" 
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
-                  android:configChanges="orientation">
-        </activity>  
         
-           
-        <activity android:name=".Settings"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
-                  android:configChanges="orientation">
+        <activity android:label="@string/search_name"
+            android:launchMode="singleTop" android:name="com.blork.anpod.activity.SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
-       <activity android:name=".Help"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.Light.NoTitleBar">
-        </activity>         
-		<service android:name=".AnpodService" android:enabled="true"/>
-		<service android:name=".AppUpdateService" android:enabled="true"/>
-		<receiver android:name=".Widget" android:process=":remote" android:label="4x1 Astronomy Widget">
-		    <intent-filter>
-		        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-		    </intent-filter>
-		    <meta-data android:name="android.appwidget.provider" android:resource="@layout/widget_info" />
-		</receiver>
-		
-		<receiver android:name=".FourByFourWidget" android:process=":remote" android:label="4x3 Astronomy Widget">
-		    <intent-filter>
-		        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-		    </intent-filter>
-		    <meta-data android:name="android.appwidget.provider" android:resource="@layout/four_by_four_widget_info" />
-		</receiver>	
-					
-		<receiver android:name=".Receiver" android:process=":remote">
-		   <intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED" />
-				<action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-				<action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-				<category android:name="android.intent.category.HOME" />
-			</intent-filter>
-	   </receiver>  	
-
-		<!-- Used for install referrer tracking -->
-		<receiver android:name="com.google.android.apps.analytics.AnalyticsReceiver" android:exported="true">
-		  <intent-filter>
-		    <action android:name="com.android.vending.INSTALL_REFERRER" />
-		  </intent-filter>
-		</receiver>
+        <provider
+            android:authorities="com.blork.anpod.search.ApodSuggestionProvider" android:name="com.blork.anpod.search.ApodSuggestionProvider"/>
+        <service android:enabled="true" android:name="com.blork.anpod.service.AnpodService"/>
+        <service android:enabled="true" android:name="service.AppUpdateService"/>
+        <!--<receiver android:name="com.blork.anpod.widget.Widget" android:process=":remote" android:label="4x1 Astronomy Widget">
+		<intent-filter>
+		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+		</intent-filter>
+		<meta-data android:name="android.appwidget.provider" android:resource="@layout/widget_info" />
+		</receiver>-->
+        <receiver android:name="service.Receiver" android:process=":remote">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+                <category android:name="android.intent.category.HOME"/>
+            </intent-filter>
+        </receiver>
+        <provider
+            android:authorities="com.blork.anpod.provider.picturescontentprovider" android:name=".provider.PicturesContentProvider"/>
     </application>
-    
-
-    <uses-sdk android:minSdkVersion="5" />
-    
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-	<uses-permission android:name="android.permission.SET_WALLPAPER"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-
-</manifest> 
+</manifest>

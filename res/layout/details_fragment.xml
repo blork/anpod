@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:screenOrientation="portrait"
+	android:background="@drawable/background_black_noise">
+
+	<com.markupartist.android.widget.ActionBar
+		android:id="@+id/actionbar"
+		style="@style/ActionBar" />
+
+
+	<FrameLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<ProgressBar
+			android:id="@+id/image_progress"
+			style="@style/ListProgressIndicator"
+			android:gravity="center"
+			android:layout_gravity="center" />
+
+
+		<ImageView
+			android:id="@+id/main_picture"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:visibility="gone"
+			android:scaleType="centerCrop"
+			android:adjustViewBounds="true"
+			android:background="@android:color/transparent" />
+
+		<!-- <WebView android:id="@+id/main_picture" android:layout_width="fill_parent" 
+			android:layout_height="fill_parent" android:visibility="gone" android:scrollbarStyle="insideInset" 
+			android:gravity="bottom|left" android:layout_gravity="bottom|left" android:scaleType="centerInside"/> -->
+		"
+		<!-- <TextView android:layout_width="fill_parent" android:layout_height="fill_parent" 
+			android:text="next" android:gravity="center_vertical|right" android:layout_gravity="center_vertical|right" 
+			/> <TextView android:layout_width="fill_parent" android:layout_height="fill_parent" 
+			android:text="previous" android:gravity="center_vertical|left" android:layout_gravity="center_vertical|left" 
+			/> -->
+
+
+		<LinearLayout
+			android:id="@+id/image_desc_cont"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="#66000000"
+			android:visibility="gone">
+			<WebView
+				android:id="@+id/image_desc"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginBottom="55dp" />
+		</LinearLayout>
+		<ImageButton
+			android:id="@+id/image_details_button"
+			android:layout_width="wrap_content"
+			android:layout_height="50dp"
+			android:gravity="bottom|center"
+			android:layout_gravity="bottom|right"
+			android:src="@drawable/info"
+			android:background="@android:color/transparent" />
+
+
+
+	</FrameLayout>
+
+</LinearLayout>

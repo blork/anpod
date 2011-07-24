@@ -30,4 +30,41 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>android-actionbar_src</name>
+			<type>2</type>
+			<locationURI>_android_android_actionbar_e440e43f/src</locationURI>
+		</link>
+		<link>
+			<name>cwac-adapter_src</name>
+			<type>2</type>
+			<locationURI>_android_cwac_adapter_144e5c18/src</locationURI>
+		</link>
+		<link>
+			<name>cwac-bus_src</name>
+			<type>2</type>
+			<locationURI>_android_cwac_bus_6e2903c9/src</locationURI>
+		</link>
+		<link>
+			<name>cwac-cache_src</name>
+			<type>2</type>
+			<locationURI>_android_cwac_cache_87fc068b/src</locationURI>
+		</link>
+		<link>
+			<name>cwac-endless_src</name>
+			<type>2</type>
+			<locationURI>_android_cwac_endless_f91ffdbd/src</locationURI>
+		</link>
+		<link>
+			<name>cwac-task_src</name>
+			<type>2</type>
+			<locationURI>_android_cwac_task_56ff595c/src</locationURI>
+		</link>
+		<link>
+			<name>cwac-thumbnail_src</name>
+			<type>2</type>
+			<locationURI>_android_cwac_thumbnail_f6a4fb75/src</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

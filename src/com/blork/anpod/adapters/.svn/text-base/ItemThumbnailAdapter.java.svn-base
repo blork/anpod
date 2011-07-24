@@ -1,0 +1,106 @@
+package com.gmedia.mobile.adapters;
+
+import java.util.ArrayList;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.gmedia.mobile.R;
+import com.gmedia.mobile.entity.Item;
+import com.gmedia.mobile.entity.ItemType;
+
+
+public class ItemThumbnailAdapter extends ArrayAdapter<Item> {
+	private Context context;
+	private ItemType type;
+
+	public ItemThumbnailAdapter(Context context, int textViewResourceId, ArrayList<Item> itemList, ItemType type) {
+		super(context, textViewResourceId, itemList);
+		this.context = context;
+		this.type = type;
+	}
+
+	public View getView(int position, View convertView,
+			ViewGroup parent) {
+		View row=convertView;
+		ItemThumbnailWrapper wrapper=null;
+
+		if (row==null) {													
+			LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+			row=inflater.inflate(R.layout.item_row, null);
+			wrapper=new ItemThumbnailWrapper(row, type);
+			row.setTag(wrapper);
+		}
+		else {
+			wrapper=(ItemThumbnailWrapper)row.getTag();
+		}
+
+		wrapper.populateFrom(getItem(position));
+
+		return(row);
+	}
+}
+
+class ItemThumbnailWrapper {
+	private TextView name = null;
+	private TextView description = null;
+	private ImageView image = null;
+	private View row = null;
+	private ItemType type;
+
+	ItemThumbnailWrapper(View row, ItemType type) {
+		this.row = row;
+		this.type = type;
+	}
+
+	void populateFrom(Item item) {
+		getName().setText(item.getName());
+		if(item.getDescription() == null || item.getDescription().equals("")) {
+			getDescription().setVisibility(View.GONE);
+		} else {
+			getDescription().setText(item.getDescription());
+		}
+		if (item.getImageUrl()!=null) {
+			switch(type){
+			case FEATURE:
+				getCover().setImageResource(R.drawable.ic_tab_features_dark);
+				break;
+			case INTERACT:
+				getCover().setImageResource(R.drawable.ic_tab_interact_dark);
+				break;
+			}
+			getCover().setTag(item.getImageUrl().toString());
+		}
+	}
+
+	TextView getName() {
+		if (name==null) {
+			name=(TextView)row.findViewById(R.id.item_name);
+		}
+
+		return(name);
+	}
+
+	TextView getDescription() {
+		if (description==null) {
+			description=(TextView)row.findViewById(R.id.item_description);
+		}
+
+		return(description);
+	}
+
+
+	ImageView getCover() {
+		if (image==null) {
+			image=(ImageView)row.findViewById(R.id.item_image);
+		}
+
+		return(image);
+	}
+}
