@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/rate"
-          android:title="Submit your rating"
-          android:icon="@drawable/ic_menu_star"/>
-</menu>
