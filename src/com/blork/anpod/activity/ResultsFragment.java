@@ -1,7 +1,5 @@
 package com.blork.anpod.activity;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -14,7 +12,6 @@ import android.widget.ListView;
 
 import com.blork.anpod.R;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
-import com.blork.anpod.model.Picture;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.endless.EndlessAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
