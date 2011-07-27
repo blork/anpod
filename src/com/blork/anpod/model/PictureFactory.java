@@ -16,6 +16,7 @@ import org.json.JSONTokener;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import com.blork.anpod.provider.PicturesContentProvider;
@@ -270,15 +271,23 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 	}
 	
 	/**
-	 * Save all.
-	 *
-	 * @param context the context
-	 * @param pictures the pictures
+	 * Save all. Returns number of new pictures.
+	 * 
+	 * @param context
+	 * @param pictures
+	 * @return Number of new pictures added.
 	 */
-	public static void saveAll(Context context, List<Picture> pictures) {
+	public static int saveAll(Context context, List<Picture> pictures) {
+		int count = 0;
+		
 		for (Picture p: pictures) {
-			p.save(context);
+			Uri uri = p.save(context);
+			if (uri != null) {
+				count++;
+			}
 		}
+		
+		return count;
 	}
 	
 	/**
@@ -290,7 +299,5 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 		ContentResolver resolver = ctx.getContentResolver();
 		resolver.delete(PicturesContentProvider.CONTENT_URI, null, null);
 	}
-
-
 	
 }
