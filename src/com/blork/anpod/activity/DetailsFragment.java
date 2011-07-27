@@ -1,11 +1,7 @@
 package com.blork.anpod.activity;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
-import android.app.WallpaperManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,16 +9,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.blork.anpod.R;
 import com.blork.anpod.model.Picture;
@@ -38,13 +30,12 @@ import com.blork.anpod.util.UIUtils;
 
 abstract class DetailsFragment extends Fragment {
 	public List<Picture> pictures;
-	private Uri mUri;
 	private Picture picture;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
+		//setHasOptionsMenu(true);
 	}
 
 	/**
@@ -148,72 +139,5 @@ abstract class DetailsFragment extends Fragment {
 		}
 		return details;
 	}
-	
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		menu.clear();
-		super.onCreateOptionsMenu(menu, inflater);
-		inflater.inflate(R.menu.details_menu_items, menu);
-	}
-	
-	//TODO: called 3 times...
-	
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		Toast.makeText(getActivity(), picture.title, Toast.LENGTH_SHORT).show();
-		if(picture.uri != null) {
-			menu.findItem(R.id.menu_save).setEnabled(true);
-			menu.findItem(R.id.menu_set_wallpaper).setEnabled(true);
-			menu.findItem(R.id.menu_fullscreen).setEnabled(true);
-		} else {
-			menu.findItem(R.id.menu_save).setEnabled(false);
-			menu.findItem(R.id.menu_set_wallpaper).setEnabled(false);
-			menu.findItem(R.id.menu_fullscreen).setEnabled(false);
-		}
-		
-	}
-
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		switch (item.getItemId()) {
-		case R.id.menu_save:
-			Toast.makeText(getActivity(), "save", Toast.LENGTH_LONG).show();
-			return true;
-		case R.id.menu_set_wallpaper:
-			Toast.makeText(getActivity(), picture.title, Toast.LENGTH_LONG).show();
-//			WallpaperManager wm = (WallpaperManager) getActivity().getSystemService(Context.WALLPAPER_SERVICE);
-//			
-//			int newWidth = wm.getDesiredMinimumWidth();
-//			int newHeight = wm.getDesiredMinimumHeight();
-//			
-//			try {
-//				Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(mUri));
-//				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-//				wm.setBitmap(resizedBitmap);
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-			return true;
-		case R.id.menu_fullscreen:
-			Toast.makeText(getActivity(), "fullscreen", Toast.LENGTH_LONG).show();
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(mUri, "image/jpeg");
-			startActivity(intent);
-			return true;
-		case R.id.menu_website:
-			Toast.makeText(getActivity(), "website", Toast.LENGTH_LONG).show();
-			Uri url = Uri.parse("http://apod.nasa.gov/apod/"+ picture.uid +".html");
-			Intent i = new Intent(Intent.ACTION_VIEW);
-			i.setData(url);
-			startActivity(i);
-			return true;
-		}
-		
-		return false;		
-	}
 }
