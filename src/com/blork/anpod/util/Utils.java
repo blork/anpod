@@ -9,8 +9,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
