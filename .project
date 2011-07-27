@@ -66,5 +66,10 @@
 			<type>2</type>
 			<locationURI>_android_cwac_thumbnail_f6a4fb75/src</locationURI>
 		</link>
+		<link>
+			<name>pulltorefresh_src</name>
+			<type>2</type>
+			<locationURI>_android_pulltorefresh_3751e35b/src</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

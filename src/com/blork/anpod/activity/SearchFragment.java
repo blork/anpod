@@ -5,9 +5,12 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.blork.anpod.R;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
@@ -17,7 +20,14 @@ import com.blork.anpod.model.PictureFactory;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
 public class SearchFragment extends ResultsFragment {
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// Inflate the layout for this fragment
 
+		return inflater.inflate(R.layout.search_fragment, container, false);
+	}
+	
 	@Override
 	public void listSetup() {	
 				

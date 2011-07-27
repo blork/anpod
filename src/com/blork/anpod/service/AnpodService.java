@@ -1,5 +1,6 @@
 package com.blork.anpod.service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -12,9 +13,14 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
@@ -22,6 +28,8 @@ import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
+import com.blork.anpod.util.BitmapUtils;
+import com.blork.anpod.util.BitmapUtils.OnFetchCompleteListener;
 import com.blork.anpod.util.Utils;
 
 
@@ -31,9 +39,12 @@ import com.blork.anpod.util.Utils;
  */
 public class AnpodService extends Service implements Runnable{
 
+	public static final String ACTION_FINISHED_UPDATE = "com.blork.anpod.ACTION_FINISHED_UPDATE";
 	private NotificationManager notificationManager;
 	private boolean notify;
-	
+	private boolean silent = false;
+	private boolean wallpaper;
+
 	static int INFO = 1;
 	static int ERROR = 2;
 	static int RUNNING = 3;
@@ -48,6 +59,7 @@ public class AnpodService extends Service implements Runnable{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		silent = intent.hasExtra("silent_run");
 		return START_STICKY;
 	}
 
@@ -63,6 +75,9 @@ public class AnpodService extends Service implements Runnable{
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		notify = prefs.getBoolean("notifications_enabled", true);
+		wallpaper = prefs.getBoolean("set_wallpaper", true);
+
+
 		boolean updates = prefs.getBoolean("updates_enabled", true);
 		boolean wifi_only = prefs.getBoolean("wifi", false);
 
@@ -86,7 +101,7 @@ public class AnpodService extends Service implements Runnable{
 	@Override
 	public void run() {
 
-		if (notify) {
+		if (notify && !silent) {
 			int icon = android.R.drawable.stat_notify_sync;
 			Notification notification = new Notification(icon, "Checking for new APOD", System.currentTimeMillis());
 			Intent syncIntent = new Intent(this, HomeActivity.class);
@@ -140,10 +155,51 @@ public class AnpodService extends Service implements Runnable{
 			notificationManager.cancelAll();
 			notificationManager.notify(INFO, notification); 
 		}
+
+		if (wallpaper) {
+			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
+			decodeOptions.inSampleSize = 2;
+
+			BitmapUtils.fetchImage(
+					this, 
+					newPicture.getFullSizeImageUrl(), 
+					newPicture.title, 
+					decodeOptions, 
+					null, 
+					new OnFetchCompleteListener() {
+						@Override
+						public void onFetchComplete(Object cookie, final Bitmap result, final Uri uri) {
+							sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+
+							WallpaperManager wm = (WallpaperManager) getSystemService(Context.WALLPAPER_SERVICE);
+
+							int newWidth = wm.getDesiredMinimumWidth();
+							int newHeight = wm.getDesiredMinimumHeight();
+
+							try {
+								Bitmap resizedBitmap = Bitmap.createScaledBitmap(result, newWidth, newHeight, true);
+								wm.setBitmap(resizedBitmap);
+							} catch (FileNotFoundException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+			);
+		}
+
+
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());	
+		long time = System.currentTimeMillis();
+		Editor editor = prefs.edit();
+		editor.putLong("time", time);
+		editor.commit();
 	}
 
 	private void finish() {
 		notificationManager.cancel(RUNNING);
+		sendBroadcast(new Intent(ACTION_FINISHED_UPDATE));
 		stopSelf();
 	}
 }
