@@ -65,14 +65,7 @@ public class Picture implements Saveable {
 	
 	public Uri uri;
 	
-	/**
-	 * Checks if is new.
-	 *
-	 * @return true, if is new
-	 */
-	public boolean isNew() {
-		return true;
-	}
+
 	
 	/**
 	 * Gets the full size image url.
