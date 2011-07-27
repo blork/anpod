@@ -60,8 +60,6 @@ public class Picture implements Saveable {
 	/** The image. */
 	public Bitmap image;
 	
-	/** The is new. */
-	private Boolean isNew = null;
 	
 	public Uri uri;
 	
@@ -196,4 +194,31 @@ public class Picture implements Saveable {
 		this.info = info;
 		this.imgurId = imgurId;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((uid == null) ? 0 : uid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Picture other = (Picture) obj;
+		if (uid == null) {
+			if (other.uid != null)
+				return false;
+		} else if (!uid.equals(other.uid))
+			return false;
+		return true;
+	}
+	
+	
 }
