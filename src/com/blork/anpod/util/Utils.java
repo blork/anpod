@@ -177,7 +177,7 @@ public class Utils {
 	 * @param context the context
 	 * @return true, if successful
 	 */
-	public static boolean IsNetworkConnected(Context context) {
+	public static boolean isNetworkConnected(Context context) {
 		boolean result = false;
 		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = connManager.getActiveNetworkInfo();
@@ -192,6 +192,11 @@ public class Utils {
 		}
 		return result;
 	}
+	
+	public static boolean isDataEnabled(Context context){
+    	ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    	return connManager.getBackgroundDataSetting();
+    }
 
 	/**
 	 * Checks if is wi fi connected.
@@ -199,7 +204,7 @@ public class Utils {
 	 * @param context the context
 	 * @return true, if successful
 	 */
-	public static boolean IsWiFiConnected(Context context) {
+	public static boolean isWiFiConnected(Context context) {
 		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = connManager.getActiveNetworkInfo();
 
