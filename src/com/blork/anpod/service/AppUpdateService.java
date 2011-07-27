@@ -24,7 +24,7 @@ public class AppUpdateService extends Service implements Runnable {
     @Override
     public void onCreate() {
         
- 		if (Utils.IsNetworkConnected(this)) {
+ 		if (Utils.isNetworkConnected(this)) {
  			Thread thread = new Thread(this);
  	        thread.start();
  		} else {
