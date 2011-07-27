@@ -4,12 +4,12 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="android-actionbar_src"/>
-	<classpathentry kind="lib" path="C:/Users/Sam/Eclipse/android-sdk-windows/extras/android/compatibility/v4/android-support-v4.jar"/>
 	<classpathentry kind="src" path="cwac-thumbnail_src"/>
+	<classpathentry kind="src" path="cwac-endless_src"/>
+	<classpathentry kind="lib" path="/Users/sam/Downloads/Android/android-sdk-mac_x86/extras/android/compatibility/v4/android-support-v4.jar"/>
+	<classpathentry kind="src" path="cwac-adapter_src"/>
 	<classpathentry kind="src" path="cwac-cache_src"/>
 	<classpathentry kind="src" path="cwac-bus_src"/>
 	<classpathentry kind="src" path="cwac-task_src"/>
-	<classpathentry kind="src" path="cwac-endless_src"/>
-	<classpathentry kind="src" path="cwac-adapter_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
