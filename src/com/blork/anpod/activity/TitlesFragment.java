@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.blork.anpod.R;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
@@ -180,4 +181,13 @@ public class TitlesFragment extends ResultsFragment {
 		String timeString = "Last updated: " + pt.format(lastUpdate);
 		return timeString;
 	}
+	
+
+    /* (non-Javadoc)
+     * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
+     */
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        showDetails(position-1); //TODO: sure this will fuck shit up
+    }
 }

@@ -1,9 +1,13 @@
 package com.blork.anpod.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,17 +25,20 @@ import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Environment;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Utils.
  */
 public class Utils {
-	
+
 	/** The Constant TAG. */
 	public static final String TAG = "Astronomy Picture of the Day";
 
@@ -190,11 +197,11 @@ public class Utils {
 		}
 		return result;
 	}
-	
+
 	public static boolean isDataEnabled(Context context){
-    	ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-    	return connManager.getBackgroundDataSetting();
-    }
+		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		return connManager.getBackgroundDataSetting();
+	}
 
 	/**
 	 * Checks if is wi fi connected.
@@ -233,4 +240,40 @@ public class Utils {
 		}
 		return list;
 	}
+
+	public static void copyFileToUserSpace(Context context, Uri uri) throws IOException, URISyntaxException { 
+		FileInputStream from = null; 
+		FileOutputStream to = null; 
+		
+		File fromFile = new File(new URI(uri.toString()));
+		
+		File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "APOD");
+		dir.mkdir();
+
+		File toFile = new File(dir + File.separator + fromFile.getName());
+		
+		try { 
+			from = new FileInputStream(fromFile); 
+			to = new FileOutputStream(toFile); 
+			byte[] buffer = new byte[4096]; 
+			int bytesRead; 
+			while ((bytesRead = from.read(buffer)) != -1) 
+				to.write(buffer, 0, bytesRead); // write 
+		} finally { 
+			if (from != null) 
+				try { 
+					from.close(); 
+				} catch (IOException e) { 
+					; 
+				} 
+				if (to != null) 
+					try { 
+						to.close(); 
+					} catch (IOException e) { 
+						; 
+					} 
+		} 
+		Uri newUri = Uri.fromFile(toFile);
+		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+	} 
 }

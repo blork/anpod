@@ -5,13 +5,13 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="/Users/sam/Downloads/Android/android-sdk-mac_x86/extras/android/compatibility/v4/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="lib/ocpsoft-pretty-time-1.0.7.jar"/>
-	<classpathentry kind="src" path="android-actionbar_src"/>
 	<classpathentry kind="src" path="cwac-endless_src"/>
 	<classpathentry kind="src" path="cwac-thumbnail_src"/>
-	<classpathentry kind="src" path="cwac-adapter_src"/>
 	<classpathentry kind="src" path="cwac-cache_src"/>
 	<classpathentry kind="src" path="cwac-bus_src"/>
 	<classpathentry kind="src" path="cwac-task_src"/>
+	<classpathentry kind="src" path="cwac-adapter_src"/>
+	<classpathentry kind="src" path="android-actionbar_src"/>
 	<classpathentry kind="src" path="pulltorefresh_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

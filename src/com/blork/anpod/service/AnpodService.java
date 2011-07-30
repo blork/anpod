@@ -20,16 +20,16 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
-import com.blork.anpod.util.BitmapUtils.OnFetchCompleteListener;
 import com.blork.anpod.util.Utils;
 
 
@@ -44,6 +44,7 @@ public class AnpodService extends Service implements Runnable{
 	private boolean notify;
 	private boolean silent = false;
 	private boolean wallpaper;
+	private Handler handler;
 
 	static int INFO = 1;
 	static int ERROR = 2;
@@ -66,6 +67,15 @@ public class AnpodService extends Service implements Runnable{
 	@Override
 	public void onCreate() {
 
+		handler = new Handler();
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		long time = System.currentTimeMillis();
+		Editor editor = prefs.edit();
+		editor.putLong("time", time);
+		editor.commit();
+
 		if (!Utils.isDataEnabled(this)) {
 			finish();
 			return;
@@ -73,7 +83,6 @@ public class AnpodService extends Service implements Runnable{
 
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		notify = prefs.getBoolean("notifications_enabled", true);
 		wallpaper = prefs.getBoolean("set_wallpaper", true);
 
@@ -96,10 +105,13 @@ public class AnpodService extends Service implements Runnable{
 
 			new Thread(this).start();
 		}
+
+
 	}
 
 	@Override
 	public void run() {
+
 
 		if (notify && !silent) {
 			int icon = android.R.drawable.stat_notify_sync;
@@ -136,9 +148,40 @@ public class AnpodService extends Service implements Runnable{
 		if (count == 0) {
 			finish();
 			return;
+		} else if (count > 10) {
+			/*
+			 * If there are 10 new pictures, we haven't updated for a while.
+			 * Instead of doing a twitter style broken list (hard), just get rid of
+			 * all the old pics.
+			 */
+			PictureFactory.deleteAll(this);
+			PictureFactory.saveAll(this, pictures);
 		}
 
 		Picture newPicture = pictures.get(0);
+
+		Log.e("", "about to set wallpaper");
+		if (wallpaper) {
+			Log.e("", "setting wallpaper");
+			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
+			decodeOptions.inSampleSize = 2;
+
+
+			WallpaperManager wm = (WallpaperManager) this.getSystemService(Context.WALLPAPER_SERVICE);
+
+			int newWidth = wm.getDesiredMinimumWidth();
+			int newHeight = wm.getDesiredMinimumHeight();
+
+			try {
+				Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
+				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+				wm.setBitmap(resizedBitmap);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		if(notify){
 			int icon = R.drawable.notify;
@@ -156,45 +199,7 @@ public class AnpodService extends Service implements Runnable{
 			notificationManager.notify(INFO, notification); 
 		}
 
-		if (wallpaper) {
-			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
-			decodeOptions.inSampleSize = 2;
-
-			BitmapUtils.fetchImage(
-					this, 
-					newPicture.getFullSizeImageUrl(), 
-					newPicture.title, 
-					decodeOptions, 
-					null, 
-					new OnFetchCompleteListener() {
-						@Override
-						public void onFetchComplete(Object cookie, final Bitmap result, final Uri uri) {
-							sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
-
-							WallpaperManager wm = (WallpaperManager) getSystemService(Context.WALLPAPER_SERVICE);
-
-							int newWidth = wm.getDesiredMinimumWidth();
-							int newHeight = wm.getDesiredMinimumHeight();
-
-							try {
-								Bitmap resizedBitmap = Bitmap.createScaledBitmap(result, newWidth, newHeight, true);
-								wm.setBitmap(resizedBitmap);
-							} catch (FileNotFoundException e) {
-								e.printStackTrace();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-			);
-		}
-
-
-		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());	
-		long time = System.currentTimeMillis();
-		Editor editor = prefs.edit();
-		editor.putLong("time", time);
-		editor.commit();
+		finish();
 	}
 
 	private void finish() {

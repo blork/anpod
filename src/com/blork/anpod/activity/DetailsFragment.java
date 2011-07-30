@@ -139,5 +139,11 @@ abstract class DetailsFragment extends Fragment {
 		}
 		return details;
 	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		BitmapUtils.manageCache(this.getActivity().getApplicationContext());
+	}
 
 }
