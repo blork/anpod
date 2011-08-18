@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory
+		android:title="Updates">
+		<CheckBoxPreference
+			android:key="updates_enabled"
+			android:title="Daily update"
+			android:summary="Update the list of wallpapers every day" />
+		<com.blork.anpod.view.TimePreference
+			android:key="update_time"
+			android:dependency="updates_enabled"
+			android:layout="?android:attr/preferenceLayoutChild"
+			android:title="Update time"
+			android:summary="Set the time to perform the update" />
+		<CheckBoxPreference
+			android:key="set_wallpaper"
+			android:dependency="updates_enabled"
+			android:layout="?android:attr/preferenceLayoutChild"
+			android:title="Set wallpaper"
+			android:summary="Update homescreen wallpaper with each day's image" />
+		<CheckBoxPreference
+			android:key="wifi"
+			android:dependency="updates_enabled"
+			android:layout="?android:attr/preferenceLayoutChild"
+			android:title="WiFi updates only"
+			android:summary="Only update the wallpaper when connected to a Wi-Fi network" />
+	</PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<header
+		android:fragment="com.blork.anpod.activity.UserPreferenceActivityV11$Prefs1Fragment"
+		android:icon="@android:drawable/ic_menu_preferences"
+		android:title="Update Settings"
+		android:summary="Change background update settings." />
+	<header
+		android:fragment="com.blork.anpod.activity.UserPreferenceActivityV11$Prefs2Fragment"
+		android:icon="@android:drawable/ic_menu_preferences"
+		android:title="Other Settings"
+		android:summary="Miscelleneous settings." />
+</preference-headers>

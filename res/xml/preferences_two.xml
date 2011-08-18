@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory
+		android:title="Donations">
+		<Preference
+			android:key="action_1"
+			android:title="Donate"
+			android:summary="Donate to help support development">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="market://details?id=com.blork.anpodpro" />
+		</Preference>
+		<Preference
+			android:key="action_2"
+			android:title="Remove adverts"
+			android:summary="Purchase the unlocker app to remove ads">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="market://details?id=com.blork.anpodpro" />
+		</Preference>
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="More apps">
+		<Preference
+			android:key="action_3"
+			android:title="Apps by Sam Oakley"
+			android:summary="View the other apps that I've made">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="market://search?q=Sam Oakley" />
+		</Preference>
+	</PreferenceCategory>
+</PreferenceScreen>
