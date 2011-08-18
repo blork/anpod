@@ -37,10 +37,10 @@
 		</activity>
 		<activity
 			android:label="@string/app_name"
-			android:name="com.blork.anpod.activity.UserPreferenceActivity"/>
+			android:name="com.blork.anpod.activity.UserPreferenceActivity" />
 		<activity
 			android:label="@string/app_name"
-			android:name="com.blork.anpod.activity.UserPreferenceActivityV11"/>
+			android:name="com.blork.anpod.activity.UserPreferenceActivityV11" />
 		<activity
 			android:label="@string/app_name"
 			android:name="com.blork.anpod.activity.SearchDetailsFragmentPagerActivity"
@@ -70,10 +70,18 @@
 		<service
 			android:enabled="true"
 			android:name="service.AppUpdateService" />
-		<!--<receiver android:name="com.blork.anpod.widget.Widget" android:process=":remote" 
-			android:label="4x1 Astronomy Widget"> <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" 
-			/> </intent-filter> <meta-data android:name="android.appwidget.provider" 
-			android:resource="@layout/widget_info" /> </receiver> -->
+		<receiver
+			android:name="com.blork.anpod.widget.Widget"
+			android:process=":remote"
+			android:label="4x1 Astronomy Widget">
+			<intent-filter>
+				<action
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@layout/widget_info" />
+		</receiver>
 		<receiver
 			android:name="com.blork.anpod.service.Receiver"
 			android:process=":remote">
@@ -84,6 +92,8 @@
 					android:name="android.intent.action.ACTION_POWER_CONNECTED" />
 				<action
 					android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+				<action
+					android:name="android.intent.action.BATTERY_CHANGED" />
 				<category
 					android:name="android.intent.category.HOME" />
 			</intent-filter>

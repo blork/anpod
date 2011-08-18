@@ -14,6 +14,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +26,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
@@ -32,6 +36,7 @@ import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.UIUtils;
 import com.blork.anpod.util.Utils;
+import com.blork.anpod.widget.Widget;
 
 
 // TODO: Auto-generated Javadoc
@@ -116,7 +121,7 @@ public class AnpodService extends Service implements Runnable{
 		while(silent == null) {
 			continue;
 		}
-		
+
 		silent = silent && UIUtils.isHoneycombTablet(this);
 
 		if (notify && !silent) {
@@ -149,6 +154,20 @@ public class AnpodService extends Service implements Runnable{
 			return;
 		}
 
+		Picture newPicture = pictures.get(0);
+
+		RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
+		ComponentName thisWidget = new ComponentName(this, Widget.class);
+		views.setViewVisibility(R.id.content, View.VISIBLE);
+		views.setViewVisibility(R.id.loading, View.GONE);
+		views.setTextViewText(R.id.title, newPicture.title);
+		views.setTextViewText(R.id.credit, newPicture.credit);
+
+		Intent qIntent = new Intent(this, HomeActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, qIntent, 0);
+		views.setOnClickPendingIntent(R.id.content, pendingIntent);
+		AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
+		
 		int count = PictureFactory.saveAll(this, pictures);
 
 		if (count == 0) {
@@ -163,8 +182,6 @@ public class AnpodService extends Service implements Runnable{
 			PictureFactory.deleteAll(this);
 			PictureFactory.saveAll(this, pictures);
 		}
-
-		Picture newPicture = pictures.get(0);
 
 		Log.e("", "about to set wallpaper");
 		if (wallpaper) {
