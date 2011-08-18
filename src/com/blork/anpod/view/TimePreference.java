@@ -15,13 +15,21 @@ public class TimePreference extends DialogPreference {
 	public static int getHour(String time) {
 		String[] pieces=time.split(":");
 
-		return(Integer.parseInt(pieces[0]));
+		if (pieces.length == 2){
+			return(Integer.parseInt(pieces[0]));
+		}else{
+			return 0;
+		}
 	}
 
 	public static int getMinute(String time) {
 		String[] pieces=time.split(":");
 
-		return(Integer.parseInt(pieces[1]));
+		if (pieces.length == 2) {
+			return(Integer.parseInt(pieces[1]));
+		}else{
+			return 0;
+		}
 	}
 
 	public TimePreference(Context ctxt, AttributeSet attrs) {
