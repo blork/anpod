@@ -3,3 +3,5 @@ gen
 default.properties
 .classpath
 .settings
+
+.DS_Store

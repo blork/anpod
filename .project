@@ -32,44 +32,44 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>android-actionbar_src</name>
+			<name>ActionBarSherlock_src</name>
 			<type>2</type>
-			<locationURI>_android_android_actionbar_e440e43f/src</locationURI>
+			<locationURI>_android_ActionBarSherlock_a2b296ea/src</locationURI>
 		</link>
 		<link>
-			<name>cwac-adapter_src</name>
+			<name>adapter_src</name>
 			<type>2</type>
-			<locationURI>_android_cwac_adapter_144e5c18/src</locationURI>
+			<locationURI>_android_adapter_bb6ca34f/src</locationURI>
 		</link>
 		<link>
-			<name>cwac-bus_src</name>
+			<name>bus_src</name>
 			<type>2</type>
-			<locationURI>_android_cwac_bus_6e2903c9/src</locationURI>
+			<locationURI>_android_bus_17e80/src</locationURI>
 		</link>
 		<link>
-			<name>cwac-cache_src</name>
+			<name>cache_src</name>
 			<type>2</type>
-			<locationURI>_android_cwac_cache_87fc068b/src</locationURI>
+			<locationURI>_android_cache_5a0af82/src</locationURI>
 		</link>
 		<link>
-			<name>cwac-endless_src</name>
+			<name>endless_src</name>
 			<type>2</type>
-			<locationURI>_android_cwac_endless_f91ffdbd/src</locationURI>
-		</link>
-		<link>
-			<name>cwac-task_src</name>
-			<type>2</type>
-			<locationURI>_android_cwac_task_56ff595c/src</locationURI>
-		</link>
-		<link>
-			<name>cwac-thumbnail_src</name>
-			<type>2</type>
-			<locationURI>_android_cwac_thumbnail_f6a4fb75/src</locationURI>
+			<locationURI>_android_endless_a03e44f4/src</locationURI>
 		</link>
 		<link>
 			<name>pulltorefresh_src</name>
 			<type>2</type>
 			<locationURI>_android_pulltorefresh_3751e35b/src</locationURI>
+		</link>
+		<link>
+			<name>task_src</name>
+			<type>2</type>
+			<locationURI>_android_task_363585/src</locationURI>
+		</link>
+		<link>
+			<name>thumbnail_src</name>
+			<type>2</type>
+			<locationURI>_android_thumbnail_4f4e50ec/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
