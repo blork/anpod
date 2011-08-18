@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/menu_refresh"
+		android:icon="@drawable/ic_menu_refresh"
+		android:title="@string/description_search"
+		android:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/menu_search"
+		android:icon="@drawable/ic_menu_search_holo_dark"
+		android:title="@string/description_search"
+		android:showAsAction="always"
+		android:actionViewClass="android.widget.SearchView" />
+	<item
+		android:id="@+id/menu_prefs"
+		android:icon="@drawable/ic_menu_preferences"
+		android:title="Preferences"
+		android:showAsAction="never" />
+</menu>
