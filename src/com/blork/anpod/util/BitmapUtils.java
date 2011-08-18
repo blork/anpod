@@ -284,8 +284,7 @@ public class BitmapUtils {
 		
 		Log.e("", "Managing cache");
 		File[] files = folder.listFiles();
-		Log.e("", files.toString());
-		if (files.length <= cacheSize) {
+		if (files == null || files.length <= cacheSize) {
 			Log.e("", "Cache size is fine");
 			return;
 		}

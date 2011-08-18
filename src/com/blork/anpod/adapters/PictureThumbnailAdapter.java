@@ -45,7 +45,7 @@ public class PictureThumbnailAdapter extends ArrayAdapter<Picture> {
 		if (row==null) {													
 			LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-			row=inflater.inflate(R.layout.simple_list_item_checkable_1, null);
+			row=inflater.inflate(R.layout.list_item, null);
 			wrapper=new PictureThumbnailWrapper(row);
 			row.setTag(wrapper);
 		}

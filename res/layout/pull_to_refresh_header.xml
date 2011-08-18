@@ -19,7 +19,7 @@
     android:layout_height="fill_parent"
     android:paddingBottom="10dip"
     android:gravity="center_vertical|center_horizontal"
-    android:background="@android:color/transparent"
+    android:background="#111"
     >
     <RelativeLayout
         android:layout_width="fill_parent"

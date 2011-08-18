@@ -3,8 +3,10 @@ package com.blork.anpod.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Window;
 
 import com.blork.anpod.R;
 import com.blork.anpod.model.Picture;
@@ -33,22 +35,31 @@ import com.blork.anpod.util.UIUtils;
  * landscape.
  */
 public class HomeActivity extends FragmentActivity {
-	
+
 	/** The pictures. */
 	public static List<Picture> pictures = new ArrayList<Picture>();
 
-	
-    /* (non-Javadoc)
-     * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        //startActivity(new Intent(this, FragmentStatePagerSupport.class));
-        setContentView(R.layout.fragment_layout);
-        
-        UIUtils.setupActionBar(this);
-    }
-    
+	@Override
+	public void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		Window window = getWindow();
+		window.setFormat(PixelFormat.RGBA_8888);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
+	 */
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
+		//startActivity(new Intent(this, FragmentStatePagerSupport.class));
+		setContentView(R.layout.fragment_layout);
+
+		setProgressBarIndeterminateVisibility(Boolean.FALSE);
+
+	}
+
 }

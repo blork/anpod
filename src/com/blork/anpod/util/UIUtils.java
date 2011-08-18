@@ -18,25 +18,18 @@ package com.blork.anpod.util;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
-
-import com.blork.anpod.R;
-import com.markupartist.android.widget.ActionBar;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -125,87 +118,5 @@ public class UIUtils {
 		}
 		return null;
 	}
-
-
-	public static void setupActionBar(View v, String t) {
-		if(UIUtils.isHoneycomb()) {
-			return;
-		}
-		
-		ActionBar actionBar = (ActionBar)v.findViewById(R.id.actionbar);
-		
-		if (actionBar == null) {
-			return;
-		}
-		
-		actionBar.setTitle(t);
-	}
-	
-	public static void setupActionBar(Activity activity) {
-		setupActionBar(activity, null);
-	}
-	
-
-	public static void setupActionBar(final Activity activity, String title) {
-		if(UIUtils.isHoneycomb()) {
-			return;
-		}
-		
-		ActionBar actionBar = (ActionBar)activity.findViewById(R.id.actionbar);
-
-		if (actionBar == null) {
-			return;
-		}
-
-		if (title == null) {
-			TextView tv = (TextView)actionBar.findViewById(R.id.actionbar_title);
-			Typeface face = Typeface.createFromAsset(activity.getAssets(), "fonts/FFFFORWA.TTF"); 
-			tv.setTypeface(face);
-			tv.setTextSize(12f);
-			actionBar.setTitle(activity.getResources().getString(R.string.app_name));
-		} else {
-			actionBar.setTitle(title);
-		}
-
-		actionBar.addAction(new ClickAction(android.R.drawable.ic_menu_search, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				activity.onSearchRequested();
-			}
-		}));
-	}
-
-
-
-
-	/**
-	 * The Class MenuAction.
-	 */
-//	private class MenuAction extends AbstractAction { 
-//
-//		/** The item. */
-//		MenuItem item;
-//
-//		/**
-//		 * Instantiates a new menu action.
-//		 *
-//		 * @param drawable the drawable
-//		 * @param item the item
-//		 */
-//		public MenuAction(int drawable, MenuItem item) {
-//			super(drawable);	
-//			this.item = item;
-//		}
-//
-//		/* (non-Javadoc)
-//		 * @see com.markupartist.android.widget.ActionBar.Action#performAction(android.view.View)
-//		 */
-//		@Override
-//		public void performAction(View view) {
-//			Log.e("!", "Performing action...");
-//			mActivity.onMenuItemSelected(Window.FEATURE_OPTIONS_PANEL, item);
-//		}
-//
-//	}
 	
 }

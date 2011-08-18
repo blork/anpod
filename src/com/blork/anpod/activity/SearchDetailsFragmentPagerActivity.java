@@ -16,54 +16,66 @@
 
 package com.blork.anpod.activity;
 
+
+
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.Menu;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
+import android.view.Window;
 
 import com.blork.anpod.R;
+import com.blork.anpod.activity.fragments.SearchDetailsFragment;
 
 public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
-    MyAdapter mAdapter;
+	MyAdapter mAdapter;
 
-    ViewPager mPager;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_pager);
-
-        mAdapter = new MyAdapter(getSupportFragmentManager());
-        
-        mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
-        
-        int index = getIntent().getExtras().getInt("index");
-       
-        mPager.setCurrentItem(index);
-    }
+	ViewPager mPager;
 
 
-    public static class MyAdapter extends FragmentStatePagerAdapter {
-        public MyAdapter(FragmentManager fm) {
-            super(fm);
-        }
+	@Override
+	public void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		Window window = getWindow();
+		window.setFormat(PixelFormat.RGBA_8888);
+	}
 
-        @Override
-        public int getCount() {
-            return SearchActivity.pictures.size();
-        }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.fragment_pager);
 
-        @Override
-        public Fragment getItem(int position) {
-            return SearchDetailsFragment.newInstance(position);
-        }
-    }
-    
-    @Override
+		mAdapter = new MyAdapter(getSupportFragmentManager());
+
+		mPager = (ViewPager)findViewById(R.id.pager);
+		mPager.setAdapter(mAdapter);
+
+		int index = getIntent().getExtras().getInt("index");
+
+		mPager.setCurrentItem(index);
+	}
+
+
+	public static class MyAdapter extends FragmentStatePagerAdapter {
+		public MyAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public int getCount() {
+			return SearchActivity.pictures.size();
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			return SearchDetailsFragment.newInstance(position);
+		}
+	}
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.details_menu_items, menu);
 		return true;	

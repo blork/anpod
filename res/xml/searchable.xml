@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+<searchable
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:label="@string/search_name"
 	android:hint="@string/search_hint"
-	android:searchSuggestAuthority="com.blork.anpod.search.ApodSuggestionProvider"
-	android:searchSuggestSelection=" ? "
 	android:searchSettingsDescription="@string/search_desc"
 	android:includeInGlobalSearch="true"
-	android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
-/>
+	android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" />

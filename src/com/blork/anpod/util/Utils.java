@@ -24,6 +24,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.blork.anpod.activity.HomeActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -275,5 +277,11 @@ public class Utils {
 		} 
 		Uri newUri = Uri.fromFile(toFile);
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+	}
+
+	public static void goHome(Context ctx) {
+		 Intent intent = new Intent(ctx, HomeActivity.class);
+         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         ctx.startActivity(intent);
 	} 
 }

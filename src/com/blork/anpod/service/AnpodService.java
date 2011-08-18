@@ -30,6 +30,7 @@ import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
+import com.blork.anpod.util.UIUtils;
 import com.blork.anpod.util.Utils;
 
 
@@ -42,7 +43,7 @@ public class AnpodService extends Service implements Runnable{
 	public static final String ACTION_FINISHED_UPDATE = "com.blork.anpod.ACTION_FINISHED_UPDATE";
 	private NotificationManager notificationManager;
 	private boolean notify;
-	private boolean silent = false;
+	private Boolean silent;
 	private boolean wallpaper;
 	private Handler handler;
 
@@ -87,7 +88,7 @@ public class AnpodService extends Service implements Runnable{
 		wallpaper = prefs.getBoolean("set_wallpaper", true);
 
 
-		boolean updates = prefs.getBoolean("updates_enabled", true);
+		boolean updates = prefs.getBoolean("updates_enabled", false);
 		boolean wifi_only = prefs.getBoolean("wifi", false);
 
 		if (!updates) {
@@ -112,6 +113,11 @@ public class AnpodService extends Service implements Runnable{
 	@Override
 	public void run() {
 
+		while(silent == null) {
+			continue;
+		}
+		
+		silent = silent && UIUtils.isHoneycombTablet(this);
 
 		if (notify && !silent) {
 			int icon = android.R.drawable.stat_notify_sync;
@@ -174,8 +180,8 @@ public class AnpodService extends Service implements Runnable{
 
 			try {
 				Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
-				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-				wm.setBitmap(resizedBitmap);
+				//Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+				wm.setBitmap(bitmap);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

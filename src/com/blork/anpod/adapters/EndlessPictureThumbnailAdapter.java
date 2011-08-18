@@ -39,7 +39,7 @@ abstract class EndlessPictureThumbnailAdapter extends EndlessAdapter {
 
 	@Override
 	protected View getPendingView(ViewGroup parent) {
-		View row = activity.getLayoutInflater().inflate(R.layout.simple_list_item_checkable_1, null);
+		View row = activity.getLayoutInflater().inflate(R.layout.list_item, null);
 
 		View child = row.findViewById(R.id.list_item);
 
