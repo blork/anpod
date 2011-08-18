@@ -2,6 +2,7 @@ package com.blork.anpod.activity.fragments;
 
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.BitmapUtils.OnFetchCompleteListener;
+import com.blork.anpod.util.UIUtils;
 import com.blork.anpod.util.Utils;
 
 // TODO: Auto-generated Javadoc
@@ -78,7 +80,10 @@ abstract class DetailsFragment extends Fragment {
 			picture = pictures.get(getShownIndex());
 
 			if (!isDualPane) {
+				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
 				getActivity().getSupportActionBar().setTitle(picture.title);
+				getActivity().getSupportActionBar().setSubtitle(picture.credit);
+
 			}
 
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
@@ -138,10 +143,11 @@ abstract class DetailsFragment extends Fragment {
 
 			WebSettings settings = text.getSettings();
 			settings.setTextSize(WebSettings.TextSize.NORMAL);
-		} else {
+		} else if (isDualPane) {
 			details.findViewById(R.id.image_select_one).setVisibility(View.VISIBLE);
 			details.findViewById(R.id.image_progress).setVisibility(View.GONE);
 		}
+
 		return details;
 	}
 
@@ -236,17 +242,21 @@ abstract class DetailsFragment extends Fragment {
 			int newHeight = wm.getDesiredMinimumHeight();
 
 			try {
-				//if(UIUtils.isHoneycombTablet(getActivity())){}
+				if(UIUtils.isHoneycombTablet(getActivity())){
+					wm.setBitmap(bitmap);
+				} else {
+					Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+					wm.setBitmap(resizedBitmap);					
+				}
 
 				//Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri));
 				//Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
 				//wm.setBitmap(bitmap);
-				wm.setStream(getActivity().getContentResolver().openInputStream(picture.uri));
+				//wm.setStream(getActivity().getContentResolver().openInputStream(picture.uri));
 
 			} catch (Exception e) {
 				return false;
 			}
-
 			return true;
 		}
 
