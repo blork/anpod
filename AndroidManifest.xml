@@ -94,6 +94,8 @@
 					android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
 				<action
 					android:name="android.intent.action.BATTERY_CHANGED" />
+				<action 
+					android:name="com.blork.anpod.SET_UPDATE" />
 				<category
 					android:name="android.intent.category.HOME" />
 			</intent-filter>
@@ -101,5 +103,8 @@
 		<provider
 			android:authorities="com.blork.anpod.provider.picturescontentprovider"
 			android:name=".provider.PicturesContentProvider" />
+		<activity
+			android:name="com.google.ads.AdActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation" />
 	</application>
 </manifest>
