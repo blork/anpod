@@ -2,7 +2,6 @@ package com.blork.anpod.activity.fragments;
 
 import java.util.List;
 
-import android.app.ActionBar;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blork.anpod.R;
+import com.blork.anpod.activity.DetailsFragmentPagerActivity;
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.util.BitmapUtils;
@@ -41,12 +42,11 @@ import com.blork.anpod.util.Utils;
 abstract class DetailsFragment extends Fragment {
 	public List<Picture> pictures;
 	private Picture picture;
-	protected Bitmap bitmap;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
+		DetailsFragmentPagerActivity.viewed++;
 	}
 
 	/**
@@ -73,6 +73,9 @@ abstract class DetailsFragment extends Fragment {
 		View detailsFrame = getActivity().findViewById(R.id.details);
 		boolean isDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 
+		Log.e("", ""+DetailsFragmentPagerActivity.viewed);
+		setHasOptionsMenu(isDualPane || DetailsFragmentPagerActivity.viewed == 1);
+
 		final View details = inflater.inflate(R.layout.details_fragment, container, false);
 
 		if (pictures != null && !pictures.isEmpty()) {
@@ -80,15 +83,14 @@ abstract class DetailsFragment extends Fragment {
 			picture = pictures.get(getShownIndex());
 
 			if (!isDualPane) {
-				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-				getActivity().getSupportActionBar().setTitle(picture.title);
-				getActivity().getSupportActionBar().setSubtitle(picture.credit);
-
+				//				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+				//				getActivity().getSupportActionBar().setTitle(picture.title);
+				//				getActivity().getSupportActionBar().setSubtitle(picture.credit);
+				getActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 			decodeOptions.inSampleSize = 2;
-
 			BitmapUtils.fetchImage(
 					getActivity(), 
 					picture.getFullSizeImageUrl(), 
@@ -100,13 +102,12 @@ abstract class DetailsFragment extends Fragment {
 						public void onFetchComplete(Object cookie, final Bitmap result, final Uri uri) {
 							try {
 
-								bitmap = result;
 								getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
 
 								final ImageView iv = (ImageView)details.findViewById(R.id.main_picture);
 								iv.setImageBitmap(result);
 								iv.setVisibility(View.VISIBLE);
-								details.findViewById(R.id.image_progress).setVisibility(View.GONE);
+								//details.findViewById(R.id.image_progress).setVisibility(View.GONE);
 
 
 								picture.uri = uri;
@@ -136,7 +137,10 @@ abstract class DetailsFragment extends Fragment {
 			"a { " +
 			"color:#EEE; " +
 			"} " +
-			"</style>" + picture.info.replace("\n", " ");
+			"h3, h4 {" +
+			"text-align:center;" +
+			"}" +
+			"</style>" + "<h3>" + picture.title + "</h3>" + picture.info.replace("\n", " ");
 
 			text.loadData(html,"text/html", "utf-8");
 			text.setBackgroundColor(0);
@@ -149,6 +153,11 @@ abstract class DetailsFragment extends Fragment {
 		}
 
 		return details;
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
 	}
 
 	@Override
@@ -217,6 +226,7 @@ abstract class DetailsFragment extends Fragment {
 			return;
 		}
 		Picture picture = HomeActivity.pictures.get(getShownIndex());
+
 		if(picture.uri != null) {
 			menu.findItem(R.id.menu_save).setEnabled(true);
 			menu.findItem(R.id.menu_set_wallpaper).setEnabled(true);
@@ -242,12 +252,31 @@ abstract class DetailsFragment extends Fragment {
 			int newHeight = wm.getDesiredMinimumHeight();
 
 			try {
+				Bitmap bitmap = null;
+				BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
+				decodeOptions.inSampleSize = 2;
+				try {
+					bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri), null, decodeOptions);
+				} catch (OutOfMemoryError e) {
+					Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+					System.gc();
+					decodeOptions.inSampleSize += 2;
+					bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri), null, decodeOptions);
+				}
+
+
 				if(UIUtils.isHoneycombTablet(getActivity())){
 					wm.setBitmap(bitmap);
 				} else {
-					Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-					wm.setBitmap(resizedBitmap);					
+					try {
+						Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+						wm.setBitmap(resizedBitmap);				
+					} catch (OutOfMemoryError e) {
+						wm.setBitmap(bitmap);
+					}
 				}
+
+				bitmap.recycle();
 
 				//Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri));
 				//Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
@@ -255,6 +284,7 @@ abstract class DetailsFragment extends Fragment {
 				//wm.setStream(getActivity().getContentResolver().openInputStream(picture.uri));
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				return false;
 			}
 			return true;

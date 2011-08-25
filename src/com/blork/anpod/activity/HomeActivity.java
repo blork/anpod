@@ -3,14 +3,20 @@ package com.blork.anpod.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
 import com.blork.anpod.R;
 import com.blork.anpod.model.Picture;
-import com.blork.anpod.util.UIUtils;
 
 // TODO: Auto-generated Javadoc
 /*
@@ -59,7 +65,42 @@ public class HomeActivity extends FragmentActivity {
 		setContentView(R.layout.fragment_layout);
 
 		setProgressBarIndeterminateVisibility(Boolean.FALSE);
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);	
+
+		try {
+			PackageManager pm = getPackageManager();
+			pm.getPackageInfo("com.blork.anpodpro", PackageManager.GET_ACTIVITIES);
+
+			boolean pro = settings.getBoolean("pro", false);
+			if(!pro){
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("Thank you!");
+				builder.setMessage("Thanks for buying the donate version - I really appreciate it!")
+				.setCancelable(false)
+				.setNeutralButton("No Problem!", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+						startActivity(new Intent(HomeActivity.this, HomeActivity.class));
+						finish();
+					} 
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+			SharedPreferences.Editor pEditor = settings.edit();
+			pEditor.putBoolean("pro", true);
+			pEditor.commit();
+		} catch (NameNotFoundException e1) {
+			SharedPreferences.Editor pEditor = settings.edit();
+			pEditor.putBoolean("pro", false);
+			pEditor.commit();
+		}
 	}
 
 }

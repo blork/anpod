@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -168,9 +169,14 @@ public class Picture implements Saveable {
 		values.put(PicturesContentProvider.UID, uid);
 
 		try {
+			List<Picture> pictures = PictureFactory.getLocalPictures(context);
+			if (pictures.contains(this)) {
+				return null;
+			}
+			
 			Uri uri = context.getContentResolver().insert(PicturesContentProvider.CONTENT_URI, values);
 			return uri;
-		} catch (android.database.SQLException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		

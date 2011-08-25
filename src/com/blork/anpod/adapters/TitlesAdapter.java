@@ -39,7 +39,7 @@ public class TitlesAdapter extends EndlessPictureThumbnailAdapter {
 				return false;
 			}
 			
-			PictureFactory.saveAll(activity, results);
+			//PictureFactory.saveAll(activity, results);
 			
 			HomeActivity.pictures.addAll(results);		
 			return true;

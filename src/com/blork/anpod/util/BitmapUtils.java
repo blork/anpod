@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.Normalizer;
-import java.text.Normalizer.Form;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -139,12 +137,17 @@ public class BitmapUtils {
 				}
 				if (cacheFile != null && cacheFile.exists()) {
 					Log.d("", "Cache file exists, using it.");
-					Bitmap cachedBitmap = BitmapFactory.decodeFile(
-							cacheFile.toString(), decodeOptions);
-					if (cachedBitmap != null) {
-						Log.d("", "Returning bitmap");
-						return cachedBitmap;
+					Bitmap cachedBitmap = null;
+					try {
+						cachedBitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
+					} catch (OutOfMemoryError e) {
+						Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+						System.gc();
+						decodeOptions.inSampleSize += 2;
 					}
+
+					return cachedBitmap;
+
 				}
 
 				try {
@@ -160,8 +163,14 @@ public class BitmapUtils {
 						return null;
 					}
 
-					final byte[] respBytes = EntityUtils.toByteArray(entity);
+					byte[] respBytes;
 
+					try {
+						respBytes = EntityUtils.toByteArray(entity);
+					} catch (OutOfMemoryError e) {
+						System.gc();
+						respBytes = EntityUtils.toByteArray(entity);
+					}
 
 					Log.d("", "Writing cache file");
 					try {
@@ -179,8 +188,18 @@ public class BitmapUtils {
 
 					Log.d("", "Returning bitmap image");
 					// Decode the bytes and return the bitmap.
-					return BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length,
-							decodeOptions);
+					Bitmap bitmap = null;
+
+					try {
+						bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
+					} catch (OutOfMemoryError e) {
+						Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+						bitmap = null;
+						System.gc();
+						decodeOptions.inSampleSize += 2;
+					}
+
+					return bitmap;
 				} catch (Exception e) {
 					Log.w(TAG, "Problem while loading image: " + e.toString(), e);
 				}
@@ -219,12 +238,16 @@ public class BitmapUtils {
 		}
 		if (cacheFile != null && cacheFile.exists()) {
 			Log.d("", "Cache file exists, using it.");
-			Bitmap cachedBitmap = BitmapFactory.decodeFile(
-					cacheFile.toString(), decodeOptions);
-			if (cachedBitmap != null) {
-				Log.d("", "Returning bitmap");
-				return cachedBitmap;
+			Bitmap cachedBitmap = null;
+			try {
+				cachedBitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
+			} catch (OutOfMemoryError e) {
+				Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+				System.gc();
+				decodeOptions.inSampleSize += 2;
 			}
+
+			return cachedBitmap;
 		}
 
 		try {
@@ -257,9 +280,17 @@ public class BitmapUtils {
 
 
 			Log.d("", "Returning bitmap image");
+			Bitmap bitmap = null;
 			// Decode the bytes and return the bitmap.
-			return BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length,
-					decodeOptions);
+			try {
+				bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
+			} catch (OutOfMemoryError e) {
+				Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+				System.gc();
+				decodeOptions.inSampleSize += 2;
+			}
+
+			return bitmap;
 		} catch (Exception e) {
 			Log.w(TAG, "Problem while loading image: " + e.toString(), e);
 		}
@@ -281,7 +312,7 @@ public class BitmapUtils {
 		}
 
 		int cacheSize = 10;
-		
+
 		Log.e("", "Managing cache");
 		File[] files = folder.listFiles();
 		if (files == null || files.length <= cacheSize) {
@@ -326,8 +357,7 @@ public class BitmapUtils {
 
 	public static String toSlug(String input) {
 		String nowhitespace = WHITESPACE.matcher(input).replaceAll("-");
-		String normalized = Normalizer.normalize(nowhitespace, Form.NFD);
-		String slug = NONLATIN.matcher(normalized).replaceAll("");
+		String slug = NONLATIN.matcher(nowhitespace).replaceAll("");
 		return slug.toLowerCase(Locale.ENGLISH);
 	}
 }

@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -48,9 +47,8 @@ public class AnpodService extends Service implements Runnable{
 	public static final String ACTION_FINISHED_UPDATE = "com.blork.anpod.ACTION_FINISHED_UPDATE";
 	private NotificationManager notificationManager;
 	private boolean notify;
-	private Boolean silent;
+	private Boolean forceRun;
 	private boolean wallpaper;
-	private Handler handler;
 
 	static int INFO = 1;
 	static int ERROR = 2;
@@ -66,14 +64,28 @@ public class AnpodService extends Service implements Runnable{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		silent = intent.hasExtra("silent_run");
+		if (intent != null) {
+			forceRun = intent.hasExtra("force_run");
+		} else {
+			forceRun = false;
+		}
+		
+		
+		new Thread(this).start();
+		
 		return START_STICKY;
 	}
 
-	@Override
-	public void onCreate() {
 
-		handler = new Handler();
+	@Override
+	public void run() {
+
+		if(forceRun == null) {
+			finish();
+			return;
+		}
+		
+		Log.e("", "Got it! " + forceRun);
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -96,7 +108,7 @@ public class AnpodService extends Service implements Runnable{
 		boolean updates = prefs.getBoolean("updates_enabled", false);
 		boolean wifi_only = prefs.getBoolean("wifi", false);
 
-		if (!updates) {
+		if (!updates && !forceRun) {
 			finish();
 			return;
 		}
@@ -109,22 +121,12 @@ public class AnpodService extends Service implements Runnable{
 				return;
 			} 
 
-			new Thread(this).start();
 		}
 
 
-	}
+		//forceRun = UIUtils.isHoneycombTablet(this);
 
-	@Override
-	public void run() {
-
-		while(silent == null) {
-			continue;
-		}
-
-		silent = silent && UIUtils.isHoneycombTablet(this);
-
-		if (notify && !silent) {
+		if (notify || forceRun) {
 			int icon = android.R.drawable.stat_notify_sync;
 			Notification notification = new Notification(icon, "Checking for new APOD", System.currentTimeMillis());
 			Intent syncIntent = new Intent(this, HomeActivity.class);
@@ -167,18 +169,13 @@ public class AnpodService extends Service implements Runnable{
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, qIntent, 0);
 		views.setOnClickPendingIntent(R.id.content, pendingIntent);
 		AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
-		
+
 		int count = PictureFactory.saveAll(this, pictures);
 
 		if (count == 0) {
 			finish();
 			return;
-		} else if (count > 10) {
-			/*
-			 * If there are 10 new pictures, we haven't updated for a while.
-			 * Instead of doing a twitter style broken list (hard), just get rid of
-			 * all the old pics.
-			 */
+		} else {
 			PictureFactory.deleteAll(this);
 			PictureFactory.saveAll(this, pictures);
 		}
@@ -196,9 +193,28 @@ public class AnpodService extends Service implements Runnable{
 			int newHeight = wm.getDesiredMinimumHeight();
 
 			try {
-				Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
-				//Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-				wm.setBitmap(bitmap);
+				
+				Bitmap bitmap;
+				
+				try {
+					bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
+				} catch (Exception e1) {
+					decodeOptions.inSampleSize += 2;
+					bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
+				}
+				
+				if(UIUtils.isHoneycombTablet(this)){
+					wm.setBitmap(bitmap);
+				} else {
+					try {
+						Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+						wm.setBitmap(resizedBitmap);				
+					} catch (OutOfMemoryError e) {
+						wm.setBitmap(bitmap);
+					}
+				}
+
+				bitmap.recycle();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -210,7 +226,8 @@ public class AnpodService extends Service implements Runnable{
 			int icon = R.drawable.notify;
 			Notification notification = new Notification(icon, "New Picture!", System.currentTimeMillis());
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			Intent notificationIntent = new Intent(this, HomeActivity.class); 
+			Intent notificationIntent = new Intent(this, HomeActivity.class);
+			//notificationIntent.putExtra("view_image", 0);
 			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			notification.setLatestEventInfo(
 					this,

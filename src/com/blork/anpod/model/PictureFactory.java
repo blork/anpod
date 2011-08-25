@@ -42,7 +42,7 @@ public class PictureFactory {
 		Picture p = getPictureFromUrl(ctx, url);
 		return p;
 	}
-	
+
 	/**
 	 * Gets the picture.
 	 *
@@ -57,7 +57,7 @@ public class PictureFactory {
 		URL url = new URL("http://anpod.heroku.com/pictures_by_uid/"+ id +".json");	
 		return getPictureFromUrl(ctx, url);
 	}
-	
+
 	/**
 	 * Gets the local pictures.
 	 *
@@ -78,9 +78,9 @@ public class PictureFactory {
 		};
 
 		Log.e("!!!", "Making query");
-		
+
 		ContentResolver resolver = ctx.getContentResolver();
-		
+
 		// Make the query. 
 		Cursor cursor =  resolver.query(
 				PicturesContentProvider.CONTENT_URI,
@@ -89,88 +89,88 @@ public class PictureFactory {
 				null,       // Selection arguments (none)
 				PicturesContentProvider.REVERSE_SORT_ORDER // Put the results in default order
 		); 
-		
+
 		Log.e("!!!", "Cursor!");
 		if (cursor.moveToFirst()) {
 			Log.e("!!!", "Cursor worked!");
-			
-	        String title;
-	        String credit;
-	        String imgur;
-	        String info;
-	        String uid;
-	        int id;
-	        
-	        int titleColumn = cursor.getColumnIndex(PicturesContentProvider.TITLE); 
-	        int creditColumn = cursor.getColumnIndex(PicturesContentProvider.CREDIT); 
-	        int imgurColumn = cursor.getColumnIndex(PicturesContentProvider.IMGURURL); 
-	        int infoColumn = cursor.getColumnIndex(PicturesContentProvider.INFO); 
-	        int uidColumn = cursor.getColumnIndex(PicturesContentProvider.UID); 
-	        int idColumn = cursor.getColumnIndex(PicturesContentProvider.ID); 
 
-	        do {
-	            title = cursor.getString(titleColumn);
-	            credit = cursor.getString(creditColumn);
-	            imgur = cursor.getString(imgurColumn);
-	            info = cursor.getString(infoColumn);
-	            uid = cursor.getString(uidColumn);
-	            id = cursor.getInt(idColumn);
-	            
-	            pictures.add(new Picture(id, uid, title, credit, info, imgur));
-	            
-	        } while (cursor.moveToNext());
-	    }
-		
-		
+			String title;
+			String credit;
+			String imgur;
+			String info;
+			String uid;
+			int id;
+
+			int titleColumn = cursor.getColumnIndex(PicturesContentProvider.TITLE); 
+			int creditColumn = cursor.getColumnIndex(PicturesContentProvider.CREDIT); 
+			int imgurColumn = cursor.getColumnIndex(PicturesContentProvider.IMGURURL); 
+			int infoColumn = cursor.getColumnIndex(PicturesContentProvider.INFO); 
+			int uidColumn = cursor.getColumnIndex(PicturesContentProvider.UID); 
+			int idColumn = cursor.getColumnIndex(PicturesContentProvider.ID); 
+
+			do {
+				title = cursor.getString(titleColumn);
+				credit = cursor.getString(creditColumn);
+				imgur = cursor.getString(imgurColumn);
+				info = cursor.getString(infoColumn);
+				uid = cursor.getString(uidColumn);
+				id = cursor.getInt(idColumn);
+
+				pictures.add(new Picture(id, uid, title, credit, info, imgur));
+
+			} while (cursor.moveToNext());
+		}
+
+
 		cursor.close();
-		
+
 		return pictures;
 	}
-	
-	
-//	public static Picture getLatestPicture(Context ctx) {
-//		Picture picture = Picture.querySingle(
-//				ctx, 
-//				Picture.class, 
-//				null, 
-//				null, 
-//				"Id DESC"
-//		);
-//		return picture;
-//	}
-	
+
+
+	//	public static Picture getLatestPicture(Context ctx) {
+	//		Picture picture = Picture.querySingle(
+	//				ctx, 
+	//				Picture.class, 
+	//				null, 
+	//				null, 
+	//				"Id DESC"
+	//		);
+	//		return picture;
+	//	}
+
 	/**
- * Gets the picture from url.
- *
- * @param ctx the ctx
- * @param url the url
- * @return the picture from url
- * @throws IOException Signals that an I/O exception has occurred.
- * @throws URISyntaxException the uRI syntax exception
- * @throws JSONException the jSON exception
- */
-private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOException, URISyntaxException, JSONException {
-		
+	 * Gets the picture from url.
+	 *
+	 * @param ctx the ctx
+	 * @param url the url
+	 * @return the picture from url
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws URISyntaxException the uRI syntax exception
+	 * @throws JSONException the jSON exception
+	 */
+	private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOException, URISyntaxException, JSONException {
+
 		String jsonString = Utils.getJSON(url);
 
 		JSONTokener jsonTokener = new JSONTokener(jsonString);
 		JSONObject json = (JSONObject) jsonTokener.nextValue();
 		json = json.getJSONObject("picture");
-		
+
 		int aid = json.getInt("id");
 		String uid = json.getString("uid");
 		String title = json.getString("title");
 		String credit = json.getString("credit");
 		String info = json.getString("explanation");
 		String imgurId = json.getString("url");
-		
+
 		return new Picture(aid, uid, title, credit, info, imgurId);
 	}
 
 	public static List<Picture> load() throws MalformedURLException, IOException, URISyntaxException, JSONException {
 		return load(null);
 	}
-	
+
 	/**
 	 * Load.
 	 *
@@ -199,12 +199,12 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 					"last="+id,
 					null);
 		}
-		
+
 		Log.e("", uri.toString());
-		
+
 		String jsonString = Utils.getJSON(uri.toURL());
 		JSONTokener jsonTokener = new JSONTokener(jsonString);
-		
+
 		JSONArray json = (JSONArray) jsonTokener.nextValue();
 		Log.e("", json.toString());
 		return jsonArrayToPictures(json);		
@@ -234,13 +234,13 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 			String credit = pictureJson.getString("credit");
 			String info = pictureJson.getString("explanation");
 			String imgurId = pictureJson.getString("url");
-						
+
 			pictures.add(new Picture(aid, uid, title, credit, info, imgurId));
 		}
-		
+
 		return pictures;
 	}
-	
+
 	/**
 	 * Search.
 	 *
@@ -254,12 +254,12 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 	 */
 	public static List<Picture> search(String query, int page) throws MalformedURLException, IOException, URISyntaxException, JSONException {
 		URI uri = new URI(
-		        "http", 
-		        "anpod.heroku.com", 
-		        "/search.json",
-		        "query="+query+"&page="+page,
-		        null);
-		
+				"http", 
+				"anpod.heroku.com", 
+				"/search.json",
+				"query="+query+"&page="+page,
+				null);
+
 		String jsonString = Utils.getJSON(uri.toURL());
 		JSONTokener jsonTokener = new JSONTokener(jsonString);
 		JSONArray json = (JSONArray) jsonTokener.nextValue();
@@ -269,7 +269,7 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 	public static List<Picture> search(String query) throws MalformedURLException, IOException, URISyntaxException, JSONException {
 		return search(query, 1);
 	}
-	
+
 	/**
 	 * Save all. Returns number of new pictures.
 	 * 
@@ -279,17 +279,17 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 	 */
 	public static int saveAll(Context context, List<Picture> pictures) {
 		int count = 0;
-		
+
 		for (Picture p: pictures) {
 			Uri uri = p.save(context);
 			if (uri != null) {
 				count++;
 			}
 		}
-		
+
 		return count;
 	}
-	
+
 	/**
 	 * Delete all.
 	 *
@@ -299,5 +299,5 @@ private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOEx
 		ContentResolver resolver = ctx.getContentResolver();
 		resolver.delete(PicturesContentProvider.CONTENT_URI, null, null);
 	}
-	
+
 }

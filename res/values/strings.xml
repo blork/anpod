@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">Astronomy Picture of the Day</string>
+    <string name="app_name">APOD</string>
     <string name="description_home">Home</string>
     <string name="description_search">Search</string>
     <string name="description_logo">Logo</string>

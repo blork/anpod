@@ -113,6 +113,7 @@ public abstract class ResultsFragment extends ListFragment {
             // Make sure our UI is in the correct state.
             showDetails(mCurCheckPosition);
         }
+
     }
 
     /* (non-Javadoc)
@@ -194,7 +195,7 @@ public abstract class ResultsFragment extends ListFragment {
 		case R.id.menu_refresh:
 			getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
 			Intent serviceIntent = new Intent(getActivity(), AnpodService.class);
-			serviceIntent.putExtra("silent_run", true);
+			serviceIntent.putExtra("force_run", true);
 			getActivity().startService(serviceIntent);
 			return true;
 		case R.id.menu_prefs:
