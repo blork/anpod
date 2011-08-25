@@ -18,6 +18,7 @@ package com.blork.anpod.activity;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -30,43 +31,49 @@ import com.blork.anpod.R;
  */
 
 public class UserPreferenceActivityV11 extends PreferenceActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-    
-    /**
-     * Populate the activity with the top-level headers.
-     */
-    @Override
-    public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.preference_headers, target);
-    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
 
-    /**
-     * This fragment shows the preferences for the first header.
-     */
-    public static class Prefs1Fragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+	/**
+	 * Populate the activity with the top-level headers.
+	 */
+	@Override
+	public void onBuildHeaders(List<Header> target) {
+		loadHeadersFromResource(R.xml.preference_headers, target);
+	}
 
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.preferences_one);
-        }
-    }
+	/**
+	 * This fragment shows the preferences for the first header.
+	 */
+	public static class Prefs1Fragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
 
-    /**
-     * This fragment shows the preferences for the second header.
-     */
-    public static class Prefs2Fragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.preferences_two);
-        }
-    }
+			// Load the preferences from an XML resource
+			addPreferencesFromResource(R.xml.preferences_one);
+		}
+	}
+
+	/**
+	 * This fragment shows the preferences for the second header.
+	 */
+	public static class Prefs2Fragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+
+			// Load the preferences from an XML resource
+			addPreferencesFromResource(R.xml.preferences_two);
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		sendBroadcast(new Intent("com.blork.anpod.SET_UPDATE"));
+    	super.onPause();
+	}
 }
 

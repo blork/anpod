@@ -16,6 +16,7 @@
 
 package com.blork.anpod.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -35,6 +36,12 @@ public class UserPreferenceActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_one);
         addPreferencesFromResource(R.xml.preferences_two);
+    }
+    
+    @Override
+    protected void onPause() {
+    	sendBroadcast(new Intent("com.blork.anpod.SET_UPDATE"));
+    	super.onPause();
     }
 }
 

@@ -14,6 +14,12 @@
 			android:title="Update time"
 			android:summary="Set the time to perform the update" />
 		<CheckBoxPreference
+			android:key="notifications_enabled"
+			android:dependency="updates_enabled"
+			android:layout="?android:attr/preferenceLayoutChild"
+			android:title="Notificatons"
+			android:summary="Enable notifications" />
+		<CheckBoxPreference
 			android:key="set_wallpaper"
 			android:dependency="updates_enabled"
 			android:layout="?android:attr/preferenceLayoutChild"

@@ -5,16 +5,8 @@
 		android:title="Donations">
 		<Preference
 			android:key="action_1"
-			android:title="Donate"
-			android:summary="Donate to help support development">
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:data="market://details?id=com.blork.anpodpro" />
-		</Preference>
-		<Preference
-			android:key="action_2"
 			android:title="Remove adverts"
-			android:summary="Purchase the unlocker app to remove ads">
+			android:summary="Donate to support development and remove ads">
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:data="market://details?id=com.blork.anpodpro" />
@@ -29,6 +21,17 @@
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:data="market://search?q=Sam Oakley" />
+		</Preference>
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="Feedback">
+		<Preference
+			android:key="action_4"
+			android:title="App feedback"
+			android:summary="Visit uservoice.com to leave your comments and suggestions">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="http://apod.uservoice.com" />
 		</Preference>
 	</PreferenceCategory>
 </PreferenceScreen>
