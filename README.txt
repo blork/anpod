@@ -1,4 +1,4 @@
-Astronomy Picture of the Day for Android
+Astronomy Picture of the Day for Android!
 ----------------------------------------
 
 Gets the latest image from the NASA APOD site and sets it as your homescreen wallpaper.
