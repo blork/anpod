@@ -19,7 +19,7 @@ public class Widget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
     	Log.d("anpod","widget onUpdate."); 
     	Intent intent = new Intent(context, AnpodService.class);
-    	intent.putExtra("widget", true);
+    	intent.putExtra("force_run", true);
     	context.startService(intent);  
     }
 }

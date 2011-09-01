@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest
 	android:installLocation="auto"
-	android:versionCode="75"
-	android:versionName="3.0"
+	android:versionCode="80"
+	android:versionName="3.0.5"
 	package="com.blork.anpod"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk
@@ -16,6 +16,8 @@
 		android:name="android.permission.SET_WALLPAPER" />
 	<uses-permission
 		android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission
+		android:name="android.permission.WAKE_LOCK" />
 	<application
 		android:name="ApodApplication"
 		android:icon="@drawable/ic_launcher"
@@ -73,7 +75,7 @@
 		<receiver
 			android:name="com.blork.anpod.widget.Widget"
 			android:process=":remote"
-			android:label="4x1 Astronomy Widget">
+			android:label="Small Astronomy Widget">
 			<intent-filter>
 				<action
 					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -81,6 +83,18 @@
 			<meta-data
 				android:name="android.appwidget.provider"
 				android:resource="@layout/widget_info" />
+		</receiver>
+		<receiver
+			android:name="com.blork.anpod.widget.LargeWidget"
+			android:process=":remote"
+			android:label="Large Astronomy Widget">
+			<intent-filter>
+				<action
+					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@layout/large_widget_info" />
 		</receiver>
 		<receiver
 			android:name="com.blork.anpod.service.Receiver"
@@ -94,7 +108,7 @@
 					android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
 				<action
 					android:name="android.intent.action.BATTERY_CHANGED" />
-				<action 
+				<action
 					android:name="com.blork.anpod.SET_UPDATE" />
 				<category
 					android:name="android.intent.category.HOME" />
