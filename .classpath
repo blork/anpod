@@ -5,13 +5,13 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="lib/acra-4.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/GoogleAdMobAdsSdk-4.1.1.jar"/>
-	<classpathentry kind="src" path="ActionBarSherlock_src"/>
-	<classpathentry kind="src" path="thumbnail_src"/>
 	<classpathentry kind="src" path="endless_src"/>
+	<classpathentry kind="src" path="thumbnail_src"/>
 	<classpathentry kind="src" path="pulltorefresh_src"/>
 	<classpathentry kind="src" path="cache_src"/>
 	<classpathentry kind="src" path="bus_src"/>
 	<classpathentry kind="src" path="task_src"/>
 	<classpathentry kind="src" path="adapter_src"/>
+	<classpathentry kind="src" path="ActionBarSherlock_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
