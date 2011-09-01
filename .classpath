@@ -8,10 +8,10 @@
 	<classpathentry kind="src" path="endless_src"/>
 	<classpathentry kind="src" path="thumbnail_src"/>
 	<classpathentry kind="src" path="pulltorefresh_src"/>
+	<classpathentry kind="src" path="ActionBarSherlock_src"/>
 	<classpathentry kind="src" path="cache_src"/>
 	<classpathentry kind="src" path="bus_src"/>
 	<classpathentry kind="src" path="task_src"/>
 	<classpathentry kind="src" path="adapter_src"/>
-	<classpathentry kind="src" path="ActionBarSherlock_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -18,10 +18,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -52,7 +49,6 @@ public class AnpodService extends Service implements Runnable{
 	private Boolean forceRun;
 	private boolean wallpaper;
 	private WakeLock wakelock;
-	private WifiLock wifilock;
 
 	static int INFO = 1;
 	static int ERROR = 2;
@@ -69,23 +65,17 @@ public class AnpodService extends Service implements Runnable{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.e("", "starting service");
-		
+
 		if (intent != null) {
 			forceRun = intent.hasExtra("force_run");
 		} else {
 			forceRun = false;
 		}
 
-
-		
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "apod");
-        wakelock.acquire();
-        
-		WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        wifilock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "apod");
-        wifilock.acquire();
-        
+		wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "apod");
+		wakelock.acquire();
+
 		new Thread(this).start();
 
 		return START_STICKY;
@@ -96,17 +86,7 @@ public class AnpodService extends Service implements Runnable{
 	public void run() {
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		if(forceRun == null) {
-			finish();
-			return;
-		}
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-		long time = System.currentTimeMillis();
-		Editor editor = prefs.edit();
-		editor.putLong("time", time);
-		editor.commit();
 
 		if (!Utils.isDataEnabled(this)) {
 			finish();
@@ -167,39 +147,42 @@ public class AnpodService extends Service implements Runnable{
 		}
 
 		Picture newPicture = pictures.get(0);
-		
+
 		Intent notificationIntent = new Intent(this, HomeActivity.class);
 		notificationIntent.putExtra("view_image", 0);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
- 		
+
 		WallpaperManager wm = (WallpaperManager) this.getSystemService(Context.WALLPAPER_SERVICE);
 
 		int newWidth = wm.getDesiredMinimumWidth();
 		int newHeight = wm.getDesiredMinimumHeight();
 
 		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, newWidth, newHeight);
-		
-
-		RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
-		ComponentName thisWidget = new ComponentName(this, Widget.class);
-		views.setViewVisibility(R.id.content, View.VISIBLE);
-		views.setViewVisibility(R.id.loading, View.GONE);
-		views.setTextViewText(R.id.title, newPicture.title);
-		views.setTextViewText(R.id.credit, newPicture.credit);
-
-		views.setOnClickPendingIntent(R.id.content, contentIntent);
-		AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
 
 
-		RemoteViews views2 = new RemoteViews(this.getPackageName(), R.layout.large_widget);
-		ComponentName thisWidget2 = new ComponentName(this, LargeWidget.class);
-		views2.setViewVisibility(R.id.content, View.VISIBLE);
-		views2.setViewVisibility(R.id.loading, View.GONE);
-		views2.setTextViewText(R.id.title, newPicture.title);
-		views2.setTextViewText(R.id.credit, newPicture.credit);
-		views2.setImageViewBitmap(R.id.image, BitmapUtils.resizeBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2));
-		views2.setOnClickPendingIntent(R.id.content, contentIntent);
-		AppWidgetManager.getInstance(this).updateAppWidget(thisWidget2, views2);
+		try {
+			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
+			ComponentName thisWidget = new ComponentName(this, Widget.class);
+			views.setViewVisibility(R.id.content, View.VISIBLE);
+			views.setViewVisibility(R.id.loading, View.GONE);
+			views.setTextViewText(R.id.title, newPicture.title);
+			views.setTextViewText(R.id.credit, newPicture.credit);
+
+			views.setOnClickPendingIntent(R.id.content, contentIntent);
+			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
+		} catch (Exception e) { }
+
+		try {
+			RemoteViews views2 = new RemoteViews(this.getPackageName(), R.layout.large_widget);
+			ComponentName thisWidget2 = new ComponentName(this, LargeWidget.class);
+			views2.setViewVisibility(R.id.content, View.VISIBLE);
+			views2.setViewVisibility(R.id.loading, View.GONE);
+			views2.setTextViewText(R.id.title, newPicture.title);
+			views2.setTextViewText(R.id.credit, newPicture.credit);
+			views2.setImageViewBitmap(R.id.image, BitmapUtils.resizeBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2));
+			views2.setOnClickPendingIntent(R.id.content, contentIntent);
+			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget2, views2);
+		} catch (Exception e) { }
 
 		int count = PictureFactory.saveAll(this, pictures);
 
@@ -217,7 +200,7 @@ public class AnpodService extends Service implements Runnable{
 
 			try {
 				wm.setBitmap(bitmap);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				finish();
 			}
 		}
@@ -240,16 +223,19 @@ public class AnpodService extends Service implements Runnable{
 	}
 
 	private void finish() {
-		notificationManager.cancel(RUNNING);
+		try {
+			notificationManager.cancel(RUNNING);
+		} catch (Exception e) { 
+
+		}
 		sendBroadcast(new Intent(ACTION_FINISHED_UPDATE));
 		stopSelf();
 	}
-	
+
 	public void onDestroy() {
 		super.onDestroy();
 		Log.e("", "finished service");
 
 		wakelock.release();
-		wifilock.release();
 	}
 }
