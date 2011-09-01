@@ -1,6 +1,5 @@
 package com.blork.anpod.service;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -21,8 +20,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -33,8 +35,8 @@ import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
-import com.blork.anpod.util.UIUtils;
 import com.blork.anpod.util.Utils;
+import com.blork.anpod.widget.LargeWidget;
 import com.blork.anpod.widget.Widget;
 
 
@@ -49,6 +51,8 @@ public class AnpodService extends Service implements Runnable{
 	private boolean notify;
 	private Boolean forceRun;
 	private boolean wallpaper;
+	private WakeLock wakelock;
+	private WifiLock wifilock;
 
 	static int INFO = 1;
 	static int ERROR = 2;
@@ -64,28 +68,38 @@ public class AnpodService extends Service implements Runnable{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.e("", "starting service");
+		
 		if (intent != null) {
 			forceRun = intent.hasExtra("force_run");
 		} else {
 			forceRun = false;
 		}
+
+
 		
-		
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "apod");
+        wakelock.acquire();
+        
+		WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifilock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "apod");
+        wifilock.acquire();
+        
 		new Thread(this).start();
-		
+
 		return START_STICKY;
 	}
 
 
 	@Override
 	public void run() {
+		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		if(forceRun == null) {
 			finish();
 			return;
 		}
-		
-		Log.e("", "Got it! " + forceRun);
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -99,10 +113,8 @@ public class AnpodService extends Service implements Runnable{
 			return;
 		}
 
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-		notify = prefs.getBoolean("notifications_enabled", true);
-		wallpaper = prefs.getBoolean("set_wallpaper", true);
+		notify = prefs.getBoolean("notifications_enabled", false);
+		wallpaper = prefs.getBoolean("set_wallpaper", false);
 
 
 		boolean updates = prefs.getBoolean("updates_enabled", false);
@@ -115,12 +127,10 @@ public class AnpodService extends Service implements Runnable{
 
 
 		if (Utils.isNetworkConnected(this)) {
-
 			if (wifi_only && !Utils.isWiFiConnected(this)) {
 				finish();
 				return;
 			} 
-
 		}
 
 
@@ -157,6 +167,18 @@ public class AnpodService extends Service implements Runnable{
 		}
 
 		Picture newPicture = pictures.get(0);
+		
+		Intent notificationIntent = new Intent(this, HomeActivity.class);
+		notificationIntent.putExtra("view_image", 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+ 		
+		WallpaperManager wm = (WallpaperManager) this.getSystemService(Context.WALLPAPER_SERVICE);
+
+		int newWidth = wm.getDesiredMinimumWidth();
+		int newHeight = wm.getDesiredMinimumHeight();
+
+		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, newWidth, newHeight);
+		
 
 		RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
 		ComponentName thisWidget = new ComponentName(this, Widget.class);
@@ -165,10 +187,19 @@ public class AnpodService extends Service implements Runnable{
 		views.setTextViewText(R.id.title, newPicture.title);
 		views.setTextViewText(R.id.credit, newPicture.credit);
 
-		Intent qIntent = new Intent(this, HomeActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, qIntent, 0);
-		views.setOnClickPendingIntent(R.id.content, pendingIntent);
+		views.setOnClickPendingIntent(R.id.content, contentIntent);
 		AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
+
+
+		RemoteViews views2 = new RemoteViews(this.getPackageName(), R.layout.large_widget);
+		ComponentName thisWidget2 = new ComponentName(this, LargeWidget.class);
+		views2.setViewVisibility(R.id.content, View.VISIBLE);
+		views2.setViewVisibility(R.id.loading, View.GONE);
+		views2.setTextViewText(R.id.title, newPicture.title);
+		views2.setTextViewText(R.id.credit, newPicture.credit);
+		views2.setImageViewBitmap(R.id.image, BitmapUtils.resizeBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2));
+		views2.setOnClickPendingIntent(R.id.content, contentIntent);
+		AppWidgetManager.getInstance(this).updateAppWidget(thisWidget2, views2);
 
 		int count = PictureFactory.saveAll(this, pictures);
 
@@ -183,42 +214,11 @@ public class AnpodService extends Service implements Runnable{
 		Log.e("", "about to set wallpaper");
 		if (wallpaper) {
 			Log.e("", "setting wallpaper");
-			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
-			decodeOptions.inSampleSize = 2;
-
-
-			WallpaperManager wm = (WallpaperManager) this.getSystemService(Context.WALLPAPER_SERVICE);
-
-			int newWidth = wm.getDesiredMinimumWidth();
-			int newHeight = wm.getDesiredMinimumHeight();
 
 			try {
-				
-				Bitmap bitmap;
-				
-				try {
-					bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
-				} catch (Exception e1) {
-					decodeOptions.inSampleSize += 2;
-					bitmap = BitmapUtils.fetchImage(this, newPicture, decodeOptions);
-				}
-				
-				if(UIUtils.isHoneycombTablet(this)){
-					wm.setBitmap(bitmap);
-				} else {
-					try {
-						Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-						wm.setBitmap(resizedBitmap);				
-					} catch (OutOfMemoryError e) {
-						wm.setBitmap(bitmap);
-					}
-				}
-
-				bitmap.recycle();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				wm.setBitmap(bitmap);
 			} catch (IOException e) {
-				e.printStackTrace();
+				finish();
 			}
 		}
 
@@ -226,9 +226,6 @@ public class AnpodService extends Service implements Runnable{
 			int icon = R.drawable.notify;
 			Notification notification = new Notification(icon, "New Picture!", System.currentTimeMillis());
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			Intent notificationIntent = new Intent(this, HomeActivity.class);
-			//notificationIntent.putExtra("view_image", 0);
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			notification.setLatestEventInfo(
 					this,
 					"New Astronomy Pic of the Day",
@@ -246,5 +243,13 @@ public class AnpodService extends Service implements Runnable{
 		notificationManager.cancel(RUNNING);
 		sendBroadcast(new Intent(ACTION_FINISHED_UPDATE));
 		stopSelf();
+	}
+	
+	public void onDestroy() {
+		super.onDestroy();
+		Log.e("", "finished service");
+
+		wakelock.release();
+		wifilock.release();
 	}
 }

@@ -12,15 +12,21 @@
  */
 package com.blork.anpod.provider;
 
-import java.util.*;
+import java.util.HashMap;
 
-import android.content.*;
-import android.database.*;
-import android.database.sqlite.*;
-import android.net.*;
-import android.text.*;
+import android.content.ContentProvider;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.UriMatcher;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
 
-import com.blork.anpod.util.*;
+import com.blork.anpod.util.SQLHelper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -121,7 +127,8 @@ public class PicturesContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#onCreate()
 	 */
 	public boolean onCreate() {
-		dbHelper = new SQLHelper(getContext(), true);
+		Log.e("", "creating content provider");
+		dbHelper = new SQLHelper(getContext());
 		return (dbHelper == null) ? false : true;
 	}
 

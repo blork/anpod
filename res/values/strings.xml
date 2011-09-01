@@ -12,8 +12,9 @@
     <string name="description_save_to_sd">Save to SD</string>
     <string name="description_rate">Rate
 </string>
-    <string name="description_set_wallpaper">Set Wallpaper
+    <string name="description_set_wallpaper">Auto Set Wallpaper
 </string>
     <string name="description_website">Open NASA website</string>
     <string name="description_fullscreen">View in Gallery</string>
+    <string name="description_open_image">Open Image</string>
 </resources>

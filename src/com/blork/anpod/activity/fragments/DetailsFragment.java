@@ -13,10 +13,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -25,12 +25,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blork.anpod.R;
-import com.blork.anpod.activity.DetailsFragmentPagerActivity;
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.BitmapUtils.OnFetchCompleteListener;
-import com.blork.anpod.util.UIUtils;
 import com.blork.anpod.util.Utils;
 
 // TODO: Auto-generated Javadoc
@@ -41,12 +39,10 @@ import com.blork.anpod.util.Utils;
 
 abstract class DetailsFragment extends Fragment {
 	public List<Picture> pictures;
-	private Picture picture;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		DetailsFragmentPagerActivity.viewed++;
 	}
 
 	/**
@@ -72,15 +68,15 @@ abstract class DetailsFragment extends Fragment {
 		// fragment directly in the containing UI.
 		View detailsFrame = getActivity().findViewById(R.id.details);
 		boolean isDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-
-		Log.e("", ""+DetailsFragmentPagerActivity.viewed);
-		setHasOptionsMenu(isDualPane || DetailsFragmentPagerActivity.viewed == 1);
+		if (isDualPane) {
+			setHasOptionsMenu(true);
+		}
 
 		final View details = inflater.inflate(R.layout.details_fragment, container, false);
 
 		if (pictures != null && !pictures.isEmpty()) {
 
-			picture = pictures.get(getShownIndex());
+			final Picture picture = pictures.get(getShownIndex());
 
 			if (!isDualPane) {
 				//				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
@@ -109,6 +105,16 @@ abstract class DetailsFragment extends Fragment {
 								iv.setVisibility(View.VISIBLE);
 								//details.findViewById(R.id.image_progress).setVisibility(View.GONE);
 
+								iv.setOnLongClickListener(new OnLongClickListener() {
+									@Override
+									public boolean onLongClick(View v) {
+										Intent intent2 = new Intent();
+										intent2.setDataAndType(picture.uri, "image/jpeg");
+										Intent intent3 = Intent.createChooser(intent2, "Open image with...");
+										startActivity(intent3);
+										return true;
+									}
+								});
 
 								picture.uri = uri;
 
@@ -176,8 +182,7 @@ abstract class DetailsFragment extends Fragment {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		final Picture picture = HomeActivity.pictures.get(getShownIndex());
-
+		final Picture picture = pictures.get(getShownIndex());
 		switch (item.getItemId()) {
 		case R.id.menu_save:
 			//Utils.moveToNiceFolder(picture.uri);
@@ -187,6 +192,12 @@ abstract class DetailsFragment extends Fragment {
 			} catch (Exception e) {
 				Toast.makeText(getActivity(), "Unable to save image.", Toast.LENGTH_LONG).show();
 			}
+			return true;
+		case R.id.menu_open:
+			Intent intent2 = new Intent();
+			intent2.setDataAndType(picture.uri, "image/jpeg");
+			Intent intent3 = Intent.createChooser(intent2, "Open image with...");
+			startActivity(intent3);
 			return true;
 		case R.id.menu_set_wallpaper:
 			new SetWallpaperTask().execute(picture);
@@ -222,29 +233,34 @@ abstract class DetailsFragment extends Fragment {
 
 
 	public void onPrepareOptionsMenu(Menu menu) {
-		if (HomeActivity.pictures == null || HomeActivity.pictures.isEmpty()) {
+		if (pictures == null || pictures.isEmpty()) {
 			return;
 		}
-		Picture picture = HomeActivity.pictures.get(getShownIndex());
 
-		if(picture.uri != null) {
+		final Picture picture = pictures.get(getShownIndex());
+
+		if(picture != null && picture.uri != null) {
 			menu.findItem(R.id.menu_save).setEnabled(true);
 			menu.findItem(R.id.menu_set_wallpaper).setEnabled(true);
 			menu.findItem(R.id.menu_fullscreen).setEnabled(true);
+			menu.findItem(R.id.menu_open).setEnabled(true);
 		} else {
 			menu.findItem(R.id.menu_save).setEnabled(false);
 			menu.findItem(R.id.menu_set_wallpaper).setEnabled(false);
 			menu.findItem(R.id.menu_fullscreen).setEnabled(false);
+			menu.findItem(R.id.menu_open).setEnabled(false);
 		}
 	}
 
 	private class SetWallpaperTask extends AsyncTask<Picture, Integer, Boolean> {
+		private Picture settingPicture;
+
 		protected void onPreExecute() {
 			Toast.makeText(getActivity(), "Setting wallpaper...", Toast.LENGTH_LONG).show();
 		}
 
-		protected Boolean doInBackground(Picture... pictures) {
-			Picture picture = pictures[0];
+		protected Boolean doInBackground(Picture... settingPictures) {
+			settingPicture = settingPictures[0];
 
 			WallpaperManager wm = (WallpaperManager) getActivity().getSystemService(Context.WALLPAPER_SERVICE);
 
@@ -252,37 +268,13 @@ abstract class DetailsFragment extends Fragment {
 			int newHeight = wm.getDesiredMinimumHeight();
 
 			try {
-				Bitmap bitmap = null;
-				BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
-				decodeOptions.inSampleSize = 2;
-				try {
-					bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri), null, decodeOptions);
-				} catch (OutOfMemoryError e) {
-					Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-					System.gc();
-					decodeOptions.inSampleSize += 2;
-					bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri), null, decodeOptions);
-				}
-
-
-				if(UIUtils.isHoneycombTablet(getActivity())){
-					wm.setBitmap(bitmap);
-				} else {
-					try {
-						Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-						wm.setBitmap(resizedBitmap);				
-					} catch (OutOfMemoryError e) {
-						wm.setBitmap(bitmap);
-					}
-				}
-
-				bitmap.recycle();
-
-				//Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(picture.uri));
-				//Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-				//wm.setBitmap(bitmap);
-				//wm.setStream(getActivity().getContentResolver().openInputStream(picture.uri));
-
+				wm.setBitmap(
+						BitmapUtils.resizeBitmap(
+								getActivity().getContentResolver().openInputStream(settingPicture.uri), 
+								newWidth, 
+								newHeight
+						)
+				);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
@@ -291,8 +283,8 @@ abstract class DetailsFragment extends Fragment {
 		}
 
 		protected void onPostExecute(Boolean result) {
-			if (result) {
-				Toast.makeText(getActivity(), "Wallpaper set.", Toast.LENGTH_SHORT).show();
+			if (result && settingPicture != null) {
+				Toast.makeText(getActivity(), "'" + settingPicture.title + "' set as wallpaper.", Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(), "Couldn't set the wallpaper.", Toast.LENGTH_SHORT).show();
 			}

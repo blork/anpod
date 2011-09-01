@@ -31,7 +31,7 @@ import com.blork.anpod.activity.fragments.TitlesDetailsFragment;
 public class DetailsFragmentPagerActivity extends FragmentActivity {
 	MyAdapter mAdapter;
 	ViewPager mPager;
-	public static int viewed = 0;
+	public static boolean first;
 
 	@Override
 	public void onAttachedToWindow() {
@@ -43,6 +43,7 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+				
 		setContentView(R.layout.fragment_pager);
 		mAdapter = new MyAdapter(getSupportFragmentManager());
 
@@ -56,10 +57,9 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onResume() {
 		super.onPause();
-		
-		viewed = 0;
+		first = true;
 	}
 
 

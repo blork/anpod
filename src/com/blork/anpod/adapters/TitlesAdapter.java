@@ -28,6 +28,7 @@ public class TitlesAdapter extends EndlessPictureThumbnailAdapter {
 
 			if (HomeActivity.pictures.isEmpty()) {
 				results = PictureFactory.load();
+				PictureFactory.saveAll(activity, results);
 			} else {
 				int index = HomeActivity.pictures.size() - 1;
 				int pictureId = HomeActivity.pictures.get(index).id;
@@ -39,7 +40,6 @@ public class TitlesAdapter extends EndlessPictureThumbnailAdapter {
 				return false;
 			}
 			
-			//PictureFactory.saveAll(activity, results);
 			
 			HomeActivity.pictures.addAll(results);		
 			return true;

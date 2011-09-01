@@ -66,7 +66,7 @@ public class PictureFactory {
 	 */
 	public static List<Picture> getLocalPictures(Context ctx) {
 		List<Picture> pictures = new ArrayList<Picture>();
-
+		
 		// Form an array specifying which columns to return. 
 		String[] projection = new String[] {
 				PicturesContentProvider.ID,
@@ -82,7 +82,7 @@ public class PictureFactory {
 		ContentResolver resolver = ctx.getContentResolver();
 
 		// Make the query. 
-		Cursor cursor =  resolver.query(
+		Cursor cursor = resolver.query(
 				PicturesContentProvider.CONTENT_URI,
 				projection, // Which columns to return 
 				null,       // Which rows to return (all rows)
@@ -279,8 +279,8 @@ public class PictureFactory {
 	 */
 	public static int saveAll(Context context, List<Picture> pictures) {
 		int count = 0;
-
 		for (Picture p: pictures) {
+			Log.e("saving", p.title);
 			Uri uri = p.save(context);
 			if (uri != null) {
 				count++;

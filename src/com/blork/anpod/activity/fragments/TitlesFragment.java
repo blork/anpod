@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 public class TitlesFragment extends ResultsFragment {
 
 	private com.blork.anpod.activity.fragments.TitlesFragment.UpdateReceiver updateReceiver;
-	private boolean isPro = false;
+	//private boolean isPro = false;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,38 +48,32 @@ public class TitlesFragment extends ResultsFragment {
 		getActivity().registerReceiver(updateReceiver, new IntentFilter(
 				AnpodService.ACTION_FINISHED_UPDATE));
 
+		Log.e("", "View_Image");
+		Bundle extras = getActivity().getIntent().getExtras();
+		if (extras != null && extras.containsKey("view_image")) {
+			showDetails(extras.getInt("view_image"));
+			getActivity().getIntent().removeExtra("view_image");
+		}
 	}
 
 
 	@Override
 	public void listSetup() {
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		isPro = settings.getBoolean("pro", false);
 
 		HomeActivity.pictures = PictureFactory.getLocalPictures(getActivity());
 
 		thumbs = new PictureThumbnailAdapter(
-				getActivity().getApplicationContext(), 
+				getActivity(), 
 				R.layout.list_item, 
 				HomeActivity.pictures
 		);
 
-		if (!isPro) {
-			AdvertisingAdapter adAdapter = new AdvertisingAdapter(getActivity(), thumbs);
-			tAdapter = new ThumbnailAdapter(
-					getActivity(), 
-					adAdapter, 
-					cache, 
-					IMAGE_IDS
-			);
-		} else {
-			tAdapter = new ThumbnailAdapter(
-					getActivity(), 
-					thumbs, 
-					cache, 
-					IMAGE_IDS
-			);
-		}
+		tAdapter = new ThumbnailAdapter(
+				getActivity(), 
+				thumbs, 
+				cache, 
+				IMAGE_IDS
+		);
 
 		etAdapter = new TitlesAdapter(
 				getActivity(), tAdapter
@@ -115,10 +110,10 @@ public class TitlesFragment extends ResultsFragment {
 	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		if (!isPro) {
-			showDetails(position - ((position / AdvertisingAdapter.AD_AMOUNT) + 1));
-		} else {
-			showDetails(position);
-		}
+		//		if (!isPro) {
+		//			showDetails(position - ((position / AdvertisingAdapter.AD_AMOUNT) + 1));
+		//		} else {
+		showDetails(position);
+		//		}
 	}
 }

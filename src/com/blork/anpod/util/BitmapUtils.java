@@ -16,10 +16,14 @@
 
 package com.blork.anpod.util;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -31,11 +35,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -120,13 +127,24 @@ public class BitmapUtils {
 				File cacheFile = null;
 				if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 					Log.d("", "creating cache file");
-					cacheFile = new File(
-							Environment.getExternalStorageDirectory()
-							+ File.separator + "Android"
-							+ File.separator + "data"
-							+ File.separator + "com.blork.anpod"
-							+ File.separator + "cache"
-							+ File.separator + toSlug(name) + ".jpg");
+
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+					if (prefs.getBoolean("archive", false)) {
+						cacheFile = new File(
+								Environment.getExternalStorageDirectory() 
+								+ File.separator + "APOD" 
+								+ File.separator + toSlug(name) + ".jpg");
+					} else {
+						cacheFile = new File(
+								Environment.getExternalStorageDirectory()
+								+ File.separator + "Android"
+								+ File.separator + "data"
+								+ File.separator + "com.blork.anpod"
+								+ File.separator + "cache"
+								+ File.separator + toSlug(name) + ".jpg");
+					}
+
 					uri = Uri.fromFile(cacheFile);
 				} else {
 					Log.d("", "SD card not mounted");
@@ -214,21 +232,28 @@ public class BitmapUtils {
 		}.execute(url);
 	}
 
-	public static Bitmap fetchImage(Context context, Picture picture, BitmapFactory.Options decodeOptions) {
+	public static Bitmap fetchImage(Context context, Picture picture, int desiredWidth, int desiredHeight) {
 
 		// First compute the cache key and cache file path for this URL
 		File cacheFile = null;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			Log.d("", "creating cache file");
-			cacheFile = new File(
-					Environment.getExternalStorageDirectory()
-					+ File.separator + "Android"
-					+ File.separator + "data"
-					+ File.separator + "com.blork.anpod"
-					+ File.separator + "cache"
-					+ File.separator + toSlug(picture.title) + ".jpg"
-			);
-			//uri = Uri.fromFile(cacheFile);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+			if (prefs.getBoolean("archive", false)) {
+				cacheFile = new File(
+						Environment.getExternalStorageDirectory() 
+						+ File.separator + "APOD" 
+						+ File.separator + toSlug(picture.title) + ".jpg");
+			} else {
+				cacheFile = new File(
+						Environment.getExternalStorageDirectory()
+						+ File.separator + "Android"
+						+ File.separator + "data"
+						+ File.separator + "com.blork.anpod"
+						+ File.separator + "cache"
+						+ File.separator + toSlug(picture.title) + ".jpg");
+			}
 		} else {
 			Log.d("", "SD card not mounted");
 			Log.d("", "creating cache file");
@@ -238,15 +263,7 @@ public class BitmapUtils {
 		}
 		if (cacheFile != null && cacheFile.exists()) {
 			Log.d("", "Cache file exists, using it.");
-			Bitmap cachedBitmap = null;
-			try {
-				cachedBitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
-			} catch (OutOfMemoryError e) {
-				Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-				System.gc();
-				decodeOptions.inSampleSize += 2;
-			}
-
+			Bitmap cachedBitmap = resizeBitmap(cacheFile, desiredWidth, desiredHeight);
 			return cachedBitmap;
 		}
 
@@ -282,14 +299,7 @@ public class BitmapUtils {
 			Log.d("", "Returning bitmap image");
 			Bitmap bitmap = null;
 			// Decode the bytes and return the bitmap.
-			try {
-				bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
-			} catch (OutOfMemoryError e) {
-				Log.e(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-				System.gc();
-				decodeOptions.inSampleSize += 2;
-			}
-
+			bitmap = resizeBitmap(new ByteArrayInputStream(respBytes), desiredWidth, desiredHeight);
 			return bitmap;
 		} catch (Exception e) {
 			Log.w(TAG, "Problem while loading image: " + e.toString(), e);
@@ -359,5 +369,101 @@ public class BitmapUtils {
 		String nowhitespace = WHITESPACE.matcher(input).replaceAll("-");
 		String slug = NONLATIN.matcher(nowhitespace).replaceAll("");
 		return slug.toLowerCase(Locale.ENGLISH);
+	}
+
+	public static Bitmap resizeBitmap(File file, int desiredWidth, int desiredHeight) {
+		try {
+			return resizeBitmap(new FileInputStream(file), desiredWidth, desiredHeight);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+	}
+
+	public static Bitmap resizeBitmap(InputStream stream, int desiredWidth, int desiredHeight) {
+		// Get the source image's dimensions
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+
+		BufferedInputStream bitmapStream = new BufferedInputStream(stream);
+		bitmapStream.mark(Integer.MAX_VALUE);
+
+		BitmapFactory.decodeStream(bitmapStream, null, options);
+
+		try {
+			bitmapStream.reset();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		int srcWidth = options.outWidth;
+		int srcHeight = options.outHeight;
+
+		// Only scale if the source is big enough. This code is just trying to fit a image into a certain width.
+		if(desiredWidth > srcWidth)
+			desiredWidth = srcWidth;
+
+
+
+		// Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
+		// from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
+		int inSampleSize = 1;
+		while(srcWidth / 2 > desiredWidth){
+			srcWidth /= 2;
+			srcHeight /= 2;
+			inSampleSize *= 2;
+		}
+
+		float desiredScale = (float) desiredWidth / srcWidth;
+
+		// Decode with inSampleSize
+		options.inJustDecodeBounds = false;
+		options.inDither = false;
+		options.inSampleSize = inSampleSize;
+		options.inScaled = false;
+		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+
+		Bitmap sampledSrcBitmap;
+		try {
+			sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
+		} catch (Throwable e) {
+			try {
+				bitmapStream.reset();
+			} catch (IOException e1) {
+				e.printStackTrace();
+			}
+			options.inSampleSize *= 2;
+			try {
+				sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
+			} catch (Exception e2) {
+				return null;
+			}
+		}
+
+		// Resize
+		Matrix matrix = new Matrix();
+		matrix.postScale(desiredScale, desiredScale);
+		Bitmap scaledBitmap = Bitmap.createBitmap(sampledSrcBitmap, 0, 0, sampledSrcBitmap.getWidth(), sampledSrcBitmap.getHeight(), matrix, true);
+		sampledSrcBitmap = null;
+
+		// Save
+		return scaledBitmap;
+	}
+
+	public static Bitmap resizeBitmap(Bitmap bitmap, int desiredWidth, int desiredHeight) {
+
+		int srcWidth = bitmap.getWidth();
+		int srcHeight = bitmap.getHeight();
+
+		float desiredScale = (float) desiredWidth / srcWidth;
+
+		// Resize
+		Matrix matrix = new Matrix();
+		matrix.postScale(desiredScale, desiredScale);
+		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
+		bitmap = null;
+
+		// Save
+		return scaledBitmap;
 	}
 }

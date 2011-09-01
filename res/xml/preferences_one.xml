@@ -32,4 +32,12 @@
 			android:title="WiFi updates only"
 			android:summary="Only update the wallpaper when connected to a Wi-Fi network" />
 	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="Archiving">
+		<CheckBoxPreference
+			android:key="archive"
+			android:layout="?android:attr/preferenceLayoutChild"
+			android:title="Keep on SD"
+			android:summary="Keep an archive of images on your SD card (will be stored in /sdcard/APOD/)" />
+	</PreferenceCategory>
 </PreferenceScreen>

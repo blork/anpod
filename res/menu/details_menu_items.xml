@@ -1,30 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-     <item android:id="@+id/menu_info"
-        android:icon="@drawable/ic_menu_info_details"
-        android:title="About"
-        android:orderInCategory="1"
-        android:showAsAction="always" />
-    <item android:id="@+id/menu_save"
-        android:icon="@drawable/ic_menu_save"
-        android:title="@string/description_save_to_sd"
-        android:orderInCategory="1"
-        android:showAsAction="never"
-        android:enabled="false" />
-    <item android:id="@+id/menu_set_wallpaper"
-        android:icon="@drawable/ic_menu_set_as"
-        android:title="@string/description_set_wallpaper"
-        android:orderInCategory="1"
-        android:showAsAction="never"
-        android:enabled="false" />
-    <item android:id="@+id/menu_fullscreen"
-        android:icon="@drawable/ic_menu_gallery"
-        android:title="@string/description_fullscreen"
-        android:orderInCategory="1"
-        android:showAsAction="never"
-        android:enabled="false" />
-    <item android:id="@+id/menu_website"
-        android:title="@string/description_website"
-        android:orderInCategory="1"
-        android:showAsAction="never" />
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/menu_info"
+		android:icon="@drawable/ic_menu_info_details"
+		android:title="About"
+		android:orderInCategory="1"
+		android:showAsAction="always" />
+	<item
+		android:id="@+id/menu_save"
+		android:icon="@android:drawable/ic_menu_save"
+		android:title="@string/description_save_to_sd"
+		android:orderInCategory="1"
+		android:showAsAction="never"
+		android:enabled="false" />
+	<item
+		android:id="@+id/menu_set_wallpaper"
+		android:icon="@android:drawable/ic_menu_set_as"
+		android:title="@string/description_set_wallpaper"
+		android:orderInCategory="1"
+		android:showAsAction="never"
+		android:enabled="false" />
+	<item
+		android:id="@+id/menu_fullscreen"
+		android:icon="@android:drawable/ic_menu_gallery"
+		android:title="@string/description_fullscreen"
+		android:orderInCategory="1"
+		android:showAsAction="never"
+		android:enabled="false" />
+	<item
+		android:id="@+id/menu_open"
+		android:icon="@android:drawable/ic_menu_share"
+		android:title="@string/description_open_image"
+		android:orderInCategory="1"
+		android:showAsAction="never"
+		android:enabled="false" />
+	<item
+		android:id="@+id/menu_website"
+		android:title="@string/description_website"
+		android:orderInCategory="1"
+		android:showAsAction="never"
+		android:icon="@android:drawable/ic_menu_compass" />
 </menu>
