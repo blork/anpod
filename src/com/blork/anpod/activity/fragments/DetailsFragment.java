@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blork.anpod.R;
-import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.BitmapUtils.OnFetchCompleteListener;
@@ -284,7 +283,7 @@ abstract class DetailsFragment extends Fragment {
 
 		protected void onPostExecute(Boolean result) {
 			if (result && settingPicture != null) {
-				Toast.makeText(getActivity(), "'" + settingPicture.title + "' set as wallpaper.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(), "Picture set as wallpaper.", Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(), "Couldn't set the wallpaper.", Toast.LENGTH_SHORT).show();
 			}
