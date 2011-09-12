@@ -343,25 +343,6 @@ public class BitmapUtils {
 		}
 	}
 
-	/**
-	 * Bytes to hex string.
-	 *
-	 * @param bytes the bytes
-	 * @return the string
-	 */
-	private static String bytesToHexString(byte[] bytes) {
-		// http://stackoverflow.com/questions/332079
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < bytes.length; i++) {
-			String hex = Integer.toHexString(0xFF & bytes[i]);
-			if (hex.length() == 1) {
-				sb.append('0');
-			}
-			sb.append(hex);
-		}
-		return sb.toString();
-	}
-
 	private static final Pattern NONLATIN = Pattern.compile("[^\\w-]");
 	private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
 
@@ -451,19 +432,20 @@ public class BitmapUtils {
 	}
 
 	public static Bitmap resizeBitmap(Bitmap bitmap, int desiredWidth, int desiredHeight) {
+		try {
+			int srcWidth = bitmap.getWidth();
+			int srcHeight = bitmap.getHeight();
+			float desiredScale = (float) desiredWidth / srcWidth;
+			// Resize
+			Matrix matrix = new Matrix();
+			matrix.postScale(desiredScale, desiredScale);
+			Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
+			bitmap = null;
+			return scaledBitmap;
 
-		int srcWidth = bitmap.getWidth();
-		int srcHeight = bitmap.getHeight();
-
-		float desiredScale = (float) desiredWidth / srcWidth;
-
-		// Resize
-		Matrix matrix = new Matrix();
-		matrix.postScale(desiredScale, desiredScale);
-		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
-		bitmap = null;
-
+		} catch (Exception e) {
+			return Bitmap.createScaledBitmap(bitmap, desiredWidth, desiredHeight, false);
+		}
 		// Save
-		return scaledBitmap;
 	}
 }
