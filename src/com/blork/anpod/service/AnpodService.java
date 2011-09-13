@@ -66,7 +66,7 @@ public class AnpodService extends Service implements Runnable{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.e("", "starting service");
 
-		if (intent != null) {
+		if (intent != null && intent.getExtras() != null) {
 			forceRun = intent.hasExtra("force_run");
 		} else {
 			forceRun = false;
@@ -76,6 +76,8 @@ public class AnpodService extends Service implements Runnable{
 		wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "apod");
 		wakelock.acquire();
 
+		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
 		new Thread(this).start();
 
 		return START_STICKY;
@@ -84,11 +86,10 @@ public class AnpodService extends Service implements Runnable{
 
 	@Override
 	public void run() {
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if (!Utils.isDataEnabled(this)) {
+		// if background data is off, and this update is in the background, quit.
+		if (!Utils.isDataEnabled(this) && !forceRun) {
 			finish();
 			return;
 		}
@@ -96,22 +97,26 @@ public class AnpodService extends Service implements Runnable{
 		notify = prefs.getBoolean("notifications_enabled", false);
 		wallpaper = prefs.getBoolean("set_wallpaper", false);
 
-
 		boolean updates = prefs.getBoolean("updates_enabled", false);
 		boolean wifi_only = prefs.getBoolean("wifi", false);
 
+		// if updates are disabled, and we are running in the background, quit.
 		if (!updates && !forceRun) {
 			finish();
 			return;
 		}
 
-
-		if (Utils.isNetworkConnected(this)) {
-			if (wifi_only && !Utils.isWiFiConnected(this)) {
-				finish();
-				return;
-			} 
+		// if no network connection, quit.
+		if (!Utils.isNetworkConnected(this)) {
+			finish();
+			return;
 		}
+
+		// if wifi only enabled, but not connected to wi-fi, quit.
+		if (wifi_only && !Utils.isWiFiConnected(this)) {
+			finish();
+			return;
+		} 
 
 
 		//forceRun = UIUtils.isHoneycombTablet(this);
@@ -139,13 +144,13 @@ public class AnpodService extends Service implements Runnable{
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} finally {
+			if (pictures.isEmpty()) {
+				finish();
+				return;
+			}
 		}
-
-		if (pictures.isEmpty()) {
-			finish();
-			return;
-		}
-
+		
 		Picture newPicture = pictures.get(0);
 
 		Intent notificationIntent = new Intent(this, HomeActivity.class);
@@ -202,6 +207,7 @@ public class AnpodService extends Service implements Runnable{
 				wm.setBitmap(bitmap);
 			} catch (Exception e) {
 				finish();
+				return;
 			}
 		}
 

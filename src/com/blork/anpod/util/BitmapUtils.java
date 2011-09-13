@@ -442,7 +442,6 @@ public class BitmapUtils {
 			Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
 			bitmap = null;
 			return scaledBitmap;
-
 		} catch (Exception e) {
 			return Bitmap.createScaledBitmap(bitmap, desiredWidth, desiredHeight, false);
 		}

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest
 	android:installLocation="auto"
-	android:versionCode="81"
-	android:versionName="3.0.6"
+	android:versionCode="82"
+	android:versionName="3.0.7"
 	package="com.blork.anpod"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk

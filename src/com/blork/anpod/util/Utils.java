@@ -214,7 +214,11 @@ public class Utils {
 	public static boolean isWiFiConnected(Context context) {
 		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = connManager.getActiveNetworkInfo();
-
+		
+		if (info == null) {
+			return false;
+		}
+		
 		int netType = info.getType();
 		if (netType == ConnectivityManager.TYPE_WIFI) {
 			return info.isConnected();
