@@ -11,12 +11,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.blork.anpod.util.Utils;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class Receiver.
  */

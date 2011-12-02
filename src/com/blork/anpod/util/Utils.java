@@ -285,7 +285,7 @@ public class Utils {
 
 	public static void goHome(Context ctx) {
 		 Intent intent = new Intent(ctx, HomeActivity.class);
-         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
          ctx.startActivity(intent);
 	} 
 }

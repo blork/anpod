@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import android.widget.ListView;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
-import com.blork.anpod.adapters.AdvertisingAdapter;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
 import com.blork.anpod.adapters.TitlesAdapter;
 import com.blork.anpod.model.PictureFactory;
@@ -89,6 +86,7 @@ public class TitlesFragment extends ResultsFragment {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			HomeActivity.pictures.clear();
+			etAdapter.notifyDataSetChanged();
 			HomeActivity.pictures.addAll(
 					PictureFactory.getLocalPictures(
 							getActivity().getApplicationContext()

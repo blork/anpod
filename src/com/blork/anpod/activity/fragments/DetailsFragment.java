@@ -13,9 +13,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -263,15 +266,25 @@ abstract class DetailsFragment extends Fragment {
 
 			WallpaperManager wm = (WallpaperManager) getActivity().getSystemService(Context.WALLPAPER_SERVICE);
 
-			int newWidth = wm.getDesiredMinimumWidth();
-			int newHeight = wm.getDesiredMinimumHeight();
+			int desiredWidth = wm.getDesiredMinimumWidth();
+			int desiredHeight = wm.getDesiredMinimumHeight();
 
+
+			if (desiredHeight < 0 || desiredWidth < 0) {
+				WindowManager window = getActivity().getWindowManager();
+				Display display = window.getDefaultDisplay();
+				desiredWidth = display.getWidth() * 2;
+				desiredHeight = display.getHeight();
+			}
+			
+			Log.e("APOD", desiredWidth+""+desiredHeight);
+			
 			try {
 				wm.setBitmap(
 						BitmapUtils.resizeBitmap(
 								getActivity().getContentResolver().openInputStream(settingPicture.uri), 
-								newWidth, 
-								newHeight
+								desiredWidth, 
+								desiredHeight
 						)
 				);
 			} catch (Exception e) {
@@ -282,7 +295,7 @@ abstract class DetailsFragment extends Fragment {
 		}
 
 		protected void onPostExecute(Boolean result) {
-			if (result && settingPicture != null) {
+			if (result && settingPicture != null && getActivity() != null) {
 				Toast.makeText(getActivity(), "Picture set as wallpaper.", Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(), "Couldn't set the wallpaper.", Toast.LENGTH_SHORT).show();

@@ -32,11 +32,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>ActionBarSherlock_src</name>
-			<type>2</type>
-			<locationURI>_android_ActionBarSherlock_a2b296ea/src</locationURI>
-		</link>
-		<link>
 			<name>adapter_src</name>
 			<type>2</type>
 			<locationURI>_android_adapter_bb6ca34f/src</locationURI>
@@ -52,24 +47,9 @@
 			<locationURI>_android_cache_5a0af82/src</locationURI>
 		</link>
 		<link>
-			<name>endless_src</name>
-			<type>2</type>
-			<locationURI>_android_endless_a03e44f4/src</locationURI>
-		</link>
-		<link>
-			<name>pulltorefresh_src</name>
-			<type>2</type>
-			<locationURI>_android_pulltorefresh_3751e35b/src</locationURI>
-		</link>
-		<link>
 			<name>task_src</name>
 			<type>2</type>
 			<locationURI>_android_task_363585/src</locationURI>
-		</link>
-		<link>
-			<name>thumbnail_src</name>
-			<type>2</type>
-			<locationURI>_android_thumbnail_4f4e50ec/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

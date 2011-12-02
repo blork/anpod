@@ -237,7 +237,7 @@ public class BitmapUtils {
 		// First compute the cache key and cache file path for this URL
 		File cacheFile = null;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			Log.d("", "creating cache file");
+			Log.e("APOD", "creating cache file");
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 			if (prefs.getBoolean("archive", false)) {
@@ -255,20 +255,20 @@ public class BitmapUtils {
 						+ File.separator + toSlug(picture.title) + ".jpg");
 			}
 		} else {
-			Log.d("", "SD card not mounted");
-			Log.d("", "creating cache file");
+			Log.e("APOD", "SD card not mounted");
+			Log.e("APOD", "creating cache file");
 			cacheFile = new File(
 					context.getCacheDir() + File.separator + toSlug(picture.title) + ".jpg");
 			//uri = Uri.fromFile(cacheFile);
 		}
 		if (cacheFile != null && cacheFile.exists()) {
-			Log.d("", "Cache file exists, using it.");
+			Log.e("APOD", "Cache file exists, using it.");
 			Bitmap cachedBitmap = resizeBitmap(cacheFile, desiredWidth, desiredHeight);
 			return cachedBitmap;
 		}
 
 		try {
-			Log.d("", "Not cached, fetching");
+			Log.e("APOD", "Not cached, fetching");
 			// TODO: check for HTTP caching headers
 			final HttpClient httpClient = SyncUtils.getHttpClient(
 					context.getApplicationContext());
@@ -282,7 +282,7 @@ public class BitmapUtils {
 
 			final byte[] respBytes = EntityUtils.toByteArray(entity);
 
-			Log.d("", "Writing cache file");
+			Log.e("APOD", "Writing cache file");
 			try {
 				cacheFile.getParentFile().mkdirs();
 				cacheFile.createNewFile();
@@ -290,19 +290,20 @@ public class BitmapUtils {
 				fos.write(respBytes);
 				fos.close();
 			} catch (FileNotFoundException e) {
-				Log.w(TAG, "Error writing to bitmap cache: " + cacheFile.toString(), e);
+				Log.e("APOD", "Error writing to bitmap cache: " + cacheFile.toString(), e);
 			} catch (IOException e) {
-				Log.w(TAG, "Error writing to bitmap cache: " + cacheFile.toString(), e);
+				Log.e("APOD", "Error writing to bitmap cache: " + cacheFile.toString(), e);
 			}
 
-
-			Log.d("", "Returning bitmap image");
 			Bitmap bitmap = null;
 			// Decode the bytes and return the bitmap.
+			Log.e("APOD", "Reiszing bitmap image");
+
 			bitmap = resizeBitmap(new ByteArrayInputStream(respBytes), desiredWidth, desiredHeight);
+			Log.e("APOD", "Returning bitmap image");
 			return bitmap;
 		} catch (Exception e) {
-			Log.w(TAG, "Problem while loading image: " + e.toString(), e);
+			Log.e("APOD", "Problem while loading image: " + e.toString(), e);
 		}
 
 		return null;
@@ -361,74 +362,82 @@ public class BitmapUtils {
 	}
 
 	public static Bitmap resizeBitmap(InputStream stream, int desiredWidth, int desiredHeight) {
-		// Get the source image's dimensions
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-
-		BufferedInputStream bitmapStream = new BufferedInputStream(stream);
-		bitmapStream.mark(Integer.MAX_VALUE);
-
-		BitmapFactory.decodeStream(bitmapStream, null, options);
-
 		try {
-			bitmapStream.reset();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			// Get the source image's dimensions
+			Log.e("APOD", "Getting dimensions");
 
-		int srcWidth = options.outWidth;
-		int srcHeight = options.outHeight;
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
 
-		// Only scale if the source is big enough. This code is just trying to fit a image into a certain width.
-		if(desiredWidth > srcWidth)
-			desiredWidth = srcWidth;
+			BufferedInputStream bitmapStream = new BufferedInputStream(stream);
+			bitmapStream.mark(Integer.MAX_VALUE);
 
+			Log.e("APOD", "Decoding image (for dimensions)");
+			BitmapFactory.decodeStream(bitmapStream, null, options);
 
-
-		// Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
-		// from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
-		int inSampleSize = 1;
-		while(srcWidth / 2 > desiredWidth){
-			srcWidth /= 2;
-			srcHeight /= 2;
-			inSampleSize *= 2;
-		}
-
-		float desiredScale = (float) desiredWidth / srcWidth;
-
-		// Decode with inSampleSize
-		options.inJustDecodeBounds = false;
-		options.inDither = false;
-		options.inSampleSize = inSampleSize;
-		options.inScaled = false;
-		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-
-		Bitmap sampledSrcBitmap;
-		try {
-			sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
-		} catch (Throwable e) {
 			try {
 				bitmapStream.reset();
-			} catch (IOException e1) {
-				e.printStackTrace();
+			} catch (IOException e) {
+				Log.e("APOD", "Can't reset bitstream", e);
 			}
-			options.inSampleSize *= 2;
-			try {
-				sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
-			} catch (Exception e2) {
-				return null;
+
+			int srcWidth = options.outWidth;
+			int srcHeight = options.outHeight;
+
+			Log.e("APOD", "Image is " + srcWidth + "x" + srcHeight);
+			Log.e("APOD", "Desired size is " + desiredWidth + "x" + desiredHeight);
+
+
+			// Only scale if the source is big enough. This code is just trying to fit a image into a certain width.
+			if(desiredWidth > srcWidth) {
+				desiredWidth = srcWidth;
 			}
+
+			// Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
+			// from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
+			int inSampleSize = 1;
+			Log.e("APOD", (srcWidth / 2 > desiredWidth)+"");
+
+			if (desiredWidth > 0) {
+				while(srcWidth / 2 > desiredWidth){
+					srcWidth /= 2;
+					srcHeight /= 2;
+					inSampleSize *= 2;
+				}
+			}
+
+			Log.e("APOD", "Best sample size is " +inSampleSize);
+
+			float desiredScale = (float) desiredWidth / srcWidth;
+
+			Log.e("APOD", "Desired scale is " + desiredScale);
+
+
+			// Decode with inSampleSize
+			options.inJustDecodeBounds = false;
+			options.inDither = false;
+			options.inSampleSize = inSampleSize;
+			options.inScaled = false;
+			options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+			Log.e("APOD", "Decoding stream (for reals)");
+			Bitmap sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
+
+			Log.e("APOD", "Resizing with matrix");
+			// Resize
+			Matrix matrix = new Matrix();
+			matrix.postScale(desiredScale, desiredScale);
+			Bitmap scaledBitmap = Bitmap.createBitmap(sampledSrcBitmap, 0, 0, sampledSrcBitmap.getWidth(), sampledSrcBitmap.getHeight(), matrix, true);
+			sampledSrcBitmap = null;
+
+			Log.e("APOD", "Returning scaled bitmap");
+			// Save
+			return scaledBitmap;
+		} catch (OutOfMemoryError e) {
+			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
+		} catch (NullPointerException e) {
+			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
 		}
-
-		// Resize
-		Matrix matrix = new Matrix();
-		matrix.postScale(desiredScale, desiredScale);
-		Bitmap scaledBitmap = Bitmap.createBitmap(sampledSrcBitmap, 0, 0, sampledSrcBitmap.getWidth(), sampledSrcBitmap.getHeight(), matrix, true);
-		sampledSrcBitmap = null;
-
-		// Save
-		return scaledBitmap;
 	}
 
 	public static Bitmap resizeBitmap(Bitmap bitmap, int desiredWidth, int desiredHeight) {
@@ -442,8 +451,8 @@ public class BitmapUtils {
 			Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
 			bitmap = null;
 			return scaledBitmap;
-		} catch (Exception e) {
-			return Bitmap.createScaledBitmap(bitmap, desiredWidth, desiredHeight, false);
+		} catch (OutOfMemoryError e) {
+			return resizeBitmap(bitmap, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
 		}
 		// Save
 	}
