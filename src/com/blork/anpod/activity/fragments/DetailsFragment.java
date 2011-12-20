@@ -84,7 +84,7 @@ abstract class DetailsFragment extends Fragment {
 				//				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
 				//				getActivity().getSupportActionBar().setTitle(picture.title);
 				//				getActivity().getSupportActionBar().setSubtitle(picture.credit);
-				getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
