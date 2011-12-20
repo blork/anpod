@@ -1,32 +1,11 @@
 <resources>
     <style name="Theme.ApodTheme" parent="@style/Theme.Sherlock">
 		<item name="abDisplayOptions">showHome|useLogo</item>
-		<item name="abBackground">@drawable/actionbar_gradient</item>
-		<item name="abDivider">@color/list_selected</item>
 		<item name="abLogo">@drawable/title_logo_default</item>
-		<item name="actionBarSize">50dp</item>
+<!-- 		<item name="actionBarSize">50dp</item>
+		<item name="abBackground">@drawable/actionbar_gradient</item>
+		<item name="abDivider">@color/list_selected</item> -->
     </style>
-
-    
-    <!-- Base application theme is the default theme. -->
-    <style name="Theme" parent="android:style/Theme" />
-
-    <!-- Variation on the Light theme that turns off the title -->
-    <style name="Theme.IOSched" parent="android:style/Theme.Light">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-
-        <!-- custom attributes -->
-        <item name="textHeaderMaxLines">3</item>
-        <item name="trackAbstractMaxLines">2</item>
-
-    </style>
-
-    <!-- Start with the Holographic Light theme -->
-    <style name="Theme.IOSched.Home" parent="style/Theme.IOSched">
-        <item name="android:windowBackground">@drawable/background_noise</item>
-    </style>
-
 
     <style name="ListProgressIndicator" parent="@android:style/Widget.ProgressBar.Large">
         <item name="android:layout_width">wrap_content</item>

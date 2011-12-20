@@ -4,8 +4,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
-    android:screenOrientation="portrait"
-    android:background="@drawable/list_bg_gradient">
+    android:screenOrientation="portrait">
 
 	<LinearLayout
 		android:orientation="vertical"
@@ -17,9 +16,6 @@
 			android:layout_weight="1"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-		    android:divider="#111"
-		    android:dividerHeight="1px"
-		    android:cacheColorHint="#00000000"
 		    android:smoothScrollbar="true" />
 		<LinearLayout
 		    android:id="@android:id/empty"
