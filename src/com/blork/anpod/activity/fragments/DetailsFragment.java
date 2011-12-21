@@ -41,11 +41,16 @@ import com.blork.anpod.util.Utils;
 
 abstract class DetailsFragment extends Fragment {
 	public List<Picture> pictures;
+	private Picture picture;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
+	
+		if (pictures != null && !pictures.isEmpty()) {
+			picture = pictures.get(getShownIndex());
+		}
 	}
 
 	/**
@@ -71,15 +76,10 @@ abstract class DetailsFragment extends Fragment {
 		// fragment directly in the containing UI.
 		View detailsFrame = getActivity().findViewById(R.id.details);
 		boolean isDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-		if (isDualPane) {
-			setHasOptionsMenu(true);
-		}
 
 		final View details = inflater.inflate(R.layout.details_fragment, container, false);
 
 		if (pictures != null && !pictures.isEmpty()) {
-
-			final Picture picture = pictures.get(getShownIndex());
 
 			if (!isDualPane) {
 				//				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
@@ -188,7 +188,6 @@ abstract class DetailsFragment extends Fragment {
 		if(pictures.size() < getShownIndex())
 			return false;
 		
-		final Picture picture = pictures.get(getShownIndex());
 		switch (item.getItemId()) {
 		case R.id.menu_save:
 			//Utils.moveToNiceFolder(picture.uri);
@@ -243,7 +242,6 @@ abstract class DetailsFragment extends Fragment {
 			return;
 		}
 
-		final Picture picture = pictures.get(getShownIndex());
 
 		if(picture != null && picture.uri != null) {
 			menu.findItem(R.id.menu_save).setEnabled(true);
