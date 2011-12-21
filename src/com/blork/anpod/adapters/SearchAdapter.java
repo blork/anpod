@@ -3,7 +3,6 @@ package com.blork.anpod.adapters;
 import java.util.List;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 
 import com.blork.anpod.R;

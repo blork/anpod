@@ -26,7 +26,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Window;
 
 import com.blork.anpod.R;
-import com.blork.anpod.activity.fragments.TitlesDetailsFragment;
+import com.blork.anpod.activity.fragments.HomeDetailFragment;
 
 public class DetailsFragmentPagerActivity extends FragmentActivity {
 	MyAdapter mAdapter;
@@ -75,7 +75,7 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			return TitlesDetailsFragment.newInstance(position);
+			return HomeDetailFragment.newInstance(position);
 		}
 	}
 }

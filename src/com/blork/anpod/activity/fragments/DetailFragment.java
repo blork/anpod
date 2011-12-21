@@ -38,7 +38,7 @@ import com.blork.anpod.util.Utils;
  * item.
  */
 
-abstract class DetailsFragment extends Fragment {
+abstract class DetailFragment extends Fragment {
 	protected Picture picture;
 
 	@Override

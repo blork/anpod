@@ -29,7 +29,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Window;
 
 import com.blork.anpod.R;
-import com.blork.anpod.activity.fragments.SearchDetailsFragment;
+import com.blork.anpod.activity.fragments.SearchDetailFragment;
 
 public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
 	MyAdapter mAdapter;
@@ -72,7 +72,7 @@ public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			return SearchDetailsFragment.newInstance(position);
+			return SearchDetailFragment.newInstance(position);
 		}
 	}
 

@@ -36,21 +36,13 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 
-import android.R;
-import android.app.IntentService;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 // TODO: Auto-generated Javadoc
 /**

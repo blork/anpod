@@ -16,7 +16,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
-import com.blork.anpod.api.Saveable;
 import com.blork.anpod.provider.PicturesContentProvider;
 import com.blork.anpod.util.Utils;
 
@@ -24,7 +23,7 @@ import com.blork.anpod.util.Utils;
 /**
  * The Class Picture.
  */
-public class Picture implements Saveable {
+public class Picture {
 
 	/** The apod ID. */
 	public int id;
@@ -93,7 +92,7 @@ public class Picture implements Saveable {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws UnsupportedSavingException the unsupported saving exception
 	 */
-	public void saveImage(Context context, boolean internal, boolean sd) throws IOException, UnsupportedSavingException {
+	public void saveImage(Context context, boolean internal, boolean sd) throws IOException {
 		
 		if(internal){
 			Log.i(Utils.TAG, "Saving image to internal storage");
@@ -153,10 +152,7 @@ public class Picture implements Saveable {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.blork.anpod.api.Saveable#save()
-	 */
-	@Override
+
 	public Uri save(Context context) {
 		Log.d("", "saving " + this.title);
 		ContentValues values = new ContentValues();

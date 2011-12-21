@@ -28,11 +28,13 @@ import com.blork.anpod.activity.HomeActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 
 // TODO: Auto-generated Javadoc
@@ -214,11 +216,11 @@ public class Utils {
 	public static boolean isWiFiConnected(Context context) {
 		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = connManager.getActiveNetworkInfo();
-		
+
 		if (info == null) {
 			return false;
 		}
-		
+
 		int netType = info.getType();
 		if (netType == ConnectivityManager.TYPE_WIFI) {
 			return info.isConnected();
@@ -250,14 +252,14 @@ public class Utils {
 	public static void copyFileToUserSpace(Context context, Uri uri) throws IOException, URISyntaxException { 
 		FileInputStream from = null; 
 		FileOutputStream to = null; 
-		
+
 		File fromFile = new File(new URI(uri.toString()));
-		
+
 		File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "APOD");
 		dir.mkdir();
 
 		File toFile = new File(dir + File.separator + fromFile.getName());
-		
+
 		try { 
 			from = new FileInputStream(fromFile); 
 			to = new FileOutputStream(toFile); 
@@ -272,20 +274,47 @@ public class Utils {
 				} catch (IOException e) { 
 					; 
 				} 
-				if (to != null) 
-					try { 
-						to.close(); 
-					} catch (IOException e) { 
-						; 
-					} 
+			if (to != null) 
+				try { 
+					to.close(); 
+				} catch (IOException e) { 
+					; 
+				} 
 		} 
 		Uri newUri = Uri.fromFile(toFile);
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
 	}
 
 	public static void goHome(Context ctx) {
-		 Intent intent = new Intent(ctx, HomeActivity.class);
-         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-         ctx.startActivity(intent);
+		Intent intent = new Intent(ctx, HomeActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		ctx.startActivity(intent);
 	} 
+
+
+	/**
+	 * Checks if is honeycomb.
+	 *
+	 * @return true, if is honeycomb
+	 */
+	public static boolean isHoneycomb() {
+		// Can use static final constants like HONEYCOMB, declared in later versions
+		// of the OS since they are inlined at compile time. This is guaranteed behavior.
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+	}
+
+	/**
+	 * Checks if is honeycomb tablet.
+	 *
+	 * @param context the context
+	 * @return true, if is honeycomb tablet
+	 */
+	public static boolean isHoneycombTablet(Context context) {
+		// Can use static final constants like HONEYCOMB, declared in later versions
+		// of the OS since they are inlined at compile time. This is guaranteed behavior.
+		return isHoneycomb() && (context.getResources().getConfiguration().screenLayout
+				& Configuration.SCREENLAYOUT_SIZE_MASK)
+				== Configuration.SCREENLAYOUT_SIZE_XLARGE;
+	}
+
 }

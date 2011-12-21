@@ -11,9 +11,8 @@ import android.os.Bundle;
  * item.
  */
 
-public class TitlesDetailsFragment extends DetailsFragment {
-	
-	public TitlesDetailsFragment(Picture picture) {
+public class HomeDetailFragment extends DetailFragment {
+	public HomeDetailFragment(Picture picture) {
 		this.picture = picture;
 	}
 
@@ -24,10 +23,10 @@ public class TitlesDetailsFragment extends DetailsFragment {
 	 * @param index the index
 	 * @return the details fragment
 	 */
-	public static TitlesDetailsFragment newInstance(int index) {
+	public static HomeDetailFragment newInstance(int index) {
 		Picture picture = HomeActivity.pictures.get(index);
 
-		TitlesDetailsFragment f = new TitlesDetailsFragment(picture);
+		HomeDetailFragment f = new HomeDetailFragment(picture);
 		
 		// Supply index input as an argument.
 		Bundle args = new Bundle();

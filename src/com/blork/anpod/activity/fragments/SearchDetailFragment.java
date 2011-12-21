@@ -11,8 +11,8 @@ import com.blork.anpod.model.Picture;
  * item.
  */
 
-public class SearchDetailsFragment extends DetailsFragment {
-	public SearchDetailsFragment(Picture picture) {
+public class SearchDetailFragment extends DetailFragment {
+	public SearchDetailFragment(Picture picture) {
 		this.picture = picture;
 	}
 
@@ -23,10 +23,10 @@ public class SearchDetailsFragment extends DetailsFragment {
 	 * @param index the index
 	 * @return the details fragment
 	 */
-	public static SearchDetailsFragment newInstance(int index) {		
+	public static SearchDetailFragment newInstance(int index) {		
 		Picture picture = SearchActivity.pictures.get(index);
 
-		SearchDetailsFragment f = new SearchDetailsFragment(picture);
+		SearchDetailFragment f = new SearchDetailFragment(picture);
 
 		// Supply index input as an argument.
 		Bundle args = new Bundle();

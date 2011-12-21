@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <fragment 
-    		android:name="com.blork.anpod.activity.fragments.SearchFragment"
+    		android:name="com.blork.anpod.activity.fragments.SearchMasterFragment"
             android:id="@+id/titles"
             android:layout_width="match_parent" android:layout_height="match_parent" />
 </FrameLayout>

@@ -19,9 +19,9 @@ import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.service.AnpodService;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
-public class TitlesFragment extends ResultsFragment {
+public class HomeMasterFragment extends MasterFragment {
 
-	private com.blork.anpod.activity.fragments.TitlesFragment.UpdateReceiver updateReceiver;
+	private com.blork.anpod.activity.fragments.HomeMasterFragment.UpdateReceiver updateReceiver;
 	//private boolean isPro = false;
 
 	@Override

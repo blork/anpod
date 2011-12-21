@@ -21,7 +21,7 @@ import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
-public class SearchFragment extends ResultsFragment {
+public class SearchMasterFragment extends MasterFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -64,11 +64,11 @@ public class SearchFragment extends ResultsFragment {
             getListView().setItemChecked(index, true);
 
             // Check what fragment is currently shown, replace if needed.
-            SearchDetailsFragment details = (SearchDetailsFragment) getFragmentManager().findFragmentById(R.id.details);
+            SearchDetailFragment details = (SearchDetailFragment) getFragmentManager().findFragmentById(R.id.details);
             
             if (details == null || details.getShownIndex() != index) {
                 // Make new fragment to show this selection.
-                details = SearchDetailsFragment.newInstance(index);
+                details = SearchDetailFragment.newInstance(index);
 
                 // Execute a transaction, replacing any existing fragment
                 // with this one inside the frame.

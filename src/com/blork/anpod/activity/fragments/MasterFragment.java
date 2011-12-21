@@ -22,7 +22,6 @@ import com.blork.anpod.activity.UserPreferenceActivity;
 import com.blork.anpod.activity.UserPreferenceActivityV11;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
 import com.blork.anpod.service.AnpodService;
-import com.blork.anpod.util.UIUtils;
 import com.blork.anpod.util.Utils;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.endless.EndlessAdapter;
@@ -37,7 +36,7 @@ import com.commonsware.cwac.thumbnail.ThumbnailMessage;
  * data to the user as appropriate based on the currrent UI layout.
  */
 
-public abstract class ResultsFragment extends ListFragment {    	
+public abstract class MasterFragment extends ListFragment {    	
 	
 	/** The Constant IMAGE_IDS. */
 	protected static final int[] IMAGE_IDS={R.id.item_image};
@@ -150,11 +149,11 @@ public abstract class ResultsFragment extends ListFragment {
             getListView().setItemChecked(index, true);
 
             // Check what fragment is currently shown, replace if needed.
-            TitlesDetailsFragment details = (TitlesDetailsFragment) getFragmentManager().findFragmentById(R.id.details);
+            HomeDetailFragment details = (HomeDetailFragment) getFragmentManager().findFragmentById(R.id.details);
             
             if (details == null || details.getShownIndex() != index) {
                 // Make new fragment to show this selection.
-                details = TitlesDetailsFragment.newInstance(index);
+                details = HomeDetailFragment.newInstance(index);
 
                 // Execute a transaction, replacing any existing fragment
                 // with this one inside the frame.
@@ -179,7 +178,7 @@ public abstract class ResultsFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.default_menu_items, menu);
-		if (UIUtils.isHoneycomb()) {
+		if (Utils.isHoneycomb()) {
 			SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 			SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
@@ -199,7 +198,7 @@ public abstract class ResultsFragment extends ListFragment {
 			getActivity().startService(serviceIntent);
 			return true;
 		case R.id.menu_prefs:
-			if (UIUtils.isHoneycombTablet(getActivity())) {
+			if (Utils.isHoneycombTablet(getActivity())) {
 				getActivity().startActivity(new Intent(getActivity(), UserPreferenceActivityV11.class));
 			} else {
 				getActivity().startActivity(new Intent(getActivity(), UserPreferenceActivity.class));
