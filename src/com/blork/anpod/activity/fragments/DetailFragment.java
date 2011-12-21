@@ -42,23 +42,23 @@ abstract class DetailFragment extends Fragment {
 	protected Picture picture;
 	private Bitmap bitmap;
 	private ImageView imageView;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
 
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		
+
 		if (imageView != null) {
 			imageView.invalidate();
 			imageView = null;
 		}
-		
+
 		if (bitmap != null) {
 			bitmap.recycle();
 			bitmap = null;
@@ -102,7 +102,7 @@ abstract class DetailFragment extends Fragment {
 				//				getActivity().getSupportActionBar().setSubtitle(picture.credit);
 				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
-			
+
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 			decodeOptions.inSampleSize = 2;
 			BitmapUtils.fetchImage(
@@ -117,13 +117,8 @@ abstract class DetailFragment extends Fragment {
 							try {
 								bitmap = result;
 								getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
-
 								imageView.setImageBitmap(bitmap);
-
-								//result.recycle();
-								
 								imageView.setVisibility(View.VISIBLE);
-								//details.findViewById(R.id.image_progress).setVisibility(View.GONE);
 
 								imageView.setOnLongClickListener(new OnLongClickListener() {
 									@Override
@@ -146,7 +141,7 @@ abstract class DetailFragment extends Fragment {
 
 
 					}
-			);
+					);
 
 			//TextView handle = (TextView)details.findViewById(R.id.handle);
 
@@ -155,18 +150,18 @@ abstract class DetailFragment extends Fragment {
 
 
 			String html = "<style>" +
-			"* { " +
-			"text-align:justify; " +
-			"color:#fff; " +
-			"line-height:1.5em; " +
-			"} " +
-			"a { " +
-			"color:#EEE; " +
-			"} " +
-			"h3, h4 {" +
-			"text-align:center;" +
-			"}" +
-			"</style>" + "<h3>" + picture.title + "</h3>" + picture.info.replace("\n", " ");
+					"* { " +
+					"text-align:justify; " +
+					"color:#fff; " +
+					"line-height:1.5em; " +
+					"} " +
+					"a { " +
+					"color:#EEE; " +
+					"} " +
+					"h3, h4 {" +
+					"text-align:center;" +
+					"}" +
+					"</style>" + "<h3>" + picture.title + "</h3>" + picture.info.replace("\n", " ");
 
 			text.loadData(html,"text/html", "utf-8");
 			text.setBackgroundColor(0);
@@ -277,17 +272,17 @@ abstract class DetailFragment extends Fragment {
 				desiredWidth = display.getWidth() * 2;
 				desiredHeight = display.getHeight();
 			}
-			
+
 			Log.d("APOD", desiredWidth+""+desiredHeight);
-			
+
 			try {
 				wm.setBitmap(
-						BitmapUtils.resizeBitmap(
-								context.getContentResolver().openInputStream(settingPicture.uri), 
-								desiredWidth, 
-								desiredHeight
+					BitmapUtils.resizeBitmap(
+							context.getContentResolver().openInputStream(settingPicture.uri), 
+							desiredWidth, 
+							desiredHeight
 						)
-				);
+					);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;

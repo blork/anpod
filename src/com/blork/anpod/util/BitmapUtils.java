@@ -43,7 +43,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.blork.anpod.model.Picture;
@@ -115,13 +114,12 @@ public class BitmapUtils {
 
 			@Override
 			protected Bitmap doInBackground(String... params) {
+				Bitmap bitmap = null;
+
 				String slug = toSlug(name);
 				Log.d("", "Fetching image");
 
 				final String url = params[0];
-				if (TextUtils.isEmpty(url)) {
-					return null;
-				}
 
 				// First compute the cache key and cache file path for this URL
 				File cacheFile = null;
@@ -155,28 +153,26 @@ public class BitmapUtils {
 				}
 				if (cacheFile != null && cacheFile.exists()) {
 					Log.d("", "Cache file exists, using it.");
-					Bitmap cachedBitmap = null;
-					while (cachedBitmap == null) {
+					while (bitmap == null) {
 						try {
-							cachedBitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
+							bitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
 						} catch (OutOfMemoryError e) {
 							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-							if (cachedBitmap != null)
-								cachedBitmap.recycle();
-							cachedBitmap = null;
+//							if (bitmap != null)
+//								bitmap.recycle();
+							bitmap = null;
 							System.gc();
 							decodeOptions.inSampleSize += 2;
 						}
 					}
-					return cachedBitmap;
-
+					return bitmap;
 				}
 
 				try {
 					BitmapUtils.manageCache(slug, context);
 
 					Log.d("", "Not cached, fetching");
-					// TODO: check for HTTP caching headers
+
 					final HttpClient httpClient = SyncUtils.getHttpClient(
 							context.getApplicationContext());
 					final HttpResponse resp = httpClient.execute(new HttpGet(url));
@@ -212,26 +208,24 @@ public class BitmapUtils {
 
 					Log.d("", "Returning bitmap image");
 					// Decode the bytes and return the bitmap.
-					Bitmap bitmap = null;
 					while (bitmap == null) {
 						try {
 							bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
 						} catch (OutOfMemoryError e) {
 							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-							if (bitmap != null)
-								bitmap.recycle();
-							bitmap = null;
+//							if (bitmap != null)
+//								bitmap.recycle();
+//							bitmap = null;
 							System.gc();
 							decodeOptions.inSampleSize += 2;
 						}
 					}
-
-					return bitmap;
+					
 				} catch (Exception e) {
 					Log.w(TAG, "Problem while loading image: " + e.toString(), e);
 				}
-
-				return null;
+				
+				return bitmap;
 			}
 
 			@Override
@@ -435,7 +429,7 @@ public class BitmapUtils {
 			Log.d("APOD", "Resizing with matrix");
 			Log.d("APOD", "Returning scaled bitmap");
 			Bitmap resizedBitmap = matrixResize(sampledSrcBitmap, desiredScale, srcWidth, srcHeight);
-			sampledSrcBitmap.recycle();
+//			sampledSrcBitmap.recycle();
 			return resizedBitmap;
 		} catch (Throwable e) {
 			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
@@ -449,7 +443,7 @@ public class BitmapUtils {
 			float desiredScale = (float) desiredWidth / srcWidth;
 			// Resize
 			Bitmap resizedBitmap = matrixResize(bitmap, desiredScale, srcWidth, srcHeight);
-			bitmap.recycle();
+//			bitmap.recycle();
 			return resizedBitmap;
 		} catch (OutOfMemoryError e) {
 			return resizeBitmap(bitmap, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
@@ -460,7 +454,7 @@ public class BitmapUtils {
 		Matrix matrix = new Matrix();
 		matrix.postScale(desiredScale, desiredScale);
 		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
-		bitmap.recycle();
+//		bitmap.recycle();
 		bitmap = null;
 		
 		return scaledBitmap;
