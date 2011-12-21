@@ -4,7 +4,9 @@ import java.util.List;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 
+import com.blork.anpod.R;
 import com.blork.anpod.activity.SearchActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
@@ -38,7 +40,9 @@ public class SearchAdapter extends EndlessPictureThumbnailAdapter {
 			page++;
 
 			if (results.isEmpty()) {
-				Log.d("", "load failed?");
+				activity.findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+				activity.findViewById(R.id.list_progress).setVisibility(View.GONE);
+
 				return false;
 			}
 			
