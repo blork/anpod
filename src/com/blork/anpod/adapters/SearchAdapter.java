@@ -38,7 +38,7 @@ public class SearchAdapter extends EndlessPictureThumbnailAdapter {
 			page++;
 
 			if (results.isEmpty()) {
-				Log.e("", "load failed?");
+				Log.d("", "load failed?");
 				return false;
 			}
 			

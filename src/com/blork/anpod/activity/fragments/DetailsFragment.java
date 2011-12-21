@@ -185,6 +185,9 @@ abstract class DetailsFragment extends Fragment {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
+		if(pictures.size() < getShownIndex())
+			return false;
+		
 		final Picture picture = pictures.get(getShownIndex());
 		switch (item.getItemId()) {
 		case R.id.menu_save:
@@ -278,7 +281,7 @@ abstract class DetailsFragment extends Fragment {
 				desiredHeight = display.getHeight();
 			}
 			
-			Log.e("APOD", desiredWidth+""+desiredHeight);
+			Log.d("APOD", desiredWidth+""+desiredHeight);
 			
 			try {
 				wm.setBitmap(

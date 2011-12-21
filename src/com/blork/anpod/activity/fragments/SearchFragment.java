@@ -80,7 +80,7 @@ public class SearchFragment extends ResultsFragment {
 		public Boolean doInBackground(Void... params) {
 			try {
 				pictures = PictureFactory.search(query);
-				Log.e("!!!", "Loading...");
+				Log.d("!!!", "Loading...");
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -94,7 +94,7 @@ public class SearchFragment extends ResultsFragment {
 		 */
 		protected void onPostExecute(Boolean result){
 			if (result && !pictures.isEmpty()) {
-				Log.e("!!!", pictures.toString());
+				Log.d("!!!", pictures.toString());
 				SearchActivity.pictures.clear();
 				SearchActivity.pictures.addAll(pictures);
 				thumbs.notifyDataSetChanged();

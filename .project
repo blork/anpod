@@ -30,26 +30,4 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>adapter_src</name>
-			<type>2</type>
-			<locationURI>_android_adapter_bb6ca34f/src</locationURI>
-		</link>
-		<link>
-			<name>bus_src</name>
-			<type>2</type>
-			<locationURI>_android_bus_17e80/src</locationURI>
-		</link>
-		<link>
-			<name>cache_src</name>
-			<type>2</type>
-			<locationURI>_android_cache_5a0af82/src</locationURI>
-		</link>
-		<link>
-			<name>task_src</name>
-			<type>2</type>
-			<locationURI>_android_task_363585/src</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

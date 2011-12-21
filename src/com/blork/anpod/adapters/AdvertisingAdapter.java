@@ -108,7 +108,7 @@
 //		}
 //		else
 //		{
-//			Log.e("!!!", position + " " + (position/AD_AMOUNT));
+//			Log.d("!!!", position + " " + (position/AD_AMOUNT));
 //			return delegate.getView(position - ((position / AD_AMOUNT) + 1), convertView, parent);
 //		}
 //	}

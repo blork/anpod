@@ -79,7 +79,7 @@
 //	 * @param savedInstanceState the saved instance state
 //	 */
 //	public void onPostCreate(Bundle savedInstanceState) {
-//		Log.e("", "onPostCreate");
+//		Log.d("", "onPostCreate");
 //
 //		// Create the action bar
 ////		final SimpleMenu menu = new SimpleMenu(mActivity);
@@ -90,7 +90,7 @@
 ////					new OnClickListener() {
 ////				@Override
 ////				public void onClick(View view) {
-////					Log.e("", "clicked");
+////					Log.d("", "clicked");
 ////					final QuickAction mQuickAction 	= new QuickAction(view);
 ////
 ////					for (int i = 0; i < menu.size(); i++) {
@@ -141,10 +141,10 @@
 //	 * @return true, if successful
 //	 */
 //	public boolean onOptionsItemSelected(MenuItem item) {
-//		Log.e("!", "Menu item selected!");
+//		Log.d("!", "Menu item selected!");
 //		switch (item.getItemId()) {
 //		case R.id.menu_search:
-//			Log.e("!", "Searching!");
+//			Log.d("!", "Searching!");
 //			goSearch();
 //			return true;
 //		}

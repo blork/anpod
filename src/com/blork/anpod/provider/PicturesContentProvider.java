@@ -127,7 +127,7 @@ public class PicturesContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#onCreate()
 	 */
 	public boolean onCreate() {
-		Log.e("", "creating content provider");
+		Log.d("", "creating content provider");
 		dbHelper = new SQLHelper(getContext());
 		return (dbHelper == null) ? false : true;
 	}

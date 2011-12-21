@@ -77,7 +77,7 @@ public class PictureFactory {
 				PicturesContentProvider.UID,
 		};
 
-		Log.e("!!!", "Making query");
+		Log.d("!!!", "Making query");
 
 		ContentResolver resolver = ctx.getContentResolver();
 
@@ -90,9 +90,9 @@ public class PictureFactory {
 				PicturesContentProvider.REVERSE_SORT_ORDER // Put the results in default order
 		); 
 
-		Log.e("!!!", "Cursor!");
+		Log.d("!!!", "Cursor!");
 		if (cursor.moveToFirst()) {
-			Log.e("!!!", "Cursor worked!");
+			Log.d("!!!", "Cursor worked!");
 
 			String title;
 			String credit;
@@ -200,13 +200,13 @@ public class PictureFactory {
 					null);
 		}
 
-		Log.e("", uri.toString());
+		Log.d("", uri.toString());
 
 		String jsonString = Utils.getJSON(uri.toURL());
 		JSONTokener jsonTokener = new JSONTokener(jsonString);
 
 		JSONArray json = (JSONArray) jsonTokener.nextValue();
-		Log.e("", json.toString());
+		Log.d("", json.toString());
 		return jsonArrayToPictures(json);		
 	}
 
@@ -280,7 +280,7 @@ public class PictureFactory {
 	public static int saveAll(Context context, List<Picture> pictures) {
 		int count = 0;
 		for (Picture p: pictures) {
-			Log.e("saving", p.title);
+			Log.d("saving", p.title);
 			Uri uri = p.save(context);
 			if (uri != null) {
 				count++;

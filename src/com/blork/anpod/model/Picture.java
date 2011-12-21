@@ -158,7 +158,7 @@ public class Picture implements Saveable {
 	 */
 	@Override
 	public Uri save(Context context) {
-		Log.e("", "saving " + this.title);
+		Log.d("", "saving " + this.title);
 		ContentValues values = new ContentValues();
 		values.put(PicturesContentProvider.ID, id);
 		

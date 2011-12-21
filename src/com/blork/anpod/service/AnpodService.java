@@ -62,7 +62,7 @@ public class AnpodService extends Service implements Runnable{
 
 		System.gc();
 
-		Log.e("APOD", "starting service");
+		Log.d("APOD", "starting service");
 
 		if (intent != null && intent.getExtras() != null) {
 			forceRun = intent.hasExtra("force_run");
@@ -80,7 +80,7 @@ public class AnpodService extends Service implements Runnable{
 
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		Log.e("APOD", "about to start main thread");
+		Log.d("APOD", "about to start main thread");
 		new Thread(this).start();
 
 		return START_STICKY;
@@ -89,17 +89,17 @@ public class AnpodService extends Service implements Runnable{
 
 	@Override
 	public void run() {
-		Log.e("APOD", "in main thread");
+		Log.d("APOD", "in main thread");
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		// if background data is off, and this update is in the background, quit.
 		if (!Utils.isDataEnabled(this) && !forceRun) {
-			Log.e("APOD", "exit point 1");
+			Log.d("APOD", "exit point 1");
 			finish();
 			return;
 		} else {
-			Log.e("APOD", "completed point 1");
+			Log.d("APOD", "completed point 1");
 		}
 
 		notify = prefs.getBoolean("notifications_enabled", false);
@@ -110,29 +110,29 @@ public class AnpodService extends Service implements Runnable{
 
 		// if updates are disabled, and we are running in the background, quit.
 		if (!updates && !forceRun) {
-			Log.e("APOD", "exit point 2");
+			Log.d("APOD", "exit point 2");
 			finish();
 			return;
 		} else {
-			Log.e("APOD", "completed point 2");
+			Log.d("APOD", "completed point 2");
 		}
 
 		// if no network connection, quit.
 		if (!Utils.isNetworkConnected(this)) {
-			Log.e("APOD", "exit point 3");
+			Log.d("APOD", "exit point 3");
 			finish();
 			return;
 		} else {
-			Log.e("APOD", "completed point 3");
+			Log.d("APOD", "completed point 3");
 		}
 
 		// if wifi only enabled, but not connected to wi-fi, quit.
 		if (wifi_only && !Utils.isWiFiConnected(this)) {
-			Log.e("APOD", "exit point 4");
+			Log.d("APOD", "exit point 4");
 			finish();
 			return;
 		}  else {
-			Log.e("APOD", "completed point 4");
+			Log.d("APOD", "completed point 4");
 		}
 
 
@@ -150,12 +150,12 @@ public class AnpodService extends Service implements Runnable{
 		}
 
 
-		Log.e("APOD", "Fetching pictures");
+		Log.d("APOD", "Fetching pictures");
 
 		List<Picture> pictures = new ArrayList<Picture>();
 
 		try {
-			Log.e("APOD", "adding pictures");
+			Log.d("APOD", "adding pictures");
 			pictures.addAll(PictureFactory.load());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -167,15 +167,15 @@ public class AnpodService extends Service implements Runnable{
 			e.printStackTrace();
 		} finally {
 			if (pictures.isEmpty()) {
-				Log.e("APOD", "exit point 5");
+				Log.d("APOD", "exit point 5");
 				finish();
 				return;
 			} else {
-				Log.e("APOD", "completed point 5");
+				Log.d("APOD", "completed point 5");
 			}
 		}
 
-		Log.e("APOD", "Fetching latest picture");
+		Log.d("APOD", "Fetching latest picture");
 		Picture newPicture = pictures.get(0);
 
 		Intent notificationIntent = new Intent(this, HomeActivity.class);
@@ -194,10 +194,10 @@ public class AnpodService extends Service implements Runnable{
 			desiredHeight = display.getHeight();
 		}
 
-		Log.e("APOD", "Fetching latest picture bitmap");
+		Log.d("APOD", "Fetching latest picture bitmap");
 		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
 
-		Log.e("APOD", "Updating widgets");
+		Log.d("APOD", "Updating widgets");
 		try {
 			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
 			ComponentName thisWidget = new ComponentName(this, Widget.class);
@@ -222,9 +222,9 @@ public class AnpodService extends Service implements Runnable{
 			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget2, views2);
 		} catch (Exception e) { }
 
-		Log.e("APOD", "Checking for new pics");
+		Log.d("APOD", "Checking for new pics");
 		int count = PictureFactory.saveAll(this, pictures);
-		Log.e("APOD", count + " new pictures");
+		Log.d("APOD", count + " new pictures");
 		if (count == 0) {
 			int icon = android.R.drawable.stat_notify_error;
 			Notification notification = new Notification(icon, "No New Picture!", System.currentTimeMillis());
@@ -237,27 +237,27 @@ public class AnpodService extends Service implements Runnable{
 			);
 			notificationManager.cancelAll();
 			notificationManager.notify(INFO, notification); 
-			Log.e("APOD", "exit point 6");
+			Log.d("APOD", "exit point 6");
 			finish();
 			return;
 		} else {
 			PictureFactory.deleteAll(this);
 			PictureFactory.saveAll(this, pictures);
-			Log.e("APOD", "completed point 6");
+			Log.d("APOD", "completed point 6");
 		}
 
 		if (wallpaper) {
-			Log.e("APOD", "setting wallpaper");
+			Log.d("APOD", "setting wallpaper");
 
 			try {
 				wm.setBitmap(bitmap);
 			} catch (Exception e) {
-				Log.e("APOD", "exit point 7");
+				Log.d("APOD", "exit point 7");
 				finish();
 				return;
 			}
 
-			Log.e("APOD", "completed point 7");
+			Log.d("APOD", "completed point 7");
 
 		}
 
@@ -275,7 +275,7 @@ public class AnpodService extends Service implements Runnable{
 			notificationManager.notify(INFO, notification); 
 		}
 
-		Log.e("APOD", "completed!");
+		Log.d("APOD", "completed!");
 		finish();
 	}
 
@@ -291,7 +291,7 @@ public class AnpodService extends Service implements Runnable{
 
 	@Override
 	public void onDestroy() {
-		Log.e("APOD", "destroying service");
+		Log.d("APOD", "destroying service");
 		wakelock.release();
 		super.onDestroy();
 	}

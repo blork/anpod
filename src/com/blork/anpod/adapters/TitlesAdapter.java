@@ -36,7 +36,7 @@ public class TitlesAdapter extends EndlessPictureThumbnailAdapter {
 			}
 
 			if (results.isEmpty()) {
-				Log.e("", "load failed?");
+				Log.d("", "load failed?");
 				return false;
 			}
 			

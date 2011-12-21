@@ -67,7 +67,7 @@ abstract class EndlessPictureThumbnailAdapter extends EndlessAdapter {
 			}
 
 			if (results.isEmpty()) {
-				Log.e("", "load failed?");
+				Log.d("", "load failed?");
 				return false;
 			}
 			

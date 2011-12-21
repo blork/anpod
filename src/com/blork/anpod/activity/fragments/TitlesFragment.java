@@ -45,7 +45,7 @@ public class TitlesFragment extends ResultsFragment {
 		getActivity().registerReceiver(updateReceiver, new IntentFilter(
 				AnpodService.ACTION_FINISHED_UPDATE));
 
-		Log.e("", "View_Image");
+		Log.d("", "View_Image");
 		Bundle extras = getActivity().getIntent().getExtras();
 		if (extras != null && extras.containsKey("view_image")) {
 			showDetails(extras.getInt("view_image"));

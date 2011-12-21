@@ -91,7 +91,7 @@ public abstract class ResultsFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         
 
-    	Log.e("", "onActivityCreated "+query);
+    	Log.d("", "onActivityCreated "+query);
     
 		
 		listSetup();
