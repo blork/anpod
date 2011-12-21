@@ -17,4 +17,6 @@
     <string name="description_website">Open NASA website</string>
     <string name="description_fullscreen">View in Gallery</string>
     <string name="description_open_image">Open Image</string>
+    <string name="select_an_image">Select an image.</string>
+    <string name="please_wait">Please wait…</string>
 </resources>

@@ -262,7 +262,7 @@ public class AnpodService extends Service implements Runnable{
 		}
 
 		if(notify){
-			int icon = R.drawable.notify;
+			int icon = R.drawable.ic_stat_notify;
 			Notification notification = new Notification(icon, "New Picture!", System.currentTimeMillis());
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
 			notification.setLatestEventInfo(

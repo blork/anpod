@@ -1,57 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:screenOrientation="portrait">
-	<FrameLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-		<ProgressBar
-			android:id="@+id/image_progress"
-			style="@style/ListProgressIndicator"
-			android:gravity="center"
-			android:layout_gravity="center" />
-		<TextView
-			android:visibility="gone"
-			android:id="@+id/image_select_one"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:layout_gravity="center"
-			android:text="Select an image." />
-		<ImageView
-			android:id="@+id/main_picture"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:visibility="gone"
-			android:scaleType="centerCrop"
-			android:adjustViewBounds="true"
-			android:background="@android:color/transparent" />
-		<!-- <WebView android:id="@+id/main_picture" android:layout_width="fill_parent" 
-			android:layout_height="fill_parent" android:visibility="gone" android:scrollbarStyle="insideInset" 
-			android:gravity="bottom|left" android:layout_gravity="bottom|left" android:scaleType="centerInside"/> -->
-		"<!-- <TextView android:layout_width="fill_parent" android:layout_height="fill_parent" 
-			android:text="next" android:gravity="center_vertical|right" android:layout_gravity="center_vertical|right" 
-			/> <TextView android:layout_width="fill_parent" android:layout_height="fill_parent" 
-			android:text="previous" android:gravity="center_vertical|left" android:layout_gravity="center_vertical|left" 
-			/> -->
-		<RelativeLayout
-			android:id="@+id/image_desc_cont"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:background="#66000000"
-			android:visibility="gone"
-			android:paddingLeft="100dp"
-			android:paddingRight="100dp">
-			<WebView
-				android:id="@+id/image_desc"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="55dp"
-				android:layout_centerInParent="true" />
-		</RelativeLayout>
-	</FrameLayout>
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:screenOrientation="portrait" >
+
+    <ProgressBar
+        android:id="@+id/image_progress"
+        style="@style/ListProgressIndicator"
+        android:layout_gravity="center"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/image_select_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/select_an_image"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/main_picture"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/image_desc_cont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:paddingLeft="100dp"
+        android:paddingRight="100dp"
+        android:visibility="gone" >
+
+        <WebView
+            android:id="@+id/image_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="55dp" />
+    </RelativeLayout>
+
+</FrameLayout>
