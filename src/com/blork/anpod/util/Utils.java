@@ -24,8 +24,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.blork.anpod.activity.HomeActivity;
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -36,6 +35,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+
+import com.blork.anpod.activity.HomeActivity;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -285,10 +286,11 @@ public class Utils {
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
 	}
 
-	public static void goHome(Context ctx) {
+	public static void goHome(Activity ctx) {
 		Intent intent = new Intent(ctx, HomeActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		ctx.startActivity(intent);
+		ctx.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 	} 
 
 
