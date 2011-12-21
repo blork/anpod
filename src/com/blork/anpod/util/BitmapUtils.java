@@ -115,7 +115,7 @@ public class BitmapUtils {
 
 			@Override
 			protected Bitmap doInBackground(String... params) {
-
+				String slug = toSlug(name);
 				Log.d("", "Fetching image");
 
 				final String url = params[0];
@@ -134,7 +134,7 @@ public class BitmapUtils {
 						cacheFile = new File(
 								Environment.getExternalStorageDirectory() 
 								+ File.separator + "APOD" 
-								+ File.separator + toSlug(name) + ".jpg");
+								+ File.separator + slug + ".jpg");
 					} else {
 						cacheFile = new File(
 								Environment.getExternalStorageDirectory()
@@ -142,7 +142,7 @@ public class BitmapUtils {
 								+ File.separator + "data"
 								+ File.separator + "com.blork.anpod"
 								+ File.separator + "cache"
-								+ File.separator + toSlug(name) + ".jpg");
+								+ File.separator + slug + ".jpg");
 					}
 
 					uri = Uri.fromFile(cacheFile);
@@ -150,25 +150,31 @@ public class BitmapUtils {
 					Log.d("", "SD card not mounted");
 					Log.d("", "creating cache file");
 					cacheFile = new File(
-							context.getCacheDir() + File.separator + toSlug(name) + ".jpg");
+							context.getCacheDir() + File.separator + slug + ".jpg");
 					uri = Uri.fromFile(cacheFile);
 				}
 				if (cacheFile != null && cacheFile.exists()) {
 					Log.d("", "Cache file exists, using it.");
 					Bitmap cachedBitmap = null;
-					try {
-						cachedBitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
-					} catch (OutOfMemoryError e) {
-						Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-						System.gc();
-						decodeOptions.inSampleSize += 2;
+					while (cachedBitmap == null) {
+						try {
+							cachedBitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
+						} catch (OutOfMemoryError e) {
+							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+							if (cachedBitmap != null)
+								cachedBitmap.recycle();
+							cachedBitmap = null;
+							System.gc();
+							decodeOptions.inSampleSize += 2;
+						}
 					}
-
 					return cachedBitmap;
 
 				}
 
 				try {
+					BitmapUtils.manageCache(slug, context);
+
 					Log.d("", "Not cached, fetching");
 					// TODO: check for HTTP caching headers
 					final HttpClient httpClient = SyncUtils.getHttpClient(
@@ -207,14 +213,17 @@ public class BitmapUtils {
 					Log.d("", "Returning bitmap image");
 					// Decode the bytes and return the bitmap.
 					Bitmap bitmap = null;
-
-					try {
-						bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
-					} catch (OutOfMemoryError e) {
-						Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-						bitmap = null;
-						System.gc();
-						decodeOptions.inSampleSize += 2;
+					while (bitmap == null) {
+						try {
+							bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
+						} catch (OutOfMemoryError e) {
+							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
+							if (bitmap != null)
+								bitmap.recycle();
+							bitmap = null;
+							System.gc();
+							decodeOptions.inSampleSize += 2;
+						}
 					}
 
 					return bitmap;
@@ -309,7 +318,8 @@ public class BitmapUtils {
 		return null;
 	}
 
-	public static void manageCache(Context context) {
+	public static void manageCache(String slug, Context context) {
+		String filename = slug + ".jpg";
 		File folder;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			folder = new File(
@@ -331,12 +341,11 @@ public class BitmapUtils {
 			return;
 		}
 
-		Log.d("", "Trimming cache");
 
 		int count = files.length;
 
 		for (File f : folder.listFiles()) {
-			if (count > cacheSize) {
+			if (count > cacheSize && !filename.equals(f.getName())) {
 				Log.d("", "Deleting " + f.getName());
 				f.delete();
 				count--;
@@ -424,18 +433,11 @@ public class BitmapUtils {
 			Bitmap sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
 
 			Log.d("APOD", "Resizing with matrix");
-			// Resize
-			Matrix matrix = new Matrix();
-			matrix.postScale(desiredScale, desiredScale);
-			Bitmap scaledBitmap = Bitmap.createBitmap(sampledSrcBitmap, 0, 0, sampledSrcBitmap.getWidth(), sampledSrcBitmap.getHeight(), matrix, true);
-			sampledSrcBitmap = null;
-
 			Log.d("APOD", "Returning scaled bitmap");
-			// Save
-			return scaledBitmap;
-		} catch (OutOfMemoryError e) {
-			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
-		} catch (NullPointerException e) {
+			Bitmap resizedBitmap = matrixResize(sampledSrcBitmap, desiredScale, srcWidth, srcHeight);
+			sampledSrcBitmap.recycle();
+			return resizedBitmap;
+		} catch (Throwable e) {
 			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
 		}
 	}
@@ -446,14 +448,21 @@ public class BitmapUtils {
 			int srcHeight = bitmap.getHeight();
 			float desiredScale = (float) desiredWidth / srcWidth;
 			// Resize
-			Matrix matrix = new Matrix();
-			matrix.postScale(desiredScale, desiredScale);
-			Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
-			bitmap = null;
-			return scaledBitmap;
+			Bitmap resizedBitmap = matrixResize(bitmap, desiredScale, srcWidth, srcHeight);
+			bitmap.recycle();
+			return resizedBitmap;
 		} catch (OutOfMemoryError e) {
 			return resizeBitmap(bitmap, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
 		}
-		// Save
+	}
+	
+	private static Bitmap matrixResize(Bitmap bitmap, float desiredScale, int srcWidth, int srcHeight) {
+		Matrix matrix = new Matrix();
+		matrix.postScale(desiredScale, desiredScale);
+		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
+		bitmap.recycle();
+		bitmap = null;
+		
+		return scaledBitmap;
 	}
 }

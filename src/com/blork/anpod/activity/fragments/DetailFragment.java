@@ -40,11 +40,29 @@ import com.blork.anpod.util.Utils;
 
 abstract class DetailFragment extends Fragment {
 	protected Picture picture;
-
+	private Bitmap bitmap;
+	private ImageView imageView;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
+
+	}
+	
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		
+		if (imageView != null) {
+			imageView.invalidate();
+			imageView = null;
+		}
+		
+		if (bitmap != null) {
+			bitmap.recycle();
+			bitmap = null;
+		}
 
 	}
 
@@ -74,6 +92,8 @@ abstract class DetailFragment extends Fragment {
 
 		final View details = inflater.inflate(R.layout.details_fragment, container, false);
 
+		imageView = (ImageView)details.findViewById(R.id.main_picture);
+
 		if (picture != null) {
 
 			if (!isDualPane) {
@@ -82,7 +102,7 @@ abstract class DetailFragment extends Fragment {
 				//				getActivity().getSupportActionBar().setSubtitle(picture.credit);
 				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
-
+			
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 			decodeOptions.inSampleSize = 2;
 			BitmapUtils.fetchImage(
@@ -95,15 +115,17 @@ abstract class DetailFragment extends Fragment {
 						@Override
 						public void onFetchComplete(Object cookie, final Bitmap result, final Uri uri) {
 							try {
-
+								bitmap = result;
 								getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
 
-								final ImageView iv = (ImageView)details.findViewById(R.id.main_picture);
-								iv.setImageBitmap(result);
-								iv.setVisibility(View.VISIBLE);
+								imageView.setImageBitmap(bitmap);
+
+								//result.recycle();
+								
+								imageView.setVisibility(View.VISIBLE);
 								//details.findViewById(R.id.image_progress).setVisibility(View.GONE);
 
-								iv.setOnLongClickListener(new OnLongClickListener() {
+								imageView.setOnLongClickListener(new OnLongClickListener() {
 									@Override
 									public boolean onLongClick(View v) {
 										Intent intent2 = new Intent();
@@ -158,18 +180,6 @@ abstract class DetailFragment extends Fragment {
 
 		return details;
 	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		BitmapUtils.manageCache(this.getActivity().getApplicationContext());
-	}
-
 
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
