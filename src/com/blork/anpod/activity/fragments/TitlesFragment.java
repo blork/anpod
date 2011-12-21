@@ -30,11 +30,6 @@ public class TitlesFragment extends ResultsFragment {
 
 		View view = inflater.inflate(R.layout.titles_fragment, container, false);
 
-		//		adView = new AdView(getActivity(), AdSize.BANNER, "a14e4bffa8a0175");
-		//		LinearLayout layout = (LinearLayout)view.findViewById(R.id.root);
-		//		layout.addView(adView);
-		//		adView.loadAd(new AdRequest());
-
 		return view;
 	}
 
@@ -108,10 +103,6 @@ public class TitlesFragment extends ResultsFragment {
 	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		//		if (!isPro) {
-		//			showDetails(position - ((position / AdvertisingAdapter.AD_AMOUNT) + 1));
-		//		} else {
 		showDetails(position);
-		//		}
 	}
 }

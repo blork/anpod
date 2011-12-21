@@ -1,6 +1,7 @@
 package com.blork.anpod.activity.fragments;
 
 import com.blork.anpod.activity.HomeActivity;
+import com.blork.anpod.model.Picture;
 
 import android.os.Bundle;
 
@@ -12,6 +13,10 @@ import android.os.Bundle;
 
 public class TitlesDetailsFragment extends DetailsFragment {
 	
+	public TitlesDetailsFragment(Picture picture) {
+		this.picture = picture;
+	}
+
 	/**
 	 * Create a new instance of DetailsFragment, initialized to
 	 * show the text at 'index'.
@@ -20,8 +25,9 @@ public class TitlesDetailsFragment extends DetailsFragment {
 	 * @return the details fragment
 	 */
 	public static TitlesDetailsFragment newInstance(int index) {
-		TitlesDetailsFragment f = new TitlesDetailsFragment();
-		f.pictures = HomeActivity.pictures;
+		Picture picture = HomeActivity.pictures.get(index);
+
+		TitlesDetailsFragment f = new TitlesDetailsFragment(picture);
 		
 		// Supply index input as an argument.
 		Bundle args = new Bundle();

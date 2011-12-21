@@ -26,7 +26,7 @@ public class SearchFragment extends ResultsFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-
+		Log.e("","!!!!!!");
 		return inflater.inflate(R.layout.titles_fragment, container, false);
 	}
 	
@@ -51,60 +51,8 @@ public class SearchFragment extends ResultsFragment {
 		);
 		
 		setListAdapter(etAdapter);
-		
-		//new SearchPictureListTask(SearchActivity.query).execute();
 	}
 	
-	/**
-	 * The Class UpdatePictureListTask.
-	 */
-	public class SearchPictureListTask extends AsyncTask<Void, Void, Boolean> {
-			
-		/** The pictures. */
-		List<Picture> pictures = new ArrayList<Picture>();
-
-		private String query;
-
-		/**
-		 * Instantiates a new update picture list task.
-		 *
-		 * @param query the query
-		 */
-		public SearchPictureListTask(String query) {
-			this.query = query;
-		}
-
-		/* (non-Javadoc)
-		 * @see android.os.AsyncTask#doInBackground(Params[])
-		 */
-		public Boolean doInBackground(Void... params) {
-			try {
-				pictures = PictureFactory.search(query);
-				Log.d("!!!", "Loading...");
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-			
-		}
-		
-		/* (non-Javadoc)
-		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-		 */
-		protected void onPostExecute(Boolean result){
-			if (result && !pictures.isEmpty()) {
-				Log.d("!!!", pictures.toString());
-				SearchActivity.pictures.clear();
-				SearchActivity.pictures.addAll(pictures);
-				thumbs.notifyDataSetChanged();
-			} else {
-				getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
-				getActivity().findViewById(R.id.list_progress).setVisibility(View.GONE);
-			}
-		}
-
-	}
 
 	@Override
 	public void showDetails(int index) {

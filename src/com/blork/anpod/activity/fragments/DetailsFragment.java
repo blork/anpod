@@ -1,7 +1,6 @@
 package com.blork.anpod.activity.fragments;
 
-import java.util.List;
-
+import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +17,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -40,17 +39,13 @@ import com.blork.anpod.util.Utils;
  */
 
 abstract class DetailsFragment extends Fragment {
-	public List<Picture> pictures;
-	private Picture picture;
+	protected Picture picture;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
-	
-		if (pictures != null && !pictures.isEmpty()) {
-			picture = pictures.get(getShownIndex());
-		}
+
 	}
 
 	/**
@@ -79,7 +74,7 @@ abstract class DetailsFragment extends Fragment {
 
 		final View details = inflater.inflate(R.layout.details_fragment, container, false);
 
-		if (pictures != null && !pictures.isEmpty()) {
+		if (picture != null) {
 
 			if (!isDualPane) {
 				//				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
@@ -185,9 +180,6 @@ abstract class DetailsFragment extends Fragment {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if(pictures.size() < getShownIndex())
-			return false;
-		
 		switch (item.getItemId()) {
 		case R.id.menu_save:
 			//Utils.moveToNiceFolder(picture.uri);
@@ -238,11 +230,6 @@ abstract class DetailsFragment extends Fragment {
 
 
 	public void onPrepareOptionsMenu(Menu menu) {
-		if (pictures == null || pictures.isEmpty()) {
-			return;
-		}
-
-
 		if(picture != null && picture.uri != null) {
 			menu.findItem(R.id.menu_save).setEnabled(true);
 			menu.findItem(R.id.menu_set_wallpaper).setEnabled(true);
@@ -258,22 +245,24 @@ abstract class DetailsFragment extends Fragment {
 
 	private class SetWallpaperTask extends AsyncTask<Picture, Integer, Boolean> {
 		private Picture settingPicture;
+		private Activity context;
 
 		protected void onPreExecute() {
-			Toast.makeText(getActivity(), "Setting wallpaper...", Toast.LENGTH_LONG).show();
+			this.context = getActivity();
+			Toast.makeText(context, "Setting wallpaper...", Toast.LENGTH_LONG).show();
 		}
 
 		protected Boolean doInBackground(Picture... settingPictures) {
 			settingPicture = settingPictures[0];
 
-			WallpaperManager wm = (WallpaperManager) getActivity().getSystemService(Context.WALLPAPER_SERVICE);
+			WallpaperManager wm = (WallpaperManager) context.getSystemService(Context.WALLPAPER_SERVICE);
 
 			int desiredWidth = wm.getDesiredMinimumWidth();
 			int desiredHeight = wm.getDesiredMinimumHeight();
 
 
 			if (desiredHeight < 0 || desiredWidth < 0) {
-				WindowManager window = getActivity().getWindowManager();
+				WindowManager window = context.getWindowManager();
 				Display display = window.getDefaultDisplay();
 				desiredWidth = display.getWidth() * 2;
 				desiredHeight = display.getHeight();
@@ -284,7 +273,7 @@ abstract class DetailsFragment extends Fragment {
 			try {
 				wm.setBitmap(
 						BitmapUtils.resizeBitmap(
-								getActivity().getContentResolver().openInputStream(settingPicture.uri), 
+								context.getContentResolver().openInputStream(settingPicture.uri), 
 								desiredWidth, 
 								desiredHeight
 						)
@@ -298,9 +287,9 @@ abstract class DetailsFragment extends Fragment {
 
 		protected void onPostExecute(Boolean result) {
 			if (result && settingPicture != null && getActivity() != null) {
-				Toast.makeText(getActivity(), "Picture set as wallpaper.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Picture set as wallpaper.", Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(getActivity(), "Couldn't set the wallpaper.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Couldn't set the wallpaper.", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
