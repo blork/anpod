@@ -17,7 +17,6 @@ import android.view.Window;
 
 import com.blork.anpod.R;
 import com.blork.anpod.model.Picture;
-import com.bugsense.trace.BugSenseHandler;
 
 // TODO: Auto-generated Javadoc
 /*
@@ -65,8 +64,6 @@ public class HomeActivity extends FragmentActivity {
 		//startActivity(new Intent(this, FragmentStatePagerSupport.class));
 		setContentView(R.layout.fragment_layout);
 		
-		BugSenseHandler.setup(this, "981d4f62");
-
 		setProgressBarIndeterminateVisibility(Boolean.FALSE);
 	}
 
