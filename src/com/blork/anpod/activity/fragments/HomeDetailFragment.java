@@ -12,7 +12,11 @@ import android.os.Bundle;
  */
 
 public class HomeDetailFragment extends DetailFragment {
+	public HomeDetailFragment() {
+		super();
+	}
 	public HomeDetailFragment(Picture picture) {
+		super();
 		this.picture = picture;
 	}
 
@@ -24,16 +28,18 @@ public class HomeDetailFragment extends DetailFragment {
 	 * @return the details fragment
 	 */
 	public static HomeDetailFragment newInstance(int index) {
-		Picture picture = HomeActivity.pictures.get(index);
-
-		HomeDetailFragment f = new HomeDetailFragment(picture);
-		
+		HomeDetailFragment f;
+		if (!HomeActivity.pictures.isEmpty()) {
+			Picture picture = HomeActivity.pictures.get(index);
+			f = new HomeDetailFragment(picture);
+		} else {
+			f = new HomeDetailFragment();
+			index = -1;
+		}
 		// Supply index input as an argument.
 		Bundle args = new Bundle();
 		args.putInt("index", index);
 		f.setArguments(args);
-
 		return f;
 	}
-
 }

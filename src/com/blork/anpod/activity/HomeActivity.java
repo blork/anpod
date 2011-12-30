@@ -50,6 +50,7 @@ public class HomeActivity extends FragmentActivity {
 		super.onAttachedToWindow();
 		Window window = getWindow();
 		window.setFormat(PixelFormat.RGBA_8888);
+		//window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	}
 
 
@@ -59,7 +60,6 @@ public class HomeActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		//startActivity(new Intent(this, FragmentStatePagerSupport.class));
 		setContentView(R.layout.fragment_layout);

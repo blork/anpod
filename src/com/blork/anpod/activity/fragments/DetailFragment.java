@@ -52,7 +52,6 @@ abstract class DetailFragment extends Fragment {
 	public void onDestroyView() {
 		super.onDestroyView();
 		
-		Log.d("", "Destroying the fragment " + picture.title);
 		if (imageView != null) {
 			imageView.setImageBitmap(null);
 			imageView.invalidate();
@@ -99,7 +98,8 @@ abstract class DetailFragment extends Fragment {
 
 		if (picture != null) {
 			
-			getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			if (!isDualPane)
+				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 			decodeOptions.inSampleSize = 2;
