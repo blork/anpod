@@ -5,8 +5,8 @@
 		android:title="Donations">
 		<Preference
 			android:key="action_1"
-			android:title="Remove adverts"
-			android:summary="Donate to support development and remove ads">
+			android:title="Donate"
+			android:summary="Donate a small amount to support development">
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:data="market://details?id=com.blork.anpodpro" />
@@ -17,7 +17,7 @@
 		<Preference
 			android:key="action_3"
 			android:title="Apps by Sam Oakley"
-			android:summary="View the other apps that I've made">
+			android:summary="View my other apps">
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:data="market://search?q=Sam Oakley" />
