@@ -6,6 +6,6 @@
 
 	<color name="background_lighter">#333</color>
 	<color name="background_darker">#222</color>
-	<color name="list_selected">#222</color>
+	<color name="list_selected">#66666666</color>
 
 </resources>
