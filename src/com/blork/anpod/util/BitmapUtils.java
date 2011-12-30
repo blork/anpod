@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -153,13 +155,14 @@ public class BitmapUtils {
 				}
 				if (cacheFile != null && cacheFile.exists()) {
 					Log.d("", "Cache file exists, using it.");
+					Log.d("", cacheFile.getAbsolutePath());
 					while (bitmap == null) {
 						try {
 							bitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
 						} catch (OutOfMemoryError e) {
 							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-//							if (bitmap != null)
-//								bitmap.recycle();
+							if (bitmap != null)
+								bitmap.recycle();
 							bitmap = null;
 							System.gc();
 							decodeOptions.inSampleSize += 2;
@@ -192,7 +195,7 @@ public class BitmapUtils {
 						respBytes = EntityUtils.toByteArray(entity);
 					}
 
-					Log.d("", "Writing cache file");
+					Log.d("APOD", "Writing cache file " + cacheFile.getName());
 					try {
 						cacheFile.getParentFile().mkdirs();
 						cacheFile.createNewFile();
@@ -213,18 +216,18 @@ public class BitmapUtils {
 							bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
 						} catch (OutOfMemoryError e) {
 							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-//							if (bitmap != null)
-//								bitmap.recycle();
-//							bitmap = null;
+							if (bitmap != null)
+								bitmap.recycle();
+							bitmap = null;
 							System.gc();
 							decodeOptions.inSampleSize += 2;
 						}
 					}
-					
+
 				} catch (Exception e) {
 					Log.w(TAG, "Problem while loading image: " + e.toString(), e);
 				}
-				
+
 				return bitmap;
 			}
 
@@ -285,7 +288,7 @@ public class BitmapUtils {
 
 			final byte[] respBytes = EntityUtils.toByteArray(entity);
 
-			Log.d("APOD", "Writing cache file");
+			Log.d("APOD", "Writing cache file " + cacheFile.getName());
 			try {
 				cacheFile.getParentFile().mkdirs();
 				cacheFile.createNewFile();
@@ -327,20 +330,26 @@ public class BitmapUtils {
 		}
 
 		int cacheSize = 10;
-
-		Log.d("", "Managing cache");
+		Log.w("", "current file: " + filename);
+		Log.w("", "Managing cache");
 		File[] files = folder.listFiles();
 		if (files == null || files.length <= cacheSize) {
-			Log.d("", "Cache size is fine");
+			Log.w("", "Cache size is fine");
 			return;
 		}
 
 
 		int count = files.length;
 
-		for (File f : folder.listFiles()) {
+		Arrays.sort(files, new Comparator<File>(){
+			public int compare(File f1, File f2) {
+				return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+			} 
+		});
+
+		for (File f : files) {
 			if (count > cacheSize && !filename.equals(f.getName())) {
-				Log.d("", "Deleting " + f.getName());
+				Log.w("", "Deleting " + f.getName());
 				f.delete();
 				count--;
 			}
@@ -429,7 +438,8 @@ public class BitmapUtils {
 			Log.d("APOD", "Resizing with matrix");
 			Log.d("APOD", "Returning scaled bitmap");
 			Bitmap resizedBitmap = matrixResize(sampledSrcBitmap, desiredScale, srcWidth, srcHeight);
-//			sampledSrcBitmap.recycle();
+			sampledSrcBitmap.recycle();
+			sampledSrcBitmap = null;
 			return resizedBitmap;
 		} catch (Throwable e) {
 			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
@@ -443,20 +453,21 @@ public class BitmapUtils {
 			float desiredScale = (float) desiredWidth / srcWidth;
 			// Resize
 			Bitmap resizedBitmap = matrixResize(bitmap, desiredScale, srcWidth, srcHeight);
-//			bitmap.recycle();
+			bitmap.recycle();
+			bitmap = null;
 			return resizedBitmap;
 		} catch (OutOfMemoryError e) {
 			return resizeBitmap(bitmap, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
 		}
 	}
-	
+
 	private static Bitmap matrixResize(Bitmap bitmap, float desiredScale, int srcWidth, int srcHeight) {
 		Matrix matrix = new Matrix();
 		matrix.postScale(desiredScale, desiredScale);
 		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
-//		bitmap.recycle();
+		bitmap.recycle();
 		bitmap = null;
-		
+
 		return scaledBitmap;
 	}
 }

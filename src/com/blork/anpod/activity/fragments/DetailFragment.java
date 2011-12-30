@@ -40,31 +40,51 @@ import com.blork.anpod.util.Utils;
 
 abstract class DetailFragment extends Fragment {
 	protected Picture picture;
-	private Bitmap bitmap;
 	private ImageView imageView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
-
 	}
-
+//
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-
+		
+		Log.d("", "Destroying the fragment " + picture.title);
 		if (imageView != null) {
+			imageView.setImageBitmap(null);
 			imageView.invalidate();
 			imageView = null;
 		}
 
-		if (bitmap != null) {
-			bitmap.recycle();
-			bitmap = null;
-		}
-
+//		if (bitmap != null) {
+//			//bitmap.recycle();
+//			bitmap = null;
+//		}
+		
+		System.gc();
 	}
+	
+//
+//	@Override
+//	public void onDetach() {
+//		super.onDetach();
+//		
+//		Log.d("", "Detaching the fragment " + picture.title);
+//		if (imageView != null) {
+//			imageView.invalidate();
+//			imageView = null;
+//		}
+//
+//		if (bitmap != null) {
+//			bitmap.recycle();
+//			bitmap = null;
+//		}
+//		
+//		System.gc();
+//	}
 
 	/**
 	 * Gets the shown index.
@@ -96,17 +116,14 @@ abstract class DetailFragment extends Fragment {
 
 		if (picture != null) {
 
-			if (!isDualPane) {
-				//				getActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-				//				getActivity().getSupportActionBar().setTitle(picture.title);
-				//				getActivity().getSupportActionBar().setSubtitle(picture.credit);
-				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-			}
+//			if (!isDualPane) {
+//				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//			}
 
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 			decodeOptions.inSampleSize = 2;
 			BitmapUtils.fetchImage(
-					getActivity(), 
+					getActivity().getApplicationContext(), 
 					picture.getFullSizeImageUrl(), 
 					picture.title, 
 					decodeOptions, 
@@ -115,9 +132,8 @@ abstract class DetailFragment extends Fragment {
 						@Override
 						public void onFetchComplete(Object cookie, final Bitmap result, final Uri uri) {
 							try {
-								bitmap = result;
-								getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
-								imageView.setImageBitmap(bitmap);
+								getActivity().getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+								imageView.setImageBitmap(result);
 								imageView.setVisibility(View.VISIBLE);
 
 								imageView.setOnLongClickListener(new OnLongClickListener() {
