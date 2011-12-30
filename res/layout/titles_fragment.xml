@@ -1,47 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/root"
-    android:orientation="vertical"
+    android:id="@+id/root"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    android:screenOrientation="portrait">
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:screenOrientation="portrait" >
 
-	<LinearLayout
-		android:orientation="vertical"
+    <ListView
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-       
-		<ListView  
-			android:id="@android:id/list"
-			android:layout_weight="1"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-		    android:smoothScrollbar="true" />
-		<LinearLayout
-		    android:id="@android:id/empty"
-			android:orientation="vertical"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:gravity="center"
-		    android:layout_gravity="center">    
-		    <TextView
-		    	android:id="@+id/no_results"
-		    	android:text="@string/search_no_results"
-		    	android:gravity="center"
-		    	android:layout_gravity="center"
-		    	android:layout_width="fill_parent"
-	        	android:layout_height="fill_parent"
-	        	android:visibility="gone"
-		    />
-		    <ProgressBar 
-		    	android:id="@+id/list_progress"
-		    	style="@style/ListProgressIndicator"
-		    	 android:gravity="center"
-		    	 android:layout_gravity="center" />
-	     </LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:smoothScrollbar="true"/>
+    <LinearLayout
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical" >
 
+        <TextView
+            android:id="@+id/no_results"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/search_no_results"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/list_progress"
+            style="@style/ListProgressIndicator"
+            android:layout_gravity="center"
+            android:gravity="center" />
     </LinearLayout>
 
-
 </LinearLayout>
-
