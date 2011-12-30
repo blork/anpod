@@ -5,7 +5,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 	<fragment
-		class="com.blork.anpod.activity.fragments.TitlesFragment"
+		class="com.blork.anpod.activity.fragments.HomeMasterFragment"
 		android:id="@+id/titles"
 		android:layout_weight="1"
 		android:layout_width="0px"
