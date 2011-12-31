@@ -225,7 +225,7 @@ public class AnpodService extends Service implements Runnable{
 		Log.d("APOD", "Checking for new pics");
 		int count = PictureFactory.saveAll(this, pictures);
 		Log.d("APOD", count + " new pictures");
-		if (count == 0) {
+		if (count == 0 && notify && !forceRun) {
 			int icon = android.R.drawable.stat_notify_error;
 			Notification notification = new Notification(icon, "No New Picture!", System.currentTimeMillis());
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
@@ -261,7 +261,7 @@ public class AnpodService extends Service implements Runnable{
 
 		}
 
-		if(notify){
+		if(notify && !forceRun){
 			int icon = R.drawable.ic_stat_notify;
 			Notification notification = new Notification(icon, "New Picture!", System.currentTimeMillis());
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
