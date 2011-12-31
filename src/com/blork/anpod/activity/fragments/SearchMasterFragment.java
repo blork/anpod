@@ -1,10 +1,6 @@
 package com.blork.anpod.activity.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -17,9 +13,10 @@ import com.blork.anpod.activity.SearchActivity;
 import com.blork.anpod.activity.SearchDetailsFragmentPagerActivity;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
 import com.blork.anpod.adapters.SearchAdapter;
-import com.blork.anpod.model.Picture;
-import com.blork.anpod.model.PictureFactory;
+import com.blork.anpod.service.AnpodService;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
+import com.markupartist.android.widget.PullToRefreshListView;
+import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
 
 public class SearchMasterFragment extends MasterFragment {
 	@Override

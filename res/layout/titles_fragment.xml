@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:screenOrientation="portrait" >
 
-    <ListView
+    <com.markupartist.android.widget.PullToRefreshListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -14,7 +14,7 @@
         android:smoothScrollbar="true"/>
     <LinearLayout
         android:id="@android:id/empty"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:gravity="center"
