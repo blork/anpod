@@ -1,124 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest
-	android:installLocation="auto"
-	android:versionCode="87"
-	android:versionName="3.1.1"
-	package="com.blork.anpod"
-	xmlns:android="http://schemas.android.com/apk/res/android">
-	<uses-sdk
-		android:minSdkVersion="5"
-		android:targetSdkVersion="15" />
-	<uses-permission
-		android:name="android.permission.INTERNET" />
-	<uses-permission
-		android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission
-		android:name="android.permission.SET_WALLPAPER" />
-	<uses-permission
-		android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission
-		android:name="android.permission.WAKE_LOCK" />
-	<application
-		android:name="ApodApplication"
-		android:icon="@drawable/ic_launcher"
-		android:logo="@drawable/title_logo_default"
-		android:label="@string/app_name"
-		android:theme="@style/Theme.ApodTheme">
-		<meta-data
-			android:name="android.app.default_searchable"
-			android:value="com.blork.anpod.activity.SearchActivity" />
-		<activity
-			android:label="@string/app_name"
-			android:name="com.blork.anpod.activity.HomeActivity">
-			<intent-filter>
-				<action
-					android:name="android.intent.action.MAIN" />
-				<category
-					android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		<activity
-			android:label="@string/app_name"
-			android:name="com.blork.anpod.activity.UserPreferenceActivity" />
-		<activity
-			android:label="@string/app_name"
-			android:name="com.blork.anpod.activity.UserPreferenceActivityV11" />
-		<activity
-			android:label="@string/app_name"
-			android:name="com.blork.anpod.activity.SearchDetailsFragmentPagerActivity"
-			android:configChanges="orientation" />
-		<activity
-			android:label="@string/app_name"
-			android:name=".activity.DetailsFragmentPagerActivity"
-			android:configChanges="orientation" />
-		<activity
-			android:label="@string/search_name"
-			android:launchMode="singleTop"
-			android:name="com.blork.anpod.activity.SearchActivity">
-			<intent-filter>
-				<action
-					android:name="android.intent.action.SEARCH" />
-			</intent-filter>
-			<meta-data
-				android:name="android.app.searchable"
-				android:resource="@xml/searchable" />
-		</activity>
-		<provider
-			android:authorities="com.blork.anpod.search.ApodSuggestionProvider"
-			android:name="com.blork.anpod.search.ApodSuggestionProvider" />
-		<service
-			android:enabled="true"
-			android:name="com.blork.anpod.service.AnpodService" />
-		<service
-			android:enabled="true"
-			android:name="service.AppUpdateService" />
-		<receiver
-			android:name="com.blork.anpod.widget.Widget"
-			android:process=":remote"
-			android:label="Small Astronomy Widget">
-			<intent-filter>
-				<action
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data
-				android:name="android.appwidget.provider"
-				android:resource="@layout/widget_info" />
-		</receiver>
-		<receiver
-			android:name="com.blork.anpod.widget.LargeWidget"
-			android:process=":remote"
-			android:label="Large Astronomy Widget">
-			<intent-filter>
-				<action
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data
-				android:name="android.appwidget.provider"
-				android:resource="@layout/large_widget_info" />
-		</receiver>
-		<receiver
-			android:name="com.blork.anpod.service.Receiver"
-			android:process=":remote">
-			<intent-filter>
-				<action
-					android:name="android.intent.action.BOOT_COMPLETED" />
-				<action
-					android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-				<action
-					android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-				<action
-					android:name="android.intent.action.BATTERY_CHANGED" />
-				<action
-					android:name="com.blork.anpod.SET_UPDATE" />
-				<category
-					android:name="android.intent.category.HOME" />
-			</intent-filter>
-		</receiver>
-		<provider
-			android:authorities="com.blork.anpod.provider.picturescontentprovider"
-			android:name=".provider.PicturesContentProvider" />
-		<activity
-			android:name="com.google.ads.AdActivity"
-			android:configChanges="keyboard|keyboardHidden|orientation" />
-	</application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="auto"
+    package="com.blork.anpod"
+    android:versionCode="88"
+    android:versionName="3.2" >
+
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <uses-sdk
+        android:minSdkVersion="5"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:name="ApodApplication"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:logo="@drawable/title_logo_default"
+        android:theme="@style/Theme.ApodTheme"
+        android:hardwareAccelerated="true">
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value="com.blork.anpod.activity.SearchActivity" />
+
+        <activity
+            android:name="com.blork.anpod.activity.HomeActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.blork.anpod.activity.UserPreferenceActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.blork.anpod.activity.UserPreferenceActivityV11"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.blork.anpod.activity.SearchDetailsFragmentPagerActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".activity.DetailsFragmentPagerActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.blork.anpod.activity.SearchActivity"
+            android:label="@string/search_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <provider
+            android:name="com.blork.anpod.search.ApodSuggestionProvider"
+            android:authorities="com.blork.anpod.search.ApodSuggestionProvider" />
+
+        <service
+            android:name="com.blork.anpod.service.AnpodService"
+            android:enabled="true" />
+        <service
+            android:name="service.AppUpdateService"
+            android:enabled="true" />
+
+        <receiver
+            android:name="com.blork.anpod.widget.Widget"
+            android:label="Small Astronomy Widget"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@layout/widget_info" />
+        </receiver>
+        <receiver
+            android:name="com.blork.anpod.widget.LargeWidget"
+            android:label="Large Astronomy Widget"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@layout/large_widget_info" />
+        </receiver>
+        <receiver
+            android:name="com.blork.anpod.service.Receiver"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.intent.action.BATTERY_CHANGED" />
+                <action android:name="com.blork.anpod.SET_UPDATE" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".provider.PicturesContentProvider"
+            android:authorities="com.blork.anpod.provider.picturescontentprovider" />
+
+        <activity
+            android:name="com.google.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation" />
+    </application>
+
 </manifest>
