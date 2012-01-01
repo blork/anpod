@@ -3,7 +3,6 @@ package com.blork.anpod.activity.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +12,14 @@ import com.blork.anpod.activity.SearchActivity;
 import com.blork.anpod.activity.SearchDetailsFragmentPagerActivity;
 import com.blork.anpod.adapters.PictureThumbnailAdapter;
 import com.blork.anpod.adapters.SearchAdapter;
-import com.blork.anpod.service.AnpodService;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
-import com.markupartist.android.widget.PullToRefreshListView;
-import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
 
 public class SearchMasterFragment extends MasterFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		Log.e("","!!!!!!");
-		return inflater.inflate(R.layout.titles_fragment, container, false);
+		return inflater.inflate(R.layout.search_titles_fragment, container, false);
 	}
 	
 	@Override
