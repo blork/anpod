@@ -1,8 +1,11 @@
 package com.blork.anpod.activity.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 
@@ -43,4 +46,5 @@ public class HomeDetailFragment extends DetailFragment {
 		f.setArguments(args);
 		return f;
 	}
+
 }
