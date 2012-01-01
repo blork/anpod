@@ -5,6 +5,8 @@
         <item name="abLogo">@drawable/title_logo_default</item>
         <item name="vpiTabPageIndicatorStyle">@style/TabPageIndicator</item>
         <item name="vpiTabTextStyle">@style/TabPageIndicator.Text</item>
+        <item name="abBackground">@drawable/actionbar_bg</item>
+        <item name="abHeight">43dp</item>
 
         <!--
      		<item name="actionBarSize">50dp</item>
@@ -26,7 +28,7 @@
         <item name="android:gravity">center</item>
         <item name="android:indeterminate">true</item>
     </style>
-
+    
     <style name="FullScreenDialog" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -41,8 +43,8 @@
     <style name="TabPageIndicator" parent="Widget">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:background">@drawable/vpi__tab_indicator</item>
-        <item name="android:paddingLeft">22dip</item>
-        <item name="android:paddingRight">22dip</item>
+        <item name="android:paddingLeft">12dip</item>
+        <item name="android:paddingRight">12dip</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
     </style>
