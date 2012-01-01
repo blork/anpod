@@ -91,10 +91,6 @@ abstract class DetailFragment extends Fragment {
 		imageView = (ImageView)details.findViewById(R.id.main_picture);
 
 		if (picture != null) {
-
-			if (!isDualPane)
-				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 			decodeOptions.inSampleSize = 2;
 			BitmapUtils.fetchImage(
