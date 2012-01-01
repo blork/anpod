@@ -51,16 +51,16 @@ abstract class DetailFragment extends Fragment {
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		
+
 		if (imageView != null) {
 			imageView.setImageBitmap(null);
 			imageView.invalidate();
 			imageView = null;
 		}
-		
+
 		System.gc();
 	}
-	
+
 
 	/**
 	 * Gets the shown index.
@@ -91,7 +91,7 @@ abstract class DetailFragment extends Fragment {
 		imageView = (ImageView)details.findViewById(R.id.main_picture);
 
 		if (picture != null) {
-			
+
 			if (!isDualPane)
 				getSupportActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -142,23 +142,23 @@ abstract class DetailFragment extends Fragment {
 
 			String style = 
 					"<style>" +
-						"* { " +
+							"* { " +
 							"color:#fff;" +
 							"background:transparent; " +
-						"} " +
-						"p { " +
+							"} " +
+							"p { " +
 							"text-align:justify; " +
 							"color:#fff; " +
 							"line-height:1.5em; " +
-						"} " +
-						"a { " +
+							"} " +
+							"a { " +
 							"color:#EEE; " +
-						"} " +
-						"h3, h4 {" +
+							"} " +
+							"h3, h4 {" +
 							"text-align:center;" +
-						"}" +
-					"</style>";
-			
+							"}" +
+							"</style>";
+
 			String html = style + 
 					"<h3>" + picture.title + "</h3>" + 
 					"<h4>" + picture.credit + "</h4>" + 
@@ -277,13 +277,18 @@ abstract class DetailFragment extends Fragment {
 			Log.d("APOD", desiredWidth+""+desiredHeight);
 
 			try {
-				wm.setBitmap(
-					BitmapUtils.resizeBitmap(
-							context.getContentResolver().openInputStream(settingPicture.uri), 
-							desiredWidth, 
-							desiredHeight
-						)
-					);
+				Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(settingPicture.uri));
+				Bitmap resizedBitmap = BitmapUtils.resizeBitmap(
+					bitmap, 
+					desiredWidth, 
+					desiredHeight
+				);
+				wm.setBitmap(resizedBitmap);
+				
+				bitmap.recycle();
+				resizedBitmap.recycle();
+				bitmap = null;
+				resizedBitmap = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;

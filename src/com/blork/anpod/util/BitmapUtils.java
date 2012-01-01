@@ -436,10 +436,11 @@ public class BitmapUtils {
 			Bitmap sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
 
 			Log.d("APOD", "Resizing with matrix");
-			Log.d("APOD", "Returning scaled bitmap");
 			Bitmap resizedBitmap = matrixResize(sampledSrcBitmap, desiredScale, srcWidth, srcHeight);
+			
 			sampledSrcBitmap.recycle();
 			sampledSrcBitmap = null;
+			Log.d("APOD", "Returning scaled bitmap");
 			return resizedBitmap;
 		} catch (Throwable e) {
 			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
@@ -465,8 +466,9 @@ public class BitmapUtils {
 		Matrix matrix = new Matrix();
 		matrix.postScale(desiredScale, desiredScale);
 		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
-		bitmap.recycle();
-		bitmap = null;
+		
+//		bitmap.recycle();
+//		bitmap = null;
 
 		return scaledBitmap;
 	}
