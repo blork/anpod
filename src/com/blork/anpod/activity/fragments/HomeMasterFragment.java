@@ -112,15 +112,9 @@ public class HomeMasterFragment extends MasterFragment {
 					)
 			);
 			etAdapter.notifyDataSetChanged();
-			getActivity().setProgressBarIndeterminateVisibility(Boolean.FALSE);
-			
-			Long timestamp = System.currentTimeMillis();
-			
+			getActivity().setProgressBarIndeterminateVisibility(false);
+						
 			((PullToRefreshListView) getListView()).onRefreshComplete("Last updated: just now");
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putLong("last_updated", timestamp);
-			editor.commit();
 		}
 	}
 

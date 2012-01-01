@@ -92,6 +92,11 @@ public class AnpodService extends Service implements Runnable{
 		Log.d("APOD", "in main thread");
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		Long timestamp = System.currentTimeMillis();
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putLong("last_updated", timestamp);
+		editor.commit();
 
 		// if background data is off, and this update is in the background, quit.
 		if (!Utils.isDataEnabled(this) && !forceRun) {
