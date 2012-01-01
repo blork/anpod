@@ -30,11 +30,15 @@ import android.view.Window;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.fragments.SearchDetailFragment;
+import com.viewpagerindicator.TabPageIndicator;
+import com.viewpagerindicator.TitleProvider;
 
 public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
-	MyAdapter mAdapter;
+	PagerAdapter mAdapter;
 
 	ViewPager mPager;
+
+	private TabPageIndicator mIndicator;
 
 
 	@Override
@@ -49,19 +53,21 @@ public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_pager);
 
-		mAdapter = new MyAdapter(getSupportFragmentManager());
+		mAdapter = new PagerAdapter(getSupportFragmentManager());
 
 		mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
+		
+		mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
+		mIndicator.setViewPager(mPager);
 
 		int index = getIntent().getExtras().getInt("index");
-
 		mPager.setCurrentItem(index);
 	}
 
 
-	public static class MyAdapter extends FragmentStatePagerAdapter {
-		public MyAdapter(FragmentManager fm) {
+	public static class PagerAdapter extends FragmentStatePagerAdapter implements TitleProvider {
+		public PagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
 
@@ -73,6 +79,11 @@ public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
 		@Override
 		public Fragment getItem(int position) {
 			return SearchDetailFragment.newInstance(position);
+		}
+		
+		@Override
+		public String getTitle(int position) {
+			return SearchActivity.pictures.get(position).title.toUpperCase();
 		}
 	}
 

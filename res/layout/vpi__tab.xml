@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?attr/vpiTabPageIndicatorStyle"
+    class="com.viewpagerindicator.TabPageIndicator$TabView" >
+
+    <TextView
+        android:id="@android:id/text1"
+        style="?attr/vpiTabTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true" />
+
+</view>

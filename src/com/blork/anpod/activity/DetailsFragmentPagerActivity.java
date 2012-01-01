@@ -23,14 +23,21 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.fragments.HomeDetailFragment;
+import com.viewpagerindicator.TabPageIndicator;
+import com.viewpagerindicator.TitleProvider;
 
 public class DetailsFragmentPagerActivity extends FragmentActivity {
-	MyAdapter mAdapter;
+	PagerAdapter mAdapter;
 	ViewPager mPager;
+	private TabPageIndicator mIndicator;
 	public static boolean first;
 
 	@Override
@@ -45,15 +52,16 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 				
 		setContentView(R.layout.fragment_pager);
-		mAdapter = new MyAdapter(getSupportFragmentManager());
+		mAdapter = new PagerAdapter(getSupportFragmentManager());
 
 		mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
 
+		mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
+		mIndicator.setViewPager(mPager);
+		
 		int index = getIntent().getExtras().getInt("index");
-
 		mPager.setCurrentItem(index);
-
 	}
 
 	@Override
@@ -63,8 +71,8 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 	}
 
 
-	public static class MyAdapter extends FragmentStatePagerAdapter {
-		public MyAdapter(FragmentManager fm) {
+	public static class PagerAdapter extends FragmentStatePagerAdapter implements TitleProvider {
+		public PagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
 
@@ -77,5 +85,11 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 		public Fragment getItem(int position) {
 			return HomeDetailFragment.newInstance(position);
 		}
+		
+		@Override
+		public String getTitle(int position) {
+			return HomeActivity.pictures.get(position).title.toUpperCase();
+		}
 	}
+
 }
