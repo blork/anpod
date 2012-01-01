@@ -135,6 +135,7 @@ public class HomeMasterFragment extends MasterFragment {
 	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		position--; //Fix pull-to-refresh off by one error
 		showDetails(position);
 	}
 }

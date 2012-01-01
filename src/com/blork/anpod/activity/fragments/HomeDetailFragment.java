@@ -1,9 +1,10 @@
 package com.blork.anpod.activity.fragments;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
-
-import android.os.Bundle;
 
 // TODO: Auto-generated Javadoc
 /**
