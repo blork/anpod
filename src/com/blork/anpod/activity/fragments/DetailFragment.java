@@ -47,7 +47,7 @@ abstract class DetailFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
 	}
-//
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -57,16 +57,10 @@ abstract class DetailFragment extends Fragment {
 			imageView.invalidate();
 			imageView = null;
 		}
-
-//		if (bitmap != null) {
-//			//bitmap.recycle();
-//			bitmap = null;
-//		}
 		
 		System.gc();
 	}
 	
-
 
 	/**
 	 * Gets the shown index.
@@ -146,19 +140,29 @@ abstract class DetailFragment extends Fragment {
 			text.setWebViewClient(new EmbeddedWebViewClient());
 
 
-			String html = "<style>" +
-					"* { " +
-					"text-align:justify; " +
-					"color:#fff; " +
-					"line-height:1.5em; " +
-					"} " +
-					"a { " +
-					"color:#EEE; " +
-					"} " +
-					"h3, h4 {" +
-					"text-align:center;" +
-					"}" +
-					"</style>" + "<h3>" + picture.title + "</h3>" + picture.info.replace("\n", " ");
+			String style = 
+					"<style>" +
+						"* { " +
+							"color:#fff;" +
+							"background:transparent; " +
+						"} " +
+						"p { " +
+							"text-align:justify; " +
+							"color:#fff; " +
+							"line-height:1.5em; " +
+						"} " +
+						"a { " +
+							"color:#EEE; " +
+						"} " +
+						"h3, h4 {" +
+							"text-align:center;" +
+						"}" +
+					"</style>";
+			
+			String html = style + 
+					"<h3>" + picture.title + "</h3>" + 
+					"<h4>" + picture.credit + "</h4>" + 
+					"<p>" + picture.info.replace("\n", " ") + "</p>";
 
 			text.loadData(html,"text/html", "utf-8");
 			text.setBackgroundColor(0);

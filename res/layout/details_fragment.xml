@@ -26,13 +26,11 @@
         android:layout_height="match_parent"
         android:background="#66000000"
         android:visibility="gone" >
-
         <WebView
             android:id="@+id/image_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="55dp" />
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 
 </FrameLayout>
