@@ -3,16 +3,25 @@ package com.blork.anpod.adapters;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
+import com.blork.anpod.util.BitmapUtils;
 import com.commonsware.cwac.endless.EndlessAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
@@ -26,9 +35,9 @@ abstract class EndlessPictureThumbnailAdapter extends EndlessAdapter {
 
 	public EndlessPictureThumbnailAdapter(Activity activity, ThumbnailAdapter tAdapter) {
 		super(tAdapter);
-		
+
 		this.activity = activity;
-		
+
 		rotate=new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF,
 				0.5f, Animation.RELATIVE_TO_SELF,
 				0.5f);
@@ -54,7 +63,7 @@ abstract class EndlessPictureThumbnailAdapter extends EndlessAdapter {
 
 	@Override
 	protected boolean cacheInBackground() {
-		
+
 		try {
 			List<Picture> results;
 
@@ -70,19 +79,20 @@ abstract class EndlessPictureThumbnailAdapter extends EndlessAdapter {
 				Log.d("", "load failed?");
 				return false;
 			}
-			
+
 			PictureFactory.saveAll(activity, results);
-			
+
 			HomeActivity.pictures.addAll(results);		
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
 
 	@Override
 	protected void appendCachedData() {
 	}
+
 }

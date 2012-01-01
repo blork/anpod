@@ -33,8 +33,7 @@ public class HomeMasterFragment extends MasterFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View view = inflater.inflate(R.layout.titles_fragment, container, false);
-
+		View view = inflater.inflate(R.layout.titles_fragment, container, false);	
 		return view;
 	}
 
@@ -53,27 +52,36 @@ public class HomeMasterFragment extends MasterFragment {
 		}
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		if (HomeActivity.current != -1) {
+			getListView().setSelection(HomeActivity.current);
+			HomeActivity.current = -1;
+		}
+	}
 
 	@Override
 	public void listSetup() {
-		
+
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		Long timestamp = settings.getLong("last_updated", -1);
-		
+
 		if (timestamp != -1) {
 			String timestring = "Last updated: " + DateUtils.getRelativeTimeSpanString(timestamp);
 			((PullToRefreshListView) getListView()).setLastUpdated(timestring);
 		}
-			
+
 		((PullToRefreshListView) getListView()).setOnRefreshListener(new OnRefreshListener() {
-		    @Override
-		    public void onRefresh() {
-		        // Do work to refresh the list here.
-		    	getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+			@Override
+			public void onRefresh() {
+				// Do work to refresh the list here.
+				getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
 				Intent serviceIntent = new Intent(getActivity(), AnpodService.class);
 				serviceIntent.putExtra("force_run", true);
 				getActivity().startService(serviceIntent);
-		    }
+			}
 		});
 
 		HomeActivity.pictures = PictureFactory.getLocalPictures(getActivity());
@@ -82,18 +90,18 @@ public class HomeMasterFragment extends MasterFragment {
 				getActivity(), 
 				R.layout.list_item, 
 				HomeActivity.pictures
-		);
+				);
 
 		tAdapter = new ThumbnailAdapter(
 				getActivity(), 
 				thumbs, 
 				cache, 
 				IMAGE_IDS
-		);
+				);
 
 		etAdapter = new TitlesAdapter(
 				getActivity(), tAdapter
-		);
+				);
 
 
 		setListAdapter(etAdapter);
@@ -109,11 +117,11 @@ public class HomeMasterFragment extends MasterFragment {
 			HomeActivity.pictures.addAll(
 					PictureFactory.getLocalPictures(
 							getActivity().getApplicationContext()
-					)
-			);
+							)
+					);
 			etAdapter.notifyDataSetChanged();
 			getActivity().setProgressBarIndeterminateVisibility(false);
-						
+
 			((PullToRefreshListView) getListView()).onRefreshComplete("Last updated: just now");
 		}
 	}

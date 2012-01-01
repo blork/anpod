@@ -16,7 +16,11 @@
 
 package com.blork.anpod.activity;
 
+import java.util.List;
+
+import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,12 +29,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnDragListener;
 import android.view.Window;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.fragments.HomeDetailFragment;
+import com.blork.anpod.model.Picture;
+import com.blork.anpod.model.PictureFactory;
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
@@ -59,11 +66,79 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 
 		mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
 		mIndicator.setViewPager(mPager);
+
+		mIndicator.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				HomeActivity.current = position;
+				if ((HomeActivity.pictures.size() - position) < 5) {
+					new AddMorePicturesTask(getApplicationContext()).execute();
+				}
+			}
+			
+			@Override
+			public void onPageScrolled(int position, float positionOffset,
+					int positionOffsetPixels) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int state) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 		int index = getIntent().getExtras().getInt("index");
 		mPager.setCurrentItem(index);
 	}
 
+	private class AddMorePicturesTask extends AsyncTask<Integer, Integer, Boolean> {
+		private Context context;
+
+		public AddMorePicturesTask(Context context){
+			this.context = context;
+		}
+		
+		protected void onPreExecute() {
+		}
+
+		protected Boolean doInBackground(Integer... i) {
+			try {
+				List<Picture> results;
+
+				if (HomeActivity.pictures.isEmpty()) {
+					results = PictureFactory.load();
+				} else {
+					int index = HomeActivity.pictures.size() - 1;
+					int pictureId = HomeActivity.pictures.get(index).id;
+					results = PictureFactory.load(pictureId);
+				}
+
+				if (results.isEmpty()) {
+					Log.d("", "load failed?");
+					return false;
+				}
+
+				PictureFactory.saveAll(context, results);
+
+				HomeActivity.pictures.addAll(results);		
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		protected void onPostExecute(Boolean result) {
+			if (result) {
+				mIndicator.notifyDataSetChanged();
+			}
+		}
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onPause();

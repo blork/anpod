@@ -44,6 +44,7 @@ public class HomeActivity extends FragmentActivity {
 
 	/** The pictures. */
 	public static List<Picture> pictures = new ArrayList<Picture>();
+	public static int current = -1;
 
 	@Override
 	public void onAttachedToWindow() {
