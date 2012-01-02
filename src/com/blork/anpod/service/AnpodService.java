@@ -236,7 +236,6 @@ public class AnpodService extends Service implements Runnable{
 			Log.d("APOD", "completed point 6");
 		}
 
-
 		Log.d("APOD", "Fetching latest picture bitmap");
 		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
 		

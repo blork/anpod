@@ -16,14 +16,12 @@
 
 package com.blork.anpod.util;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
@@ -269,8 +267,11 @@ public class BitmapUtils {
 		}
 		if (cacheFile != null && cacheFile.exists()) {
 			Log.d("APOD", "Cache file exists, using it.");
-			Bitmap cachedBitmap = resizeBitmap(cacheFile, desiredWidth, desiredHeight);
-			return cachedBitmap;
+			try {
+				Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(cacheFile));
+				Bitmap cachedBitmap = resizeBitmap(bitmap, desiredWidth, desiredHeight);
+				return cachedBitmap;
+			} catch (FileNotFoundException e) {}
 		}
 
 		try {
@@ -301,11 +302,12 @@ public class BitmapUtils {
 				Log.d("APOD", "Error writing to bitmap cache: " + cacheFile.toString(), e);
 			}
 
-			Bitmap bitmap = null;
 			// Decode the bytes and return the bitmap.
 			Log.d("APOD", "Reiszing bitmap image");
 
-			bitmap = resizeBitmap(new ByteArrayInputStream(respBytes), desiredWidth, desiredHeight);
+			Bitmap bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(respBytes));
+
+			bitmap = resizeBitmap(bitmap, desiredWidth, desiredHeight);
 			Log.d("APOD", "Returning bitmap image");
 			return bitmap;
 		} catch (Exception e) {
@@ -365,88 +367,6 @@ public class BitmapUtils {
 		return slug.toLowerCase(Locale.ENGLISH);
 	}
 
-	public static Bitmap resizeBitmap(File file, int desiredWidth, int desiredHeight) {
-		try {
-			return resizeBitmap(new FileInputStream(file), desiredWidth, desiredHeight);
-		} catch (FileNotFoundException e) {
-			return null;
-		}
-	}
-
-	public static Bitmap resizeBitmap(InputStream stream, int desiredWidth, int desiredHeight) {
-		try {
-			// Get the source image's dimensions
-			Log.d("APOD", "Getting dimensions");
-
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inJustDecodeBounds = true;
-
-			BufferedInputStream bitmapStream = new BufferedInputStream(stream);
-			bitmapStream.mark(Integer.MAX_VALUE);
-
-			Log.d("APOD", "Decoding image (for dimensions)");
-			BitmapFactory.decodeStream(bitmapStream, null, options);
-
-			try {
-				bitmapStream.reset();
-			} catch (IOException e) {
-				Log.d("APOD", "Can't reset bitstream", e);
-			}
-
-			int srcWidth = options.outWidth;
-			int srcHeight = options.outHeight;
-
-			Log.d("APOD", "Image is " + srcWidth + "x" + srcHeight);
-			Log.d("APOD", "Desired size is " + desiredWidth + "x" + desiredHeight);
-
-
-			// Only scale if the source is big enough. This code is just trying to fit a image into a certain width.
-			if(desiredWidth > srcWidth) {
-				desiredWidth = srcWidth;
-			}
-
-			// Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
-			// from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
-			int inSampleSize = 1;
-			Log.d("APOD", (srcWidth / 2 > desiredWidth)+"");
-
-			if (desiredWidth > 0) {
-				while(srcWidth / 2 > desiredWidth){
-					srcWidth /= 2;
-					srcHeight /= 2;
-					inSampleSize *= 2;
-				}
-			}
-
-			Log.d("APOD", "Best sample size is " +inSampleSize);
-
-			float desiredScale = (float) desiredWidth / srcWidth;
-
-			Log.d("APOD", "Desired scale is " + desiredScale);
-
-
-			// Decode with inSampleSize
-			options.inJustDecodeBounds = false;
-			options.inDither = false;
-			options.inSampleSize = inSampleSize;
-			options.inScaled = false;
-			options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-			Log.d("APOD", "Decoding stream (for reals)");
-			Bitmap sampledSrcBitmap = BitmapFactory.decodeStream(bitmapStream, null, options);
-
-			Log.d("APOD", "Resizing with matrix");
-			Bitmap resizedBitmap = matrixResize(sampledSrcBitmap, desiredScale, srcWidth, srcHeight);
-			
-			sampledSrcBitmap.recycle();
-			sampledSrcBitmap = null;
-			Log.d("APOD", "Returning scaled bitmap");
-			return resizedBitmap;
-		} catch (Throwable e) {
-			return resizeBitmap(stream, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
-		}
-	}
-
 	public static Bitmap resizeBitmap(Bitmap bitmap, int desiredWidth, int desiredHeight) {
 		try {
 			int srcWidth = bitmap.getWidth();
@@ -466,9 +386,9 @@ public class BitmapUtils {
 		Matrix matrix = new Matrix();
 		matrix.postScale(desiredScale, desiredScale);
 		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
-		
-//		bitmap.recycle();
-//		bitmap = null;
+
+		//		bitmap.recycle();
+		//		bitmap = null;
 
 		return scaledBitmap;
 	}
