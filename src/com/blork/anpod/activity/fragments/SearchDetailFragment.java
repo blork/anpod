@@ -12,7 +12,7 @@ import com.blork.anpod.model.Picture;
  */
 
 public class SearchDetailFragment extends DetailFragment {
-	public SearchDetailFragment(Picture picture) {
+	private SearchDetailFragment(Picture picture) {
 		this.picture = picture;
 	}
 

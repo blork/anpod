@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -48,21 +47,14 @@ public class Picture {
 	/** The info. */
 	public String info;
 	
-	/** The image uri. */
-	public Uri imageUri;
-	
 	/** The imgur id. */
 	public String imgurId;
-	
-	/** The youtube url. */
-	public URL youtubeUrl;
 	
 	/** The image. */
 	public Bitmap image;
 	
 	
 	public Uri uri;
-	
 
 	
 	/**
@@ -104,10 +96,6 @@ public class Picture {
 			image.compress(CompressFormat.JPEG, 75, bos);
 			bos.flush();
 			bos.close();
-
-			File file = new File(context.getFilesDir().getPath()+"/"+fileName);
-
-			imageUri = Uri.fromFile(file);
 		}
 
 		if(sd){
@@ -142,8 +130,6 @@ public class Picture {
 					bos.flush();
 					bos.close();
 
-					this.imageUri = Uri.fromFile(imageFile);
-
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -153,7 +139,7 @@ public class Picture {
 	}
 
 
-	public Uri save(Context context) {
+	Uri save(Context context) {
 		Log.d("", "saving " + this.title);
 		ContentValues values = new ContentValues();
 		values.put(PicturesContentProvider.ID, id);
@@ -187,7 +173,7 @@ public class Picture {
 	 * @param info the info
 	 * @param imgurId the imgur id
 	 */
-	public Picture(int aid, String uid, String title, String credit,
+	Picture(int aid, String uid, String title, String credit,
 			String info, String imgurId) {
 		this.id = aid;
 		this.uid = uid;

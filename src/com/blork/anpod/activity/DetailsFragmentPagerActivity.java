@@ -29,9 +29,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.View;
-import android.view.View.OnDragListener;
 import android.view.Window;
 
 import com.blork.anpod.R;
@@ -42,10 +39,7 @@ import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
 public class DetailsFragmentPagerActivity extends FragmentActivity {
-	PagerAdapter mAdapter;
-	ViewPager mPager;
 	private TabPageIndicator mIndicator;
-	public static boolean first;
 
 	@Override
 	public void onAttachedToWindow() {
@@ -59,9 +53,9 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 				
 		setContentView(R.layout.fragment_pager);
-		mAdapter = new PagerAdapter(getSupportFragmentManager());
+		PagerAdapter mAdapter = new PagerAdapter(getSupportFragmentManager());
 
-		mPager = (ViewPager)findViewById(R.id.pager);
+		ViewPager mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
 
 		mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
@@ -142,11 +136,10 @@ public class DetailsFragmentPagerActivity extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onPause();
-		first = true;
 	}
 
 
-	public static class PagerAdapter extends FragmentStatePagerAdapter implements TitleProvider {
+	private static class PagerAdapter extends FragmentStatePagerAdapter implements TitleProvider {
 		public PagerAdapter(FragmentManager fm) {
 			super(fm);
 		}

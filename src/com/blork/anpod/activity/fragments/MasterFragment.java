@@ -36,7 +36,7 @@ import com.commonsware.cwac.thumbnail.ThumbnailMessage;
  * data to the user as appropriate based on the currrent UI layout.
  */
 
-public abstract class MasterFragment extends ListFragment {    	
+abstract class MasterFragment extends ListFragment {    	
 	
 	/** The Constant IMAGE_IDS. */
 	protected static final int[] IMAGE_IDS={R.id.item_image};
@@ -45,14 +45,14 @@ public abstract class MasterFragment extends ListFragment {
 	private ThumbnailBus bus=new ThumbnailBus();
 	
 	/** The cache. */
-	public SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=
+	SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=
 							new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(null, null, 101, bus);
 	
 	/** The thumbs. */
 	protected PictureThumbnailAdapter thumbs;
 	
     /** The m dual pane. */
-    public boolean isDualPane;
+    boolean isDualPane;
     
     /** The m cur check position. */
     int mCurCheckPosition = 0;

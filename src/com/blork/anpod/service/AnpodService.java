@@ -35,7 +35,6 @@ import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.Utils;
-import com.blork.anpod.widget.LargeWidget;
 import com.blork.anpod.widget.Widget;
 
 
@@ -52,9 +51,9 @@ public class AnpodService extends Service implements Runnable{
 	private boolean wallpaper;
 	private WakeLock wakelock;
 
-	static int INFO = 1;
-	static int ERROR = 2;
-	static int RUNNING = 3;
+	private static int INFO = 1;
+	private static int ERROR = 2;
+	private static int RUNNING = 3;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {

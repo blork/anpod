@@ -109,7 +109,7 @@ public class HomeMasterFragment extends MasterFragment {
 
 
 
-	class UpdateReceiver extends BroadcastReceiver {
+	private class UpdateReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			HomeActivity.pictures.clear();

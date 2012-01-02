@@ -88,20 +88,6 @@ public class BitmapUtils {
 	 * @param context the context
 	 * @param url the url
 	 * @param name the name
-	 * @param callback the callback
-	 */
-	public static void fetchImage(final Context context, final String url, final String name,
-			final OnFetchCompleteListener callback) {
-		fetchImage(context, url, name, null, null, callback);
-	}
-
-	/**
-	 * Only call this method from the main (UI) thread. The {@link OnFetchCompleteListener} callback
-	 * be invoked on the UI thread, but image fetching will be done in an {@link AsyncTask}.
-	 *
-	 * @param context the context
-	 * @param url the url
-	 * @param name the name
 	 * @param decodeOptions the decode options
 	 * @param cookie An arbitrary object that will be passed to the callback.
 	 * @param callback the callback
@@ -317,7 +303,7 @@ public class BitmapUtils {
 		return null;
 	}
 
-	public static void manageCache(String slug, Context context) {
+	private static void manageCache(String slug, Context context) {
 		String filename = slug + ".jpg";
 		File folder;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {

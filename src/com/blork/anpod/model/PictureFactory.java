@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,36 +26,6 @@ import com.blork.anpod.util.Utils;
  * A factory for creating Picture objects.
  */
 public class PictureFactory {
-
-	/**
-	 * Gets the todays picture.
-	 *
-	 * @param ctx the ctx
-	 * @return the todays picture
-	 * @throws JSONException the jSON exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws URISyntaxException the uRI syntax exception
-	 */
-	public static final Picture getTodaysPicture(Context ctx) throws JSONException, IOException, URISyntaxException {
-		URL url = new URL("http://anpod.heroku.com/latest.json");	
-		Picture p = getPictureFromUrl(ctx, url);
-		return p;
-	}
-
-	/**
-	 * Gets the picture.
-	 *
-	 * @param ctx the ctx
-	 * @param id the id
-	 * @return the picture
-	 * @throws JSONException the jSON exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws URISyntaxException the uRI syntax exception
-	 */
-	public static final Picture getPicture(Context ctx, String id) throws JSONException, IOException, URISyntaxException {
-		URL url = new URL("http://anpod.heroku.com/pictures_by_uid/"+ id +".json");	
-		return getPictureFromUrl(ctx, url);
-	}
 
 	/**
 	 * Gets the local pictures.
@@ -138,34 +107,6 @@ public class PictureFactory {
 	//		);
 	//		return picture;
 	//	}
-
-	/**
-	 * Gets the picture from url.
-	 *
-	 * @param ctx the ctx
-	 * @param url the url
-	 * @return the picture from url
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws URISyntaxException the uRI syntax exception
-	 * @throws JSONException the jSON exception
-	 */
-	private static final Picture getPictureFromUrl(Context ctx, URL url) throws IOException, URISyntaxException, JSONException {
-
-		String jsonString = Utils.getJSON(url);
-
-		JSONTokener jsonTokener = new JSONTokener(jsonString);
-		JSONObject json = (JSONObject) jsonTokener.nextValue();
-		json = json.getJSONObject("picture");
-
-		int aid = json.getInt("id");
-		String uid = json.getString("uid");
-		String title = json.getString("title");
-		String credit = json.getString("credit");
-		String info = json.getString("explanation");
-		String imgurId = json.getString("url");
-
-		return new Picture(aid, uid, title, credit, info, imgurId);
-	}
 
 	public static List<Picture> load() throws MalformedURLException, IOException, URISyntaxException, JSONException {
 		return load(null);

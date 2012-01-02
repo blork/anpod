@@ -51,7 +51,7 @@ import android.text.format.DateUtils;
  * {@link ScheduleProvider}. Reads data from both local {@link Resources} and
  * from remote sources, such as a spreadsheet.
  */
-public class SyncUtils {
+class SyncUtils {
 
     /** The Constant SECOND_IN_MILLIS. */
     private static final int SECOND_IN_MILLIS = (int) DateUtils.SECOND_IN_MILLIS;
@@ -70,7 +70,7 @@ public class SyncUtils {
      * @param context the context
      * @return the http client
      */
-    public static HttpClient getHttpClient(Context context) {
+    static HttpClient getHttpClient(Context context) {
         final HttpParams params = new BasicHttpParams();
 
         // Use generous timeouts for slow mobile networks
@@ -161,17 +161,5 @@ public class SyncUtils {
         public long getContentLength() {
             return -1;
         }
-    }
-
-    /**
-     * The Interface Prefs.
-     */
-    private interface Prefs {
-        
-        /** The IOSCHE d_ sync. */
-        String IOSCHED_SYNC = "iosched_sync";
-        
-        /** The LOCA l_ version. */
-        String LOCAL_VERSION = "local_version";
     }
 }

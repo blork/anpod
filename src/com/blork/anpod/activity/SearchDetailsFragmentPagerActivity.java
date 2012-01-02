@@ -34,10 +34,6 @@ import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
 public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
-	PagerAdapter mAdapter;
-
-	ViewPager mPager;
-
 	private TabPageIndicator mIndicator;
 
 
@@ -53,9 +49,9 @@ public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_pager);
 
-		mAdapter = new PagerAdapter(getSupportFragmentManager());
+		PagerAdapter mAdapter = new PagerAdapter(getSupportFragmentManager());
 
-		mPager = (ViewPager)findViewById(R.id.pager);
+		ViewPager mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
 		
 		mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
@@ -66,7 +62,7 @@ public class SearchDetailsFragmentPagerActivity extends FragmentActivity {
 	}
 
 
-	public static class PagerAdapter extends FragmentStatePagerAdapter implements TitleProvider {
+	private static class PagerAdapter extends FragmentStatePagerAdapter implements TitleProvider {
 		public PagerAdapter(FragmentManager fm) {
 			super(fm);
 		}

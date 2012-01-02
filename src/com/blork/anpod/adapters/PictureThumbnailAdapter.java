@@ -79,7 +79,7 @@ class PictureThumbnailWrapper {
 		}
 	}
 
-	TextView getTitle() {
+	private TextView getTitle() {
 		if (title==null) {
 			title=(TextView)row.findViewById(R.id.item_name);
 		}
@@ -88,7 +88,7 @@ class PictureThumbnailWrapper {
 	}
 
 
-	TextView getCredit() {
+	private TextView getCredit() {
 		if (credit==null) {
 			credit=(TextView)row.findViewById(R.id.item_credit);
 		}
@@ -96,7 +96,7 @@ class PictureThumbnailWrapper {
 		return(credit);
 	}
 
-	ImageView getCover() {
+	private ImageView getCover() {
 		if (image==null) {
 			image=(ImageView)row.findViewById(R.id.item_image);
 		}
