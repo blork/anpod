@@ -199,9 +199,6 @@ public class AnpodService extends Service implements Runnable{
 			desiredHeight = display.getHeight();
 		}
 
-		Log.d("APOD", "Fetching latest picture bitmap");
-		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
-
 		Log.d("APOD", "Updating widgets");
 		try {
 			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
@@ -239,6 +236,10 @@ public class AnpodService extends Service implements Runnable{
 			Log.d("APOD", "completed point 6");
 		}
 
+
+		Log.d("APOD", "Fetching latest picture bitmap");
+		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
+		
 		if (wallpaper) {
 			Log.d("APOD", "setting wallpaper");
 
