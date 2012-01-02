@@ -215,18 +215,6 @@ public class AnpodService extends Service implements Runnable{
 			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
 		} catch (Exception e) { }
 
-		try {
-			RemoteViews views2 = new RemoteViews(this.getPackageName(), R.layout.large_widget);
-			ComponentName thisWidget2 = new ComponentName(this, LargeWidget.class);
-			views2.setViewVisibility(R.id.content, View.VISIBLE);
-			views2.setViewVisibility(R.id.loading, View.GONE);
-			views2.setTextViewText(R.id.title, newPicture.title);
-			views2.setTextViewText(R.id.credit, newPicture.credit);
-			views2.setImageViewBitmap(R.id.image, BitmapUtils.resizeBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2));
-			views2.setOnClickPendingIntent(R.id.content, contentIntent);
-			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget2, views2);
-		} catch (Exception e) { }
-
 		Log.d("APOD", "Checking for new pics");
 		int count = PictureFactory.saveAll(this, pictures);
 		Log.d("APOD", count + " new pictures");

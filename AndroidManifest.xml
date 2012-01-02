@@ -91,18 +91,6 @@
                 android:resource="@layout/widget_info" />
         </receiver>
         <receiver
-            android:name="com.blork.anpod.widget.LargeWidget"
-            android:label="Large Astronomy Widget"
-            android:process=":remote" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@layout/large_widget_info" />
-        </receiver>
-        <receiver
             android:name="com.blork.anpod.service.Receiver"
             android:process=":remote" >
             <intent-filter>
