@@ -13,8 +13,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.WallpaperManager;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,9 +23,7 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.RemoteViews;
 
 import com.blork.anpod.R;
 import com.blork.anpod.activity.HomeActivity;
@@ -35,7 +31,6 @@ import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.Utils;
-import com.blork.anpod.widget.Widget;
 
 
 // TODO: Auto-generated Javadoc
@@ -198,42 +193,6 @@ public class AnpodService extends Service implements Runnable{
 			desiredHeight = display.getHeight();
 		}
 
-		Log.d("APOD", "Updating widgets");
-		try {
-			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
-			ComponentName thisWidget = new ComponentName(this, Widget.class);
-			views.setViewVisibility(R.id.content, View.VISIBLE);
-			views.setViewVisibility(R.id.loading, View.GONE);
-			views.setTextViewText(R.id.title, newPicture.title);
-			views.setTextViewText(R.id.credit, newPicture.credit);
-
-			views.setOnClickPendingIntent(R.id.content, contentIntent);
-			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
-		} catch (Exception e) { }
-
-		Log.d("APOD", "Checking for new pics");
-		int count = PictureFactory.saveAll(this, pictures);
-		Log.d("APOD", count + " new pictures");
-		if (count == 0 && notify && !forceRun) {
-			int icon = android.R.drawable.stat_notify_error;
-			Notification notification = new Notification(icon, "No New Picture!", System.currentTimeMillis());
-			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			notification.setLatestEventInfo(
-					this,
-					"No new picture!",
-					"There has been no new NASA update today. Try again tomorrow!", 
-					contentIntent
-			);
-			notificationManager.cancelAll();
-			notificationManager.notify(INFO, notification); 
-			Log.d("APOD", "exit point 6");
-			finish();
-			return;
-		} else {
-			PictureFactory.deleteAll(this);
-			PictureFactory.saveAll(this, pictures);
-			Log.d("APOD", "completed point 6");
-		}
 
 		Log.d("APOD", "Fetching latest picture bitmap");
 		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
@@ -267,6 +226,8 @@ public class AnpodService extends Service implements Runnable{
 			notificationManager.notify(INFO, notification); 
 		}
 
+		
+		startService(new Intent(this, WidgetService.class));
 		Log.d("APOD", "completed!");
 		finish();
 	}
