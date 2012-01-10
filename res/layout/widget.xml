@@ -1,61 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:gravity="center_vertical">
-	<RelativeLayout
-		android:id="@+id/content"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:padding="5dp"
-		android:visibility="gone"
-		android:background="#66000000">
-		<TextView
-			android:id="@+id/title"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text=""
-			android:textSize="20sp"
-			android:layout_alignParentTop="true"
-			android:gravity="center"
-			android:ellipsize="end"
-			android:textColor="#FFFFFF"
-			android:shadowColor="#666666"
-			android:shadowRadius="1.2"
-			android:shadowDx="1.2"
-			android:shadowDy="1.2"
-			android:typeface="sans" />
-		<TextView
-			android:id="@+id/credit"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text=""
-			android:textSize="10sp"
-			android:gravity="center"
-			android:ellipsize="end"
-			android:textColor="#CCCCCC"
-			android:layout_below="@+id/title"
-			android:shadowColor="#666666"
-			android:shadowRadius="1.2"
-			android:shadowDx="1.2"
-			android:shadowDy="1.2"
-			android:typeface="sans" />
-	</RelativeLayout>
-	<LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:gravity="center"
-		android:id="@+id/loading"
-		android:background="#99000000">
-		<TextView
-			android:text="@string/please_wait"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textSize="16sp"
-			android:gravity="center"
-			android:textColor="#FFFFFF" />
-	</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="8dp"
+    android:background="@drawable/appwidget_transparent_bg"
+    android:gravity="center_vertical" >
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:shadowColor="#666666"
+            android:shadowDx="1.2"
+            android:shadowDy="1.2"
+            android:shadowRadius="1.2"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:typeface="sans" />
+
+        <TextView
+            android:id="@+id/credit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:shadowColor="#666666"
+            android:shadowDx="1.2"
+            android:shadowDy="1.2"
+            android:shadowRadius="1.2"
+            android:text=""
+            android:textColor="#EEEEEE"
+            android:textSize="10sp"
+            android:typeface="sans" />
+    </RelativeLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/loading"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/please_wait"
+            android:textColor="#000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </LinearLayout>
