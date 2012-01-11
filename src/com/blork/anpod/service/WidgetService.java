@@ -114,8 +114,8 @@ public class WidgetService extends Service implements Runnable{
 
 			final float scale = getResources().getDisplayMetrics().density;
 			// Convert the dps to pixels, based on density scale
-			int width = (int) (300 * scale + 0.5f);
-			int height = (int) (300 * scale + 0.5f);
+			int width = (int) (280 * scale + 0.5f);
+			int height = (int) (280 * scale + 0.5f);
 
 			Log.d(Utils.TAG, width + " " + height);
 
