@@ -273,18 +273,12 @@ abstract class DetailFragment extends Fragment {
 			Log.d("APOD", desiredWidth+""+desiredHeight);
 
 			try {
-				Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(settingPicture.uri));
-				Bitmap resizedBitmap = BitmapUtils.resizeBitmap(
-					bitmap, 
-					desiredWidth, 
-					desiredHeight
-				);
-				wm.setBitmap(resizedBitmap);
+				Bitmap bitmap = BitmapUtils.fetchImage(getActivity().getApplicationContext(), settingPicture, desiredWidth, desiredHeight);
+
+				wm.setBitmap(bitmap);
 				
 				bitmap.recycle();
-				resizedBitmap.recycle();
 				bitmap = null;
-				resizedBitmap = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
