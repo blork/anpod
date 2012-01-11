@@ -13,11 +13,11 @@ import com.blork.anpod.model.Picture;
 
 public class HomeDetailFragment extends DetailFragment {
 	
-	private HomeDetailFragment() {
+	public HomeDetailFragment() {
 		super();
 	}
 	
-	private HomeDetailFragment(Picture picture) {
+	public HomeDetailFragment(Picture picture) {
 		super();
 		this.picture = picture;
 	}
