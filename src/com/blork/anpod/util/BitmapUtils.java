@@ -16,12 +16,14 @@
 
 package com.blork.anpod.util;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
@@ -38,7 +40,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -52,9 +53,6 @@ import com.blork.anpod.model.Picture;
  * Helper class for fetching and disk-caching images from the web.
  */
 public class BitmapUtils {
-
-	/** The Constant TAG. */
-	private static final String TAG = "BitmapUtils";
 
 	// TODO: for concurrent connections, DefaultHttpClient isn't great, consider other options
 	// that still allow for sharing resources across bitmap fetches.
@@ -78,7 +76,7 @@ public class BitmapUtils {
 		 * @param cookie the cookie
 		 * @param result the result
 		 */
-		public void onFetchComplete(Object cookie, Bitmap result, Uri uri);
+		public void onFetchComplete(BitmapResult result);
 	}
 
 	/**
@@ -86,143 +84,34 @@ public class BitmapUtils {
 	 * be invoked on the UI thread, but image fetching will be done in an {@link AsyncTask}.
 	 *
 	 * @param context the context
+	 * @param desiredHeight 
+	 * @param desiredWidth 
 	 * @param url the url
 	 * @param name the name
 	 * @param decodeOptions the decode options
 	 * @param cookie An arbitrary object that will be passed to the callback.
 	 * @param callback the callback
 	 */
-	public static void fetchImage(final Context context, final String url, final String name,
-			final BitmapFactory.Options decodeOptions,
-			final Object cookie, final OnFetchCompleteListener callback) {
-		new AsyncTask<String, Void, Bitmap>() {
-			private Uri uri;
+	public static void fetchImage(final Context context, final Picture picture, final 
+			int desiredWidth, final int desiredHeight, final OnFetchCompleteListener callback) {
+		new AsyncTask<String, Void, BitmapResult>() {
 
 			@Override
-			protected Bitmap doInBackground(String... params) {
-				Bitmap bitmap = null;
+			protected BitmapResult doInBackground(String... params) {
+				
+				BitmapResult result = fetchImage(context, picture, desiredWidth, desiredHeight);
 
-				String slug = toSlug(name);
-				Log.d("", "Fetching image");
-
-				final String url = params[0];
-
-				// First compute the cache key and cache file path for this URL
-				File cacheFile = null;
-				if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-					Log.d("", "creating cache file");
-
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-					if (prefs.getBoolean("archive", false)) {
-						cacheFile = new File(
-								Environment.getExternalStorageDirectory() 
-								+ File.separator + "APOD" 
-								+ File.separator + slug + ".jpg");
-					} else {
-						cacheFile = new File(
-								Environment.getExternalStorageDirectory()
-								+ File.separator + "Android"
-								+ File.separator + "data"
-								+ File.separator + "com.blork.anpod"
-								+ File.separator + "cache"
-								+ File.separator + slug + ".jpg");
-					}
-
-					uri = Uri.fromFile(cacheFile);
-				} else {
-					Log.d("", "SD card not mounted");
-					Log.d("", "creating cache file");
-					cacheFile = new File(
-							context.getCacheDir() + File.separator + slug + ".jpg");
-					uri = Uri.fromFile(cacheFile);
-				}
-				if (cacheFile != null && cacheFile.exists()) {
-					Log.d("", "Cache file exists, using it.");
-					Log.d("", cacheFile.getAbsolutePath());
-					while (bitmap == null) {
-						try {
-							bitmap = BitmapFactory.decodeFile(cacheFile.toString(), decodeOptions);
-						} catch (OutOfMemoryError e) {
-							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-							if (bitmap != null)
-								bitmap.recycle();
-							bitmap = null;
-							System.gc();
-							decodeOptions.inSampleSize += 2;
-						}
-					}
-					return bitmap;
-				}
-
-				try {
-					BitmapUtils.manageCache(slug, context);
-
-					Log.d("", "Not cached, fetching");
-
-					final HttpClient httpClient = SyncUtils.getHttpClient(
-							context.getApplicationContext());
-					final HttpResponse resp = httpClient.execute(new HttpGet(url));
-					final HttpEntity entity = resp.getEntity();
-
-					final int statusCode = resp.getStatusLine().getStatusCode();
-					if (statusCode != HttpStatus.SC_OK || entity == null) {
-						return null;
-					}
-
-					byte[] respBytes;
-
-					try {
-						respBytes = EntityUtils.toByteArray(entity);
-					} catch (OutOfMemoryError e) {
-						System.gc();
-						respBytes = EntityUtils.toByteArray(entity);
-					}
-
-					Log.d("APOD", "Writing cache file " + cacheFile.getName());
-					try {
-						cacheFile.getParentFile().mkdirs();
-						cacheFile.createNewFile();
-						FileOutputStream fos = new FileOutputStream(cacheFile);
-						fos.write(respBytes);
-						fos.close();
-					} catch (FileNotFoundException e) {
-						Log.w(TAG, "Error writing to bitmap cache: " + cacheFile.toString(), e);
-					} catch (IOException e) {
-						Log.w(TAG, "Error writing to bitmap cache: " + cacheFile.toString(), e);
-					}
-
-
-					Log.d("", "Returning bitmap image");
-					// Decode the bytes and return the bitmap.
-					while (bitmap == null) {
-						try {
-							bitmap = BitmapFactory.decodeByteArray(respBytes, 0, respBytes.length, decodeOptions);
-						} catch (OutOfMemoryError e) {
-							Log.d(Utils.TAG, "Out of memory..."+decodeOptions.inSampleSize);
-							if (bitmap != null)
-								bitmap.recycle();
-							bitmap = null;
-							System.gc();
-							decodeOptions.inSampleSize += 2;
-						}
-					}
-
-				} catch (Exception e) {
-					Log.w(TAG, "Problem while loading image: " + e.toString(), e);
-				}
-
-				return bitmap;
+				return result;
 			}
 
 			@Override
-			protected void onPostExecute(Bitmap result) {
-				callback.onFetchComplete(cookie, result, uri);
+			protected void onPostExecute(BitmapResult result) {
+				callback.onFetchComplete(result);
 			}
-		}.execute(url);
+		}.execute(picture.getFullSizeImageUrl());
 	}
 
-	public static Bitmap fetchImage(Context context, Picture picture, int desiredWidth, int desiredHeight) {
+	public static BitmapResult fetchImage(Context context, Picture picture, int desiredWidth, int desiredHeight) {
 
 		// First compute the cache key and cache file path for this URL
 		File cacheFile = null;
@@ -249,19 +138,19 @@ public class BitmapUtils {
 			Log.d("APOD", "creating cache file");
 			cacheFile = new File(
 					context.getCacheDir() + File.separator + toSlug(picture.title) + ".jpg");
-			//uri = Uri.fromFile(cacheFile);
 		}
+				
 		if (cacheFile != null && cacheFile.exists()) {
 			Log.d("APOD", "Cache file exists, using it.");
 			try {
-				Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(cacheFile));
-				Bitmap cachedBitmap = resizeBitmap(bitmap, desiredWidth, desiredHeight);
-				return cachedBitmap;
+				Bitmap bitmap = decodeStream(new FileInputStream(cacheFile), desiredWidth, desiredHeight);
+				return new BitmapResult(bitmap, Uri.fromFile(cacheFile));
 			} catch (FileNotFoundException e) {}
 		}
 
 		try {
 			Log.d("APOD", "Not cached, fetching");
+			BitmapUtils.manageCache(toSlug(picture.title), context);
 			// TODO: check for HTTP caching headers
 			final HttpClient httpClient = SyncUtils.getHttpClient(
 					context.getApplicationContext());
@@ -291,11 +180,9 @@ public class BitmapUtils {
 			// Decode the bytes and return the bitmap.
 			Log.d("APOD", "Reiszing bitmap image");
 
-			Bitmap bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(respBytes));
-
-			bitmap = resizeBitmap(bitmap, desiredWidth, desiredHeight);
+			Bitmap bitmap = decodeStream(new ByteArrayInputStream(respBytes), desiredWidth, desiredHeight);
 			Log.d("APOD", "Returning bitmap image");
-			return bitmap;
+			return new BitmapResult(bitmap, Uri.fromFile(cacheFile));
 		} catch (Exception e) {
 			Log.d("APOD", "Problem while loading image: " + e.toString(), e);
 		}
@@ -317,7 +204,7 @@ public class BitmapUtils {
 			folder = context.getCacheDir();
 		}
 
-		int cacheSize = 10;
+		int cacheSize = 15;
 		Log.w("", "current file: " + filename);
 		Log.w("", "Managing cache");
 		File[] files = folder.listFiles();
@@ -352,30 +239,59 @@ public class BitmapUtils {
 		String slug = NONLATIN.matcher(nowhitespace).replaceAll("");
 		return slug.toLowerCase(Locale.ENGLISH);
 	}
+	
+	private static Bitmap decodeStream(InputStream is, int desiredWidth, int desiredHeight){
+	    Bitmap b = null;
+	    try {
+	        //Decode image size
+	        BitmapFactory.Options o = new BitmapFactory.Options();
+	        o.inJustDecodeBounds = true;
 
-	public static Bitmap resizeBitmap(Bitmap bitmap, int desiredWidth, int desiredHeight) {
-		try {
-			int srcWidth = bitmap.getWidth();
-			int srcHeight = bitmap.getHeight();
-			float desiredScale = (float) desiredWidth / srcWidth;
-			// Resize
-			Bitmap resizedBitmap = matrixResize(bitmap, desiredScale, srcWidth, srcHeight);
-			bitmap.recycle();
-			bitmap = null;
-			return resizedBitmap;
-		} catch (OutOfMemoryError e) {
-			return resizeBitmap(bitmap, desiredWidth - (desiredWidth/4), desiredHeight - (desiredHeight/4));
-		}
+	        BufferedInputStream bis = new BufferedInputStream(is);
+	        bis.mark(Integer.MAX_VALUE);
+	        
+	        BitmapFactory.decodeStream(bis, null, o);
+	        bis.reset();
+	        
+	        int scale = 1;
+	        if (o.outHeight > desiredHeight || o.outWidth > desiredWidth) {
+	            scale = (int)Math.pow(2, (int) Math.round(Math.log(Math.max(desiredHeight, desiredWidth) / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+	        }
+
+	        //Decode with inSampleSize
+	        BitmapFactory.Options o2 = new BitmapFactory.Options();
+	        o2.inSampleSize = scale;
+	        o2.inDither = true;
+	        o2.inPurgeable = true;
+	        
+	        b = BitmapFactory.decodeStream(bis, null, o2);
+	        bis.close();
+	        is.close();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	    return b;
 	}
+	
+	public static class BitmapResult {
+		private Bitmap bitmap;
+		private Uri uri;
 
-	private static Bitmap matrixResize(Bitmap bitmap, float desiredScale, int srcWidth, int srcHeight) {
-		Matrix matrix = new Matrix();
-		matrix.postScale(desiredScale, desiredScale);
-		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, srcWidth, srcHeight, matrix, true);
+		public BitmapResult(Bitmap bitmap, Uri uri) {
+			this.bitmap = bitmap;
+			this.uri = uri;
+		}
+		
+		public Bitmap getBitmap() {
+			return bitmap;
+		}
 
-		//		bitmap.recycle();
-		//		bitmap = null;
-
-		return scaledBitmap;
+		public Uri getUri() {
+			return uri;
+		}
+		
+		public void recycle() {
+			bitmap.recycle();
+		}
 	}
 }

@@ -16,7 +16,6 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -30,6 +29,7 @@ import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
+import com.blork.anpod.util.BitmapUtils.BitmapResult;
 import com.blork.anpod.util.Utils;
 
 
@@ -195,13 +195,13 @@ public class AnpodService extends Service implements Runnable{
 
 
 		Log.d("APOD", "Fetching latest picture bitmap");
-		Bitmap bitmap = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
+		BitmapResult result = BitmapUtils.fetchImage(this, newPicture, desiredWidth, desiredHeight);
 		
 		if (wallpaper) {
 			Log.d("APOD", "setting wallpaper");
 
 			try {
-				wm.setBitmap(bitmap);
+				wm.setBitmap(result.getBitmap());
 			} catch (Exception e) {
 				Log.d("APOD", "exit point 7");
 				finish();

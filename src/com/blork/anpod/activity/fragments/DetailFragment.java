@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.SupportActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 import com.blork.anpod.R;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.util.BitmapUtils;
+import com.blork.anpod.util.BitmapUtils.BitmapResult;
 import com.blork.anpod.util.BitmapUtils.OnFetchCompleteListener;
 import com.blork.anpod.util.Utils;
 
@@ -53,6 +56,9 @@ abstract class DetailFragment extends Fragment {
 		super.onDestroyView();
 
 		if (imageView != null) {
+			try {
+				((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
+			} catch (Exception e) {}
 			imageView.setImageBitmap(null);
 			imageView.invalidate();
 			imageView = null;
@@ -61,6 +67,13 @@ abstract class DetailFragment extends Fragment {
 		System.gc();
 	}
 
+	@Override
+	public void onAttach(SupportActivity activity){
+		super.onAttach(activity);
+		Window window = activity.getWindow();
+		window.setFormat(PixelFormat.RGBA_8888);
+
+	}
 
 	/**
 	 * Gets the shown index.
@@ -91,35 +104,36 @@ abstract class DetailFragment extends Fragment {
 		imageView = (ImageView)details.findViewById(R.id.main_picture);
 
 		if (picture != null) {
-			BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
-			decodeOptions.inSampleSize = 2;
+			WindowManager window = getActivity().getWindowManager();
+			Display display = window.getDefaultDisplay();
+			int desiredWidth = display.getWidth();
+			int desiredHeight = display.getHeight();
+
 			BitmapUtils.fetchImage(
 					getActivity().getApplicationContext(), 
-					picture.getFullSizeImageUrl(), 
-					picture.title, 
-					decodeOptions, 
-					null, 
+					picture,
+					desiredWidth,
+					desiredHeight,
 					new OnFetchCompleteListener() {
 						@Override
-						public void onFetchComplete(Object cookie, final Bitmap result, final Uri uri) {
+						public void onFetchComplete(final BitmapResult result) {
 							try {
-								getActivity().getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
-								imageView.setImageBitmap(result);
+								getActivity().getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, result.getUri()));
+								imageView.setImageBitmap(result.getBitmap());
 								imageView.setVisibility(View.VISIBLE);
 
 								imageView.setOnLongClickListener(new OnLongClickListener() {
 									@Override
 									public boolean onLongClick(View v) {
 										Intent intent2 = new Intent();
-										intent2.setDataAndType(picture.uri, "image/jpeg");
+										intent2.setDataAndType(result.getUri(), "image/jpeg");
 										Intent intent3 = Intent.createChooser(intent2, "Open image with...");
 										startActivity(intent3);
 										return true;
 									}
 								});
 
-								picture.uri = uri;
-
+								picture.uri = result.getUri();
 							} catch (NullPointerException e) {
 								e.printStackTrace();
 							}
@@ -273,12 +287,11 @@ abstract class DetailFragment extends Fragment {
 			Log.d("APOD", desiredWidth+""+desiredHeight);
 
 			try {
-				Bitmap bitmap = BitmapUtils.fetchImage(getActivity().getApplicationContext(), settingPicture, desiredWidth, desiredHeight);
-
-				wm.setBitmap(bitmap);
+				BitmapResult result = BitmapUtils.fetchImage(getActivity().getApplicationContext(), settingPicture, desiredWidth, desiredHeight);
+				wm.setBitmap(result.getBitmap());
 				
-				bitmap.recycle();
-				bitmap = null;
+				result.recycle();
+				result = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;

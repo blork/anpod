@@ -7,7 +7,6 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -18,9 +17,10 @@ import com.blork.anpod.activity.HomeActivity;
 import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
+import com.blork.anpod.util.BitmapUtils.BitmapResult;
 import com.blork.anpod.util.Utils;
-import com.blork.anpod.widget.Widget4x2;
 import com.blork.anpod.widget.Widget;
+import com.blork.anpod.widget.Widget4x2;
 import com.blork.anpod.widget.Widget4x4;
 
 
@@ -78,7 +78,6 @@ public class WidgetService extends Service implements Runnable{
 			e.printStackTrace();
 		}
 
-		Bitmap bitmap = null;
 
 		try {
 			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget_4x2);
@@ -95,8 +94,8 @@ public class WidgetService extends Service implements Runnable{
 
 			Log.d(Utils.TAG, width + " " + height);
 
-			bitmap = BitmapUtils.fetchImage(this, latestPicture, width, height);
-			views.setImageViewBitmap(R.id.image, bitmap);
+			BitmapResult result = BitmapUtils.fetchImage(this, latestPicture, width, height);
+			views.setImageViewBitmap(R.id.image, result.getBitmap());
 
 			Log.d(Utils.TAG, "widget image set");
 			views.setOnClickPendingIntent(R.id.content, contentIntent);
@@ -120,10 +119,10 @@ public class WidgetService extends Service implements Runnable{
 
 			Log.d(Utils.TAG, width + " " + height);
 
-			bitmap = BitmapUtils.fetchImage(this, latestPicture, width, height);
+			BitmapResult result = BitmapUtils.fetchImage(this, latestPicture, width, height);
 
 
-			views.setImageViewBitmap(R.id.image, bitmap);
+			views.setImageViewBitmap(R.id.image, result.getBitmap());
 
 			Log.d(Utils.TAG, "big widget image set");
 			views.setOnClickPendingIntent(R.id.content, contentIntent);
