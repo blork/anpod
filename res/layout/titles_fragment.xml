@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:screenOrientation="portrait" >
 
-    <com.markupartist.android.widget.PullToRefreshListView
+    <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"

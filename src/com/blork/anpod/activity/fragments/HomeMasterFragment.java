@@ -4,10 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +18,6 @@ import com.blork.anpod.adapters.TitlesAdapter;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.service.AnpodService;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
-import com.markupartist.android.widget.PullToRefreshListView;
-import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
 
 public class HomeMasterFragment extends MasterFragment {
 
@@ -65,25 +60,6 @@ public class HomeMasterFragment extends MasterFragment {
 	@Override
 	public void listSetup() {
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		Long timestamp = settings.getLong("last_updated", -1);
-
-		if (timestamp != -1) {
-			String timestring = "Last updated: " + DateUtils.getRelativeTimeSpanString(timestamp);
-			((PullToRefreshListView) getListView()).setLastUpdated(timestring);
-		}
-
-		((PullToRefreshListView) getListView()).setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				// Do work to refresh the list here.
-				getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
-				Intent serviceIntent = new Intent(getActivity(), AnpodService.class);
-				serviceIntent.putExtra("force_run", true);
-				getActivity().startService(serviceIntent);
-			}
-		});
-
 		HomeActivity.pictures = PictureFactory.getLocalPictures(getActivity());
 
 		thumbs = new PictureThumbnailAdapter(
@@ -121,8 +97,6 @@ public class HomeMasterFragment extends MasterFragment {
 					);
 			etAdapter.notifyDataSetChanged();
 			getActivity().setProgressBarIndeterminateVisibility(false);
-
-			((PullToRefreshListView) getListView()).onRefreshComplete("Last updated: just now");
 		}
 	}
 
@@ -137,7 +111,6 @@ public class HomeMasterFragment extends MasterFragment {
 	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		position--; //Fix pull-to-refresh off by one error
 		showDetails(position);
 	}
 }
