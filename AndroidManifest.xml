@@ -91,10 +91,10 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@layout/widget_info" />
+                android:resource="@xml/widget_info" />
         </receiver>
         <receiver
-            android:name="com.blork.anpod.widget.BigWidget"
+            android:name="com.blork.anpod.widget.Widget4x2"
             android:label="Astronomy Widget (4x2)"
             android:process=":remote" >
             <intent-filter>
@@ -103,7 +103,19 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@layout/big_widget_info" />
+                android:resource="@xml/widget_info_4x2" />
+        </receiver>
+        <receiver
+            android:name="com.blork.anpod.widget.Widget4x4"
+            android:label="Astronomy Widget (4x4)"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_4x4" />
         </receiver>
         <receiver
             android:name="com.blork.anpod.service.Receiver"

@@ -2,21 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     android:background="@drawable/appwidget_transparent_bg"
-    android:gravity="center_vertical" >
+    android:gravity="center" >
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:visibility="gone" >
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
             android:scaleType="centerInside" />
     </RelativeLayout>
 

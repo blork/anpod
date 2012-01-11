@@ -12,7 +12,7 @@ import com.blork.anpod.util.Utils;
 /**
  * The Class Widget.
  */
-public class BigWidget extends AppWidgetProvider {
+public class Widget4x4 extends AppWidgetProvider {
    
     /* (non-Javadoc)
      * @see android.appwidget.AppWidgetProvider#onUpdate(android.content.Context, android.appwidget.AppWidgetManager, int[])

@@ -19,8 +19,9 @@ import com.blork.anpod.model.Picture;
 import com.blork.anpod.model.PictureFactory;
 import com.blork.anpod.util.BitmapUtils;
 import com.blork.anpod.util.Utils;
-import com.blork.anpod.widget.BigWidget;
+import com.blork.anpod.widget.Widget4x2;
 import com.blork.anpod.widget.Widget;
+import com.blork.anpod.widget.Widget4x4;
 
 
 // TODO: Auto-generated Javadoc
@@ -49,19 +50,19 @@ public class WidgetService extends Service implements Runnable{
 		Log.d("APOD", "in main thread");
 
 		List<Picture> pictures = PictureFactory.getLocalPictures(this);
-		
+
 		if (pictures == null || pictures.size() == 0) {
 			stopSelf();
 			return;
 		}
 
 		Picture latestPicture = pictures.get(0);
-		
+
 		Intent notificationIntent = new Intent(this, HomeActivity.class);
 		notificationIntent.putExtra("view_image", 0);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		
+
 		Log.d("APOD", "Updating widgets");
 		try {
 			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
@@ -77,13 +78,15 @@ public class WidgetService extends Service implements Runnable{
 			e.printStackTrace();
 		}
 
+		Bitmap bitmap = null;
+
 		try {
-			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.big_widget);
-			ComponentName thisWidget = new ComponentName(this, BigWidget.class);
+			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget_4x2);
+			ComponentName thisWidget = new ComponentName(this, Widget4x2.class);
 			views.setViewVisibility(R.id.content, View.VISIBLE);
 			views.setViewVisibility(R.id.loading, View.GONE);
-//			views.setTextViewText(R.id.title, latestPicture.title);
-//			views.setTextViewText(R.id.credit, latestPicture.credit);
+			//			views.setTextViewText(R.id.title, latestPicture.title);
+			//			views.setTextViewText(R.id.credit, latestPicture.credit);
 
 			final float scale = getResources().getDisplayMetrics().density;
 			// Convert the dps to pixels, based on density scale
@@ -91,11 +94,38 @@ public class WidgetService extends Service implements Runnable{
 			int height = (int) (110 * scale + 0.5f);
 
 			Log.d(Utils.TAG, width + " " + height);
-			
-			Bitmap bitmap = BitmapUtils.fetchImage(this, latestPicture, width, height);
+
+			bitmap = BitmapUtils.fetchImage(this, latestPicture, width, height);
 			views.setImageViewBitmap(R.id.image, bitmap);
 
 			Log.d(Utils.TAG, "widget image set");
+			views.setOnClickPendingIntent(R.id.content, contentIntent);
+			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
+		} catch (Exception e) { 
+			e.printStackTrace();
+		}
+
+		try {
+			RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget_4x2);
+			ComponentName thisWidget = new ComponentName(this, Widget4x4.class);
+			views.setViewVisibility(R.id.content, View.VISIBLE);
+			views.setViewVisibility(R.id.loading, View.GONE);
+			//			views.setTextViewText(R.id.title, latestPicture.title);
+			//			views.setTextViewText(R.id.credit, latestPicture.credit);
+
+			final float scale = getResources().getDisplayMetrics().density;
+			// Convert the dps to pixels, based on density scale
+			int width = (int) (300 * scale + 0.5f);
+			int height = (int) (300 * scale + 0.5f);
+
+			Log.d(Utils.TAG, width + " " + height);
+
+			bitmap = BitmapUtils.fetchImage(this, latestPicture, width, height);
+
+
+			views.setImageViewBitmap(R.id.image, bitmap);
+
+			Log.d(Utils.TAG, "big widget image set");
 			views.setOnClickPendingIntent(R.id.content, contentIntent);
 			AppWidgetManager.getInstance(this).updateAppWidget(thisWidget, views);
 		} catch (Exception e) { 
