@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto"
     package="com.blork.anpod"
-    android:versionCode="91"
-    android:versionName="3.3.3" >
+    android:versionCode="92"
+    android:versionName="3.3.4" >
 
     <supports-screens
         android:largeScreens="true"
