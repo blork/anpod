@@ -176,13 +176,40 @@ public class AnpodService extends Service implements Runnable{
 
 		Log.d("APOD", "Fetching latest picture");
 		Picture newPicture = pictures.get(0);
+		
+		
 
 		Intent notificationIntent = new Intent(this, HomeActivity.class);
 		notificationIntent.putExtra("view_image", 0);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+		
+		Log.d("APOD", "Checking for new pics");
+		int count = PictureFactory.saveAll(this, pictures);
+		Log.d("APOD", count + " new pictures");
+		if (count == 0 && notify && !forceRun) {
+			int icon = android.R.drawable.stat_notify_error;
+			Notification notification = new Notification(icon, "No New Picture!", System.currentTimeMillis());
+			notification.flags = Notification.FLAG_AUTO_CANCEL;
+			notification.setLatestEventInfo(
+					this,
+					"No new picture!",
+					"There has been no new NASA update today. Try again tomorrow!", 
+					contentIntent
+			);
+			notificationManager.cancelAll();
+			notificationManager.notify(INFO, notification); 
+			Log.d("APOD", "exit point 6");
+			finish();
+			return;
+		} else {
+			PictureFactory.deleteAll(this);
+			PictureFactory.saveAll(this, pictures);
+			Log.d("APOD", "completed point 6");
+		}
+		
+		
 		WallpaperManager wm = (WallpaperManager) this.getSystemService(Context.WALLPAPER_SERVICE);
-
 		int desiredWidth = wm.getDesiredMinimumWidth();
 		int desiredHeight = wm.getDesiredMinimumHeight();
 
@@ -227,12 +254,13 @@ public class AnpodService extends Service implements Runnable{
 		}
 
 		
-		startService(new Intent(this, WidgetService.class));
 		Log.d("APOD", "completed!");
 		finish();
 	}
 
 	private void finish() {
+		startService(new Intent(this, WidgetService.class));
+
 		try {
 			notificationManager.cancel(RUNNING);
 		} catch (Exception e) { 
