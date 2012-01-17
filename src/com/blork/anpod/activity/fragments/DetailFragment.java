@@ -147,6 +147,7 @@ abstract class DetailFragment extends Fragment {
 			//TextView handle = (TextView)details.findViewById(R.id.handle);
 
 			final WebView text = (WebView)details.findViewById(R.id.image_desc);
+			text.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			text.setWebViewClient(new EmbeddedWebViewClient());
 
 
