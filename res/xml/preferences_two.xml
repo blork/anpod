@@ -2,28 +2,6 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory
-		android:title="Donations">
-		<Preference
-			android:key="action_1"
-			android:title="Donate"
-			android:summary="Donate a small amount to support development">
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:data="market://details?id=com.blork.anpodpro" />
-		</Preference>
-	</PreferenceCategory>
-	<PreferenceCategory
-		android:title="More apps">
-		<Preference
-			android:key="action_3"
-			android:title="Apps by Sam Oakley"
-			android:summary="View my other apps">
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:data="market://search?q=Sam Oakley" />
-		</Preference>
-	</PreferenceCategory>
-	<PreferenceCategory
 		android:title="Feedback">
 		<Preference
 			android:key="action_4"
